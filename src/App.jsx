@@ -1,6 +1,6 @@
-import { Component } from 'react';
-import './App.css'
-import LoginForm from './components/loginFrame'
+import './App.css';
+// Component
+import LoginForm from './components/loginFrame';
 
 function App() {
   return (

@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import {
   Box,
   Button,
   Grid,
+  IconButton,
   Paper,
   TextField,
   Typography,
-  IconButton,
 } from '@mui/material';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import VGUFullLogo from '../assets/VGU Full Color logo-06.png';
+import React, { useState } from 'react';
+import VGULogo from '../assets/VGU_logo.png';
 
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -19,15 +19,14 @@ export default function LoginForm() {
       container
       justifyContent="center"
       alignItems="center"
-      sx={{ minHeight: '100vh', bgcolor: '#f4f4f4' }}
     >
       <Grid container maxWidth="lg" spacing={4}>
         {/* Login Form */}
-        <Grid item xs={12} md={6} sx={{ maxWidth: 400 }}>
+        <Grid sx={{ maxWidth: 400 }}>
           <Paper elevation={3} sx={{ p: 4, borderRadius: 3, textAlign: 'center' }}>
             <Box
               component="img"
-              src={VGUFullLogo}
+              src={VGULogo}
               alt="VGU Logo"
               sx={{ height: 40, mb: 1 }}
             />
@@ -62,6 +61,7 @@ export default function LoginForm() {
                 mt: 2,
                 backgroundColor: '#d35400',
                 '&:hover': { backgroundColor: '#b94300' },
+                '&:focus': { outline: 'none'},
               }}
             >
               Log in
