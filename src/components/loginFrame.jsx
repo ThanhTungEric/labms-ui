@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import {
+  Alert,
   Box,
   Button,
   Grid,
+  IconButton,
   Paper,
   TextField,
   Typography,
-  IconButton,
-  Alert,
 } from '@mui/material';
-import VisibilityIcon from '@mui/icons-material/Visibility';
+import React, { useState } from 'react';
 import VGUFullLogo from '../assets/VGU_logo.png';
 
 export default function LoginForm() {
@@ -34,11 +34,11 @@ export default function LoginForm() {
       container
       justifyContent="center"
       alignItems="center"
-      sx={{ minHeight: '100vh', bgcolor: '#f4f4f4' }}
+      sx={{ minHeight: '100vh' }}
     >
       <Grid container maxWidth="lg" spacing={4}>
         {/* Login Form */}
-        <Grid item xs={12} md={6} sx={{ maxWidth: 400 }}>
+        <Grid sx={{ maxWidth: 400 }}>
           <Paper elevation={3} sx={{ p: 4, borderRadius: 3, textAlign: 'center' }}>
             <Box
               component="img"
