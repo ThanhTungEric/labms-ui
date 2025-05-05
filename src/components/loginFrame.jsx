@@ -7,12 +7,27 @@ import {
   TextField,
   Typography,
   IconButton,
+  Alert,
 } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VGUFullLogo from '../assets/VGU Full Color logo-06.png';
 
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState(false);
+
+  const handleLogin = () => {
+    if (username === 'finnk' && password === '123456') {
+      setSuccess(true);
+      setError('');
+    } else {
+      setError('Invalid username or password');
+      setSuccess(false);
+    }
+  };
 
   return (
     <Grid
@@ -34,6 +49,8 @@ export default function LoginForm() {
 
             <TextField
               label="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               fullWidth
               variant="outlined"
               margin="normal"
@@ -43,21 +60,37 @@ export default function LoginForm() {
               <TextField
                 label="Password"
                 type={showPassword ? 'text' : 'password'}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 fullWidth
                 variant="outlined"
                 margin="normal"
               />
               <IconButton
                 onClick={() => setShowPassword(!showPassword)}
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
                 sx={{ position: 'absolute', top: 25, right: 10 }}
               >
                 <VisibilityIcon />
               </IconButton>
             </Box>
 
+            {/* Feedback Messages */}
+            {error && (
+              <Box mt={1}>
+                <Alert severity="error">{error}</Alert>
+              </Box>
+            )}
+            {success && (
+              <Box mt={1}>
+                <Alert severity="success">Login successful!</Alert>
+              </Box>
+            )}
+
             <Button
               variant="contained"
               fullWidth
+              onClick={handleLogin}
               sx={{
                 mt: 2,
                 backgroundColor: '#d35400',
@@ -79,5 +112,6 @@ export default function LoginForm() {
     </Grid>
   );
 }
+
 
  
