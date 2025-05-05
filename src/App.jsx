@@ -1,11 +1,12 @@
 import './App.css';
 // Component
-import LoginForm from './components/loginFrame';
+import Header from './components/header';
 
 function App() {
   return (
       <div>
-        <LoginForm/>
+        {/* <LoginForm/> */}
+        <Header />
       </div>
   );
 }
