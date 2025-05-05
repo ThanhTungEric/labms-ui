@@ -10,7 +10,7 @@ import {
   Alert,
 } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import VGUFullLogo from '../assets/VGU Full Color logo-06.png';
+import VGUFullLogo from '../assets/VGU_logo.png';
 
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -112,6 +112,3 @@ export default function LoginForm() {
     </Grid>
   );
 }
-
-
- 
