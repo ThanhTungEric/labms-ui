@@ -1,10 +1,12 @@
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import MenuIcon from '@mui/icons-material/Menu';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import IconButton from '@mui/material/IconButton';
-import Toolbar from '@mui/material/Toolbar';
-import * as React from 'react';
+import {
+    AppBar,
+    Box,
+    IconButton,
+    Toolbar,
+} from "@mui/material";
+import React from 'react';
 import VGUWhiteLogo from '../assets/VGULogo_horizontal-white.png';
 import LanguageToggleButton from './LanguageToggleButton';
 
