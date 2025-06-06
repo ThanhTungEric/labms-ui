@@ -12,72 +12,172 @@ import { PageContainer } from '@toolpad/core/PageContainer';
 import Grid from '@mui/material/Grid';
 import FacilitiesMaster from '../../pages/operator/general/FacilitiesMaster';
 import CommonStandardMaster from '../../pages/operator/general/CommonStandardMaster';
+import InfoIcon from '@mui/icons-material/Info';
+import { List } from '@mui/material';
+import DevicesOtherIcon from '@mui/icons-material/DevicesOther';
+import PaidIcon from '@mui/icons-material/Paid';
+import EngineeringIcon from '@mui/icons-material/Engineering';
+import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
+import InventoryIcon from '@mui/icons-material/Inventory';
+import SummarizeIcon from '@mui/icons-material/Summarize';
+import SettingsSuggestIcon from '@mui/icons-material/SettingsSuggest';
+import ListOfLab from '../../pages/Information/listOfLabs/Information';
 
 const NAVIGATION = [
     {
-        kind: 'header',
-        title: 'Main items',
-    },
-    {
-        segment: 'dashboard',
-        title: 'Dashboard',
-        icon: <DashboardIcon />,
-    },
-    {
-        segment: 'orders',
-        title: 'Orders',
-        icon: <ShoppingCartIcon />,
-    },
-    {
-        kind: 'divider',
-    },
-    {
-        kind: 'header',
-        title: 'Analytics',
-    },
-    {
-        segment: 'reports',
-        title: 'Reports',
-        icon: <BarChartIcon />,
+        segment: 'information',
+        title: 'Information',
+        icon: <InfoIcon />,
         children: [
             {
-                segment: 'sales',
-                title: 'Sales',
+                segment: 'listOfLabs',
+                title: 'List of labs',
                 icon: <DescriptionIcon />,
             },
             {
-                segment: 'traffic',
-                title: 'Traffic',
+                segment: 'labInformation',
+                title: 'Lab information',
                 icon: <DescriptionIcon />,
             },
         ],
     },
     {
-        segment: 'integrations',
-        title: 'Integrations',
-        icon: <LayersIcon />,
-    },
-    {
-        kind: 'divider',
-    },
-    {
-        segment: 'operator',
-        title: 'Operator',
-        icon: <BarChartIcon />,
+        segment: 'equipment',
+        title: 'Equipment',
+        icon: <DevicesOtherIcon />,
         children: [
             {
-                segment: 'facilities',
-                title: 'Facilities',
+                segment: 'information  ',
+                title: 'Information',
                 icon: <DescriptionIcon />,
             },
             {
-                segment: 'commons',
-                title: 'Common Standards',
+                segment: 'labAssets',
+                title: 'Lab Assets',
+                icon: <DescriptionIcon />,
+            },
+            {
+                segment: 'usageHistory',
+                title: 'Usage History',
+                icon: <DescriptionIcon />,
+            },
+            {
+                segment: 'maintenanceAndStocking',
+                title: 'Maintenance & Stocking',
+                icon: <DescriptionIcon />,
+            },
+            {
+                segment: 'upgradeAndInvestment',
+                title: 'Upgrade & Investment',
+                icon: <DescriptionIcon />,
+            },
+        ],
+    },
+    {
+        segment: 'financial',
+        title: 'Financial',
+        icon: <PaidIcon />,
+        children: [
+            {
+                segment: 'labBudget',
+                title: 'List of labs',
+                icon: <DescriptionIcon />,
+            },
+            {
+                segment: 'labIncomeExpense',
+                title: 'Lab Income & Expense',
+                icon: <DescriptionIcon />,
+            },
+        ],
+    },
+    {
+        segment: 'operation',
+        title: 'Operation',
+        icon: <EngineeringIcon />,
+        children: [
+            {
+                segment: 'labUsageLog',
+                title: 'Lab Usage Log',
+                icon: <DescriptionIcon />,
+            },
+            {
+                segment: 'labResourceDemand',
+                title: 'Lab Resource Demand',
+                icon: <DescriptionIcon />,
+            },
+        ],
+    },
+    {
+        segment: 'process',
+        title: 'Process',
+        icon: <PublishedWithChangesIcon />,
+        children: [
+            {
+                segment: 'labBooking',
+                title: 'Lab Booking',
+                icon: <DescriptionIcon />,
+            },
+            {
+                segment: 'labSecurity',
+                title: 'Lab Security',
+                icon: <DescriptionIcon />,
+            },
+        ],
+    },
+    {
+        segment: 'inventory',
+        title: 'Inventory',
+        icon: <InventoryIcon />,
+        children: [
+            {
+                segment: 'labInventoryPlanning',
+                title: 'Lab Inventory Planning',
+                icon: <DescriptionIcon />,
+            },
+            {
+                segment: 'inventoryResultEvaluation',
+                title: 'Inventory Result Evaluation',
+                icon: <DescriptionIcon />,
+            },
+        ],
+    },
+    {
+        segment: 'report',
+        title: 'Report',
+        icon: <SummarizeIcon />,
+        children: [
+            {
+                segment: 'reportList',
+                title: 'Report List',
+                icon: <DescriptionIcon />,
+            },
+        ],
+    },
+    {
+        segment: 'system',
+        title: 'System',
+        icon: <SettingsSuggestIcon />,
+        children: [
+            {
+                segment: 'userInformation',
+                title: 'User Information',
+                icon: <DescriptionIcon />,
+            },
+            {
+                segment: 'generalMaster',
+                title: 'General Master',
                 icon: <DescriptionIcon />,
             },
         ],
     },
 
+    // {
+    //     kind: 'header',
+    //     title: 'Main items',
+    // },
+    // {
+    //     kind: 'divider',
+    // },
 ];
 
 const demoTheme = createTheme({
@@ -142,6 +242,8 @@ export default function DashboardLayoutBasic(props) {
                                 return <FacilitiesMaster />;
                             case '/operator/commons':
                                 return <CommonStandardMaster />;
+                            case '/information/listOfLabs':
+                                return <ListOfLab />;
                             case '/dashboard':
                             default:
                                 return (
@@ -162,7 +264,6 @@ export default function DashboardLayoutBasic(props) {
                         }
                     })()}
                 </PageContainer>
-
             </DashboardLayout>
         </AppProvider>
     );

@@ -7,11 +7,12 @@ import DashboardLayoutBasic from './components/navigate/DashboardLayoutBasic';
 function App() {
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<DashboardLayoutBasic />} />
-      </Routes>
+        <Routes>
+          <Route path="/" element={<DashboardLayoutBasic />} />
+        </Routes>
     </Router>
   );
 }
 
 export default App;
+
