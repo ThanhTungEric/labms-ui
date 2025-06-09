@@ -22,11 +22,9 @@ import AddIcon from '@mui/icons-material/Add';
 import UploadIcon from '@mui/icons-material/Upload';
 import DownloadIcon from '@mui/icons-material/Download';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
 
-function createData(no, labcode, labname, faculty, location, area, supervisor, state) {
-  return { no, labcode, labname, faculty, location, area, supervisor, state };
+function createData(no, labcode, labname, falcuty, location, area, supervisor, state) {
+  return { no, labcode, labname, falcuty, location, area, supervisor, state };
 }
 
 const initialData = [
@@ -40,18 +38,12 @@ const initialData = [
 
 export default function BasicTable() {
   const [filterText, setFilterText] = React.useState('');
-  const [labCodeFilter, setLabCodeFilter] = React.useState('');
-  const [labNameFilter, setLabNameFilter] = React.useState('');
-  const [locationFilter, setLocationFilter] = React.useState('');
-  const [facultyFilter, setFacultyFilter] = React.useState('');
-  const [showMoreFilters, setShowMoreFilters] = React.useState(false);
-
   const [rows, setRows] = React.useState(initialData);
   const [open, setOpen] = React.useState(false);
   const [isEditing, setIsEditing] = React.useState(false);
   const [editRowIndex, setEditRowIndex] = React.useState(null);
   const [formData, setFormData] = React.useState({
-    labcode: '', labname: '', faculty: '', location: '', area: '', supervisor: '', state: ''
+    labcode: '', labname: '', falcuty: '', location: '', area: '', supervisor: '', state: ''
   });
 
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -83,12 +75,12 @@ export default function BasicTable() {
 
   const handleClickOpen = () => {
     setIsEditing(false);
-    setFormData({ labcode: '', labname: '', faculty: '', location: '', area: '', supervisor: '', state: '' });
+    setFormData({ labcode: '', labname: '', falcuty: '', location: '', area: '', supervisor: '', state: '' });
     setOpen(true);
   };
 
   const handleClose = () => {
-    setFormData({ labcode: '', labname: '', faculty: '', location: '', area: '', supervisor: '', state: '' });
+    setFormData({ labcode: '', labname: '', falcuty: '', location: '', area: '', supervisor: '', state: '' });
     setOpen(false);
   };
 
@@ -109,22 +101,13 @@ export default function BasicTable() {
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const filteredRows = rows.filter((row) => {
-    const generalMatch = Object.values(row).join(' ').toLowerCase().includes(filterText.toLowerCase());
-    const labCodeMatch = row.labcode.toLowerCase().includes(labCodeFilter.toLowerCase());
-    const labNameMatch = row.labname.toLowerCase().includes(labNameFilter.toLowerCase());
-    const locationMatch = row.location.toLowerCase().includes(locationFilter.toLowerCase());
-    const facultyMatch = row.faculty.toLowerCase().includes(facultyFilter.toLowerCase());
-
-    return (
-      generalMatch &&
-      (!showMoreFilters || (labNameMatch && labCodeMatch && locationMatch && facultyMatch))
-    );
-  });
+  const filteredRows = rows.filter((row) =>
+    Object.values(row).join(' ').toLowerCase().includes(filterText.toLowerCase())
+  );
 
   return (
     <Box sx={{ p: 2 }}>
-      <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', mb: 2, flexWrap: 'wrap' }}>
+      <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', mb: 2 }}>
         <TextField
           label="Filter labs (any column)"
           variant="outlined"
@@ -132,151 +115,21 @@ export default function BasicTable() {
           value={filterText}
           onChange={(e) => setFilterText(e.target.value)}
         />
-        <Button
-          onClick={() => setShowMoreFilters((prev) => !prev)}
-          variant="outlined"
-          color="primary"
-          sx={{
-            color: 'white',
-            borderColor: 'none',
-            backgroundColor: '#4682B4  ',
-            '&:hover': {
-              color: '#4682B4',
-              backgroundColor: 'white',
-            },
-          }}
-        >
-          {showMoreFilters ? 'Hide Filters' : 'More Filters'}
+        <Button variant="contained" color="primary" onClick={handleClickOpen} sx={{ fontSize: '0.75rem', borderRadius: '100px', backgroundColor: '#FFFBEB', color: '#F28130', '&:hover': {backgroundColor: '#F28130', color: 'white'}}} startIcon={<AddIcon />}>
+          Add
         </Button>
-
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleClickOpen}
-          sx={{
-            borderRadius: '100px',
-            backgroundColor: '#4682B4',
-            color: 'white',
-            minWidth: '40px',
-            padding: '6px 12px',
-            '&:hover': {
-              backgroundColor: '#4682B4',
-              color: '#white',
-              '& .hover-text': {
-                display: 'inline',
-                marginLeft: '8px',
-              },
-            },
-          }}
-        >
-          <AddIcon fontSize="small" />
-          <Box
-            className="hover-text"
-            sx={{
-              display: 'none',
-              transition: 'display 0.3s ease-in-out',
-            }}
-          >
-            Add
-          </Box>
+        <Button variant="contained" color="primary" sx={{ fontSize: '0.75rem', whiteSpace: 'nowrap', minWidth: '170px', borderRadius: '100px', backgroundColor: '#FFFBEB', color: '#F28130', '&:hover': {backgroundColor: '#F28130', color: 'white'} }} startIcon={<UploadIcon />}>
+          Upload template
         </Button>
-
-        <Button
-          variant="contained"
-          color="primary"
-          sx={{
-            borderRadius: '100px',
-            backgroundColor: '#4682B4',
-            color: 'white',
-            minWidth: '40px',
-            padding: '6px 12px',
-            '&:hover': {
-              backgroundColor: '#4682B4',
-              color: '#white',
-              '& .hover-text': {
-                display: 'inline',
-                marginLeft: '8px',
-              },
-            },
-          }}
-        >
-          <UploadIcon fontSize="small" />
-          <Box
-            className="hover-text"
-            sx={{
-              display: 'none',
-              transition: 'display 0.3s ease-in-out',
-            }}
-          >
-            Import
-          </Box>
-        </Button>
-
-        <Button
-          variant="contained"
-          color="primary"
-          sx={{
-            borderRadius: '100px',
-            backgroundColor: '#4682B4',
-            color: 'white',
-            minWidth: '40px',
-            padding: '6px 12px',
-            '&:hover': {
-              backgroundColor: '#4682B4',
-              color: '#white',
-              '& .hover-text': {
-                display: 'inline',
-                marginLeft: '8px',
-              },
-            },
-          }}
-        >
-          <DownloadIcon fontSize="small" />
-          <Box
-            className="hover-text"
-            sx={{
-              display: 'none',
-              transition: 'display 0.3s ease-in-out',
-            }}
-          >
-            Export
-          </Box>
+        <Button variant="contained" color="primary" sx={{ fontSize: '0.75rem', whiteSpace: 'nowrap', minWidth: '190px', borderRadius: '100px', backgroundColor: '#FFFBEB', color: '#F28130', '&:hover': {backgroundColor: '#F28130', color: 'white'} }} startIcon={<DownloadIcon />}>
+          Download template
         </Button>
       </Box>
-
-      {showMoreFilters && (
-        <Box sx={{ display: 'flex', gap: 2, mb: 2, flexWrap: 'wrap' }}>
-          <TextField
-            label="Lab Name"
-            variant="outlined"
-            value={labNameFilter}
-            onChange={(e) => setLabNameFilter(e.target.value)}
-          />
-          <TextField
-            label="Lab Code"
-            variant="outlined"
-            value={labCodeFilter}
-            onChange={(e) => setLabCodeFilter(e.target.value)}
-          />
-          <TextField
-            label="Location"
-            variant="outlined"
-            value={locationFilter}
-            onChange={(e) => setLocationFilter(e.target.value)}
-          />
-          <TextField
-            label="Faculty"
-            variant="outlined"
-            value={facultyFilter}
-            onChange={(e) => setFacultyFilter(e.target.value)}
-          />
-        </Box>
-      )}
 
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>{isEditing ? 'Edit Lab' : 'Add New Lab'}</DialogTitle>
         <DialogContent>
-          {['labcode','labname','faculty','location','area','supervisor','state'].map((field) => (
+          {['labcode','labname','falcuty','location','area','supervisor','state'].map((field) => (
             <TextField
               key={field}
               margin="dense"
@@ -318,7 +171,7 @@ export default function BasicTable() {
                 <TableCell align="center">{row.no}</TableCell>
                 <TableCell align="center">{row.labcode}</TableCell>
                 <TableCell align="center">{row.labname}</TableCell>
-                <TableCell align="center">{row.faculty}</TableCell>
+                <TableCell align="center">{row.falcuty}</TableCell>
                 <TableCell align="center">{row.location}</TableCell>
                 <TableCell align="center">{row.area}</TableCell>
                 <TableCell align="center">{row.supervisor}</TableCell>
@@ -348,8 +201,8 @@ export default function BasicTable() {
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
         transformOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
-        <MenuItem onClick={handleEdit}><EditIcon /></MenuItem>
-        <MenuItem onClick={handleDelete}><DeleteIcon /></MenuItem>
+        <MenuItem onClick={handleEdit}>Edit</MenuItem>
+        <MenuItem onClick={handleDelete}>Delete</MenuItem>
       </Menu>
     </Box>
   );
