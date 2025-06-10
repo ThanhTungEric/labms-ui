@@ -22,6 +22,21 @@ import InventoryIcon from '@mui/icons-material/Inventory';
 import SummarizeIcon from '@mui/icons-material/Summarize';
 import SettingsSuggestIcon from '@mui/icons-material/SettingsSuggest';
 import ListOfLab from '../../pages/Information/listOfLabs/Information';
+import EquipInfo from '../../pages/equipment/equipInfo/equipInfo';
+import LabAssets from '../../pages/equipment/labAssets/labAssets';
+import MaintenanceAndStocking from '../../pages/equipment/maintenanceAndStocking/maintenanceAndStocking';
+import UpgradeAndInvestment from '../../pages/equipment/upgradeAndInvestment/upgradeAndInvestment';
+import LabBudget from'../../pages/financial/labBudget/labBudget';
+import LabIncomeExpense from '../../pages/financial/labIncomeExpense/labIncomeExpense';
+import LabResourceDemand from '../../pages/operation/labResourceDemand/labResourceDemand';
+import LabUsageLog from '../../pages/operation/labUsageLog/labUsageLog';
+import LabBooking from '../../pages/process/labBooking/labBooking';
+import LabSecurity from '../../pages/process/labSecurity/labSecurity';
+import LabInventoryPlanning from '../../pages/inventory/labInventoryPlanning/labInventoryPlanning';
+import InventoryResultEvaluation from '../../pages/inventory/inventoryResultEvaluation/inventoryResultEvaluation';
+import ReportList from '../../pages/report/reportList/reportList';
+import GeneralMaster from '../../pages/system/generalMaster/generalMaster';
+import UserInformation from '../../pages/system/userInformation/userInformation';
 
 const NAVIGATION = [
     {
@@ -47,7 +62,7 @@ const NAVIGATION = [
         icon: <DevicesOtherIcon />,
         children: [
             {
-                segment: 'information  ',
+                segment: 'equipInfo',
                 title: 'Information',
                 icon: <DescriptionIcon />,
             },
@@ -80,7 +95,7 @@ const NAVIGATION = [
         children: [
             {
                 segment: 'labBudget',
-                title: 'List of labs',
+                title: 'Lab Budget',
                 icon: <DescriptionIcon />,
             },
             {
@@ -244,6 +259,37 @@ export default function DashboardLayoutBasic(props) {
                                 return <CommonStandardMaster />;
                             case '/information/listOfLabs':
                                 return <ListOfLab />;
+                            case '/equipment/equipInfo':
+                                return <EquipInfo />;
+                            case '/equipment/labAssets':
+                                return <LabAssets />;
+                            case '/equipment/maintenanceAndStocking':
+                                return <MaintenanceAndStocking />;
+                            case '/equipment/upgradeAndInvestment':
+                                return <UpgradeAndInvestment />;
+                            case '/financial/labBudget':
+                                return <LabBudget />;
+                            case '/financial/labIncomeExpense':
+                                return <LabIncomeExpense />;
+                            case '/operation/labUsageLog':
+                                return <LabUsageLog />;
+                            case '/operation/labResourceDemand':
+                                return <LabResourceDemand />;
+                            case '/process/labBooking':
+                                return <LabBooking />;
+                            case '/process/labSecurity':
+                                return <LabSecurity />;
+                            case '/inventory/labInventoryPlanning':
+                                return <LabInventoryPlanning />;
+                            case '/inventory/inventoryResultEvaluation':
+                                return <InventoryResultEvaluation />;
+                            case '/report/reportList':
+                                return <ReportList />;
+                            case '/system/generalMaster':
+                                return <GeneralMaster />;
+                            case '/system/userInformation':
+                                return <UserInformation />;
+                            
                             case '/dashboard':
                             default:
                                 return (
