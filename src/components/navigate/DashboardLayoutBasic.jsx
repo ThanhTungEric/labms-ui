@@ -37,6 +37,7 @@ import InventoryResultEvaluation from '../../pages/inventory/inventoryResultEval
 import ReportList from '../../pages/report/reportList/reportList';
 import GeneralMaster from '../../pages/system/generalMaster/generalMaster';
 import UserInformation from '../../pages/system/userInformation/userInformation';
+import LabInformation from '../../pages/Information/labInformation/labInformation';
 
 const NAVIGATION = [
     {
@@ -52,7 +53,7 @@ const NAVIGATION = [
             {
                 segment: 'labInformation',
                 title: 'Lab information',
-                icon: <DescriptionIcon />,
+                icon: <DescriptionIcon />
             },
         ],
     },
@@ -259,6 +260,10 @@ export default function DashboardLayoutBasic(props) {
                                 return <CommonStandardMaster />;
                             case '/information/listOfLabs':
                                 return <ListOfLab />;
+                            case '/information/labInformation':
+                                return <LabInformation />;
+                            case '/information/labInformation/roomUsageLog':
+                                return <RoomUsageLog />;
                             case '/equipment/equipInfo':
                                 return <EquipInfo />;
                             case '/equipment/labAssets':
@@ -289,7 +294,6 @@ export default function DashboardLayoutBasic(props) {
                                 return <GeneralMaster />;
                             case '/system/userInformation':
                                 return <UserInformation />;
-                            
                             case '/dashboard':
                             default:
                                 return (
