@@ -11,6 +11,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import RoomUsageLog from './roomUsageLog/roomUsageLog';
+import InstructionManual from './instructionManual/instructionManual';
 
 function useDemoRouter(initialPath) {
   const [pathname, setPathname] = React.useState(initialPath);
@@ -128,6 +129,8 @@ export default function BasicTable() {
   switch (router.pathname) {
     case '/information/labInformation/roomUsageLog':
       return <RoomUsageLog />;
+    case '/information/labInformation/instructionManual':
+      return <InstructionManual />;
     default:
       break;
   }
@@ -152,6 +155,24 @@ export default function BasicTable() {
           }}
         >
           Room Usage Log
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => router.navigate('/information/labInformation/instructionManual')}
+          sx={{
+            borderRadius: '100px',
+            backgroundColor: 'primary',
+            color: 'white',
+            minWidth: '40px',
+            padding: '6px 12px',
+            '&:hover': {
+              backgroundColor: 'white',
+              color: 'black',
+            },
+          }}
+        >
+          Instruction Manual
         </Button>
 
         <TextField
