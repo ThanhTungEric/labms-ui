@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   Box,
   Button,
@@ -15,15 +15,27 @@ import {
 } from '@mui/material';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
+import LabInformation from '../labInformation';
+import RoomUsageLog from '../roomUsageLog/roomUsageLog';
 
-const mockUser = {
-  name: 'John Doe',
-  email: 'johndoe@gmail.com',
-  avatar: 'https://i.imgur.com/9wCbcYz.png', // Replace with your image path
-};
+export default function FileUpload() {
+  // Mock router
+  const [pathname, setPathname] = useState('/information/labInformation/instructionManual');
+  const router = useMemo(() => {
+    return {
+      pathname,
+      searchParams: new URLSearchParams(),
+      navigate: (path) => setPathname(String(path)),
+    };
+  }, [pathname]);
 
-const FileUpload = () => {
+  // Mock user info
+  const mockUser = {
+    name: 'John Doe',
+    email: 'johndoe@gmail.com',
+    avatar: 'https://i.imgur.com/9wCbcYz.png',
+  };
+
   const [files, setFiles] = useState([]);
 
   const handleFileUpload = (e) => {
@@ -42,8 +54,74 @@ const FileUpload = () => {
     setFiles(updatedFiles);
   };
 
+  // Routing
+  switch (router.pathname) {
+    case '/information/labInformation':
+      return <LabInformation />;
+    case '/information/labInformation/roomUsageLog':
+      return <RoomUsageLog />;
+    case '/information/labInformation/instructionManual':
+    default:
+      break;
+  }
+
   return (
-    <Box p={4}>
+    <Box sx={{ p: 2 }}>
+      {/* Navigation Buttons */}
+      <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', mb: 2, flexWrap: 'wrap' }}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => router.navigate('/information/labInformation')}
+          sx={{
+            borderRadius: '100px',
+            backgroundColor: 'gray',
+            color: 'white',
+            minWidth: '40px',
+            padding: '6px 12px',
+            '&:hover': {
+              backgroundColor: '#1565c0',
+              color: 'white',
+            },
+          }}
+        >
+          Room Facilities
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => router.navigate('/information/labInformation/roomUsageLog')}
+          sx={{
+            borderRadius: '100px',
+            backgroundColor: 'gray',
+            color: 'white',
+            minWidth: '40px',
+            padding: '6px 12px',
+            '&:hover': {
+              backgroundColor: '#1565c0',
+              color: 'white',
+            },
+          }}
+        >
+          Room Usage Log
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => router.navigate('/information/labInformation/instructionManual')}
+          sx={{
+            borderRadius: '100px',
+            backgroundColor: 'primary',
+            color: 'white',
+            minWidth: '40px',
+            padding: '6px 12px',
+          }}
+        >
+          Instruction Manual
+        </Button>
+      </Box>
+
+      {/* File Table */}
       <Typography variant="h6" fontWeight="bold" mb={2}>
         Attached Files
       </Typography>
@@ -87,6 +165,7 @@ const FileUpload = () => {
         </Table>
       </TableContainer>
 
+      {/* Upload Button */}
       <Box mt={3}>
         <input
           accept="*"
@@ -103,6 +182,4 @@ const FileUpload = () => {
       </Box>
     </Box>
   );
-};
-
-export default FileUpload;
+}

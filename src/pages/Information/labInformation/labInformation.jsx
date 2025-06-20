@@ -141,16 +141,29 @@ export default function BasicTable() {
         <Button
           variant="contained"
           color="primary"
-          onClick={() => router.navigate('/information/labInformation/roomUsageLog')}
           sx={{
             borderRadius: '100px',
             backgroundColor: 'primary',
             color: 'white',
             minWidth: '40px',
             padding: '6px 12px',
+          }}
+        >
+          Room Facilities
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => router.navigate('/information/labInformation/roomUsageLog')}
+          sx={{
+            borderRadius: '100px',
+            backgroundColor: 'gray',
+            color: 'white',
+            minWidth: '40px',
+            padding: '6px 12px',
             '&:hover': {
-              backgroundColor: 'white',
-              color: 'black',
+              backgroundColor: '#1565c0',
+              colore: 'white',
             },
           }}
         >
@@ -162,13 +175,13 @@ export default function BasicTable() {
           onClick={() => router.navigate('/information/labInformation/instructionManual')}
           sx={{
             borderRadius: '100px',
-            backgroundColor: 'primary',
+            backgroundColor: 'gray',
             color: 'white',
             minWidth: '40px',
             padding: '6px 12px',
             '&:hover': {
-              backgroundColor: 'white',
-              color: 'black',
+              backgroundColor: '#1565c0',
+              color: 'white',
             },
           }}
         >
