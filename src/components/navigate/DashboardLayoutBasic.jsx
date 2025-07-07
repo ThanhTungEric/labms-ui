@@ -4,6 +4,7 @@ import { createTheme, styled } from '@mui/material/styles';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import BarChartIcon from '@mui/icons-material/BarChart';
+import LogoutIcon from '@mui/icons-material/Logout';
 import DescriptionIcon from '@mui/icons-material/Description';
 import LayersIcon from '@mui/icons-material/Layers';
 import { AppProvider } from '@toolpad/core/AppProvider';
@@ -26,7 +27,7 @@ import EquipInfo from '../../pages/equipment/equipInfo/equipInfo';
 import LabAssets from '../../pages/equipment/labAssets/labAssets';
 import MaintenanceAndStocking from '../../pages/equipment/maintenanceAndStocking/maintenanceAndStocking';
 import UpgradeAndInvestment from '../../pages/equipment/upgradeAndInvestment/upgradeAndInvestment';
-import LabBudget from'../../pages/financial/labBudget/labBudget';
+import LabBudget from '../../pages/financial/labBudget/labBudget';
 import LabIncomeExpense from '../../pages/financial/labIncomeExpense/labIncomeExpense';
 import LabResourceDemand from '../../pages/operation/labResourceDemand/labResourceDemand';
 import LabUsageLog from '../../pages/operation/labUsageLog/labUsageLog';
@@ -186,6 +187,9 @@ const NAVIGATION = [
             },
         ],
     },
+    { kind: 'divider' },
+    { kind: 'header', title: 'System Actions' },
+    { segment: 'logout', title: 'Logout', icon: <LogoutIcon /> }
 
     // {
     //     kind: 'header',
@@ -234,7 +238,7 @@ const Skeleton = styled('div')(({ theme, height }) => ({
 }));
 
 export default function DashboardLayoutBasic(props) {
-    const { window } = props;
+    const { window, onLogout } = props;
 
     const router = useDemoRouter('/dashboard');
 
@@ -294,6 +298,10 @@ export default function DashboardLayoutBasic(props) {
                                 return <GeneralMaster />;
                             case '/system/userInformation':
                                 return <UserInformation />;
+                            case '/logout':
+                                if (onLogout) onLogout();
+                                router.navigate('/login');
+                                return null;
                             case '/dashboard':
                             default:
                                 return (
