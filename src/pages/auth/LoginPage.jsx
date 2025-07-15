@@ -29,7 +29,7 @@ function LoginPage({onLoginSuccess}) {
   const [password, setPassword] = useState("");
 
   return (
-    <Box sx={{ position: "relative", minHeight: "100vh", overflow: "hidden" }}>
+    <Box sx={{ position: "relative", minHeight: "100vh", overflow: "hidden", textAlign: "center" }}>
       <DiagonalBackground />
 
       <Grid
