@@ -4,15 +4,17 @@ import { BASE_URL } from './env';
 const api = axios.create({
   baseURL: BASE_URL,
   withCredentials: true,
-  timeout: 10000,
 });
 
-api.interceptors.response.use(
-  (res) => res,
-  (err) => {
-    console.error('API Error:', err);
-    return Promise.reject(err);
+api.interceptors.request.use((config) => {
+  const csrfToken = localStorage.getItem('csrfToken');
+
+  if (csrfToken) {
+    config.headers = config.headers || {};
+    config.headers['X-CSRF-Token'] = csrfToken;
   }
-);
+
+  return config;
+});
 
 export default api;
