@@ -1,4 +1,3 @@
-
 import * as React from 'react';
 import { createTheme, styled } from '@mui/material/styles';
 import DashboardIcon from '@mui/icons-material/Dashboard';
@@ -11,7 +10,6 @@ import { AppProvider } from '@toolpad/core/AppProvider';
 import { DashboardLayout } from '@toolpad/core/DashboardLayout';
 import { PageContainer } from '@toolpad/core/PageContainer';
 import Grid from '@mui/material/Grid';
-import FacilitiesMaster from '../../pages/operator/general/FacilitiesMaster';
 import CommonStandardMaster from '../../pages/operator/general/CommonStandardMaster';
 import InfoIcon from '@mui/icons-material/Info';
 import { List } from '@mui/material';
@@ -36,24 +34,40 @@ import LabSecurity from '../../pages/process/labSecurity/labSecurity';
 import LabInventoryPlanning from '../../pages/inventory/labInventoryPlanning/labInventoryPlanning';
 import InventoryResultEvaluation from '../../pages/inventory/inventoryResultEvaluation/inventoryResultEvaluation';
 import ReportList from '../../pages/report/reportList/reportList';
-import GeneralMaster from '../../pages/system/generalMaster/generalMaster';
-import UserInformation from '../../pages/system/userInformation/userInformation';
 import LabInformation from '../../pages/Information/labInformation/labInformation';
+import BusinessIcon from '@mui/icons-material/Business';
+import BuildingTable from '../../pages/site/building'
+import FacilitiesMaster from '../../pages/setup/facilitiesmaster';
+
+const BuildingPage = () => <div>Building Page Content</div>;
+const FloorPage = () => <div>Floor Page Content</div>;
+const RoomPage = () => <div>Room Page Content</div>;
+const RoomUsageLog = () => <div>Room Usage Log Content</div>;
 
 const NAVIGATION = [
     {
-        segment: 'information',
-        title: 'Information',
-        icon: <InfoIcon />,
+        segment: 'site',
+        title: 'Site',
+        icon: <BusinessIcon />,
         children: [
             {
-                segment: 'listOfLabs',
-                title: 'List of labs',
+                segment: 'building',
+                title: 'Building',
                 icon: <DescriptionIcon />,
             },
             {
-                segment: 'labInformation',
-                title: 'Lab information',
+                segment: 'floor',
+                title: 'Floor',
+                icon: <DescriptionIcon />,
+            },
+            {
+                segment: 'room',
+                title: 'Room',
+                icon: <DescriptionIcon />,
+            },
+            {
+                segment: 'lab',
+                title: 'Lab',
                 icon: <DescriptionIcon />
             },
         ],
@@ -171,18 +185,18 @@ const NAVIGATION = [
         ],
     },
     {
-        segment: 'system',
-        title: 'System',
+        segment: 'setup',
+        title: 'Setup',
         icon: <SettingsSuggestIcon />,
         children: [
             {
-                segment: 'userInformation',
-                title: 'User Information',
+                segment: 'facilitiesMaster',
+                title: 'Facilities Master',
                 icon: <DescriptionIcon />,
             },
             {
-                segment: 'generalMaster',
-                title: 'General Master',
+                segment: 'commonStandardMaster',
+                title: 'Common Standard Master',
                 icon: <DescriptionIcon />,
             },
         ],
@@ -190,14 +204,6 @@ const NAVIGATION = [
     { kind: 'divider' },
     { kind: 'header', title: 'System Actions' },
     { segment: 'logout', title: 'Logout', icon: <LogoutIcon /> }
-
-    // {
-    //     kind: 'header',
-    //     title: 'Main items',
-    // },
-    // {
-    //     kind: 'divider',
-    // },
 ];
 
 const demoTheme = createTheme({
@@ -212,6 +218,42 @@ const demoTheme = createTheme({
             md: 600,
             lg: 1200,
             xl: 1536,
+        },
+    },
+    components: {
+        MuiCssBaseline: {
+            styleOverrides: {
+                '& ::-webkit-scrollbar': {
+                    width: '6px',
+                    height: '6px',
+                },
+                '& ::-webkit-scrollbar-thumb': {
+                    backgroundColor: 'rgba(0,0,0,.2)',
+                    borderRadius: '10px',
+                    '&:hover': {
+                        backgroundColor: 'rgba(0,0,0,.3)',
+                    },
+                },
+                '& ::-webkit-scrollbar-track': {
+                    backgroundColor: 'transparent',
+                },
+                '.MuiDrawer-paper': {
+                    '&::-webkit-scrollbar': {
+                        width: '6px',
+                        height: '6px',
+                    },
+                    '&::-webkit-scrollbar-thumb': {
+                        backgroundColor: 'rgba(0,0,0,.2)',
+                        borderRadius: '10px',
+                        '&:hover': {
+                            backgroundColor: 'rgba(0,0,0,.3)',
+                        },
+                    },
+                    '&::-webkit-scrollbar-track': {
+                        backgroundColor: 'transparent',
+                    },
+                },
+            },
         },
     },
 });
@@ -255,17 +297,13 @@ export default function DashboardLayoutBasic(props) {
             }}
         >
             <DashboardLayout>
-                <PageContainer>
+                <PageContainer title={false}>
                     {(() => {
                         switch (router.pathname) {
                             case '/operator/facilities':
                                 return <FacilitiesMaster />;
                             case '/operator/commons':
                                 return <CommonStandardMaster />;
-                            case '/information/listOfLabs':
-                                return <ListOfLab />;
-                            case '/information/labInformation':
-                                return <LabInformation />;
                             case '/information/labInformation/roomUsageLog':
                                 return <RoomUsageLog />;
                             case '/equipment/equipInfo':
@@ -294,10 +332,18 @@ export default function DashboardLayoutBasic(props) {
                                 return <InventoryResultEvaluation />;
                             case '/report/reportList':
                                 return <ReportList />;
-                            case '/system/generalMaster':
-                                return <GeneralMaster />;
-                            case '/system/userInformation':
-                                return <UserInformation />;
+                            case '/site/building':
+                                return <BuildingTable />;
+                            case '/site/floor':
+                                return <FloorPage />;
+                            case '/site/room':
+                                return <RoomPage />;
+                            case '/site/lab':
+                                return <LabInformation />;
+                            case '/setup/facilitiesMaster':
+                                return <FacilitiesMaster />;
+                            case '/setup/commonStandardMaster':
+                                return <CommonStandardMaster />;
                             case '/logout':
                                 if (onLogout) onLogout();
                                 router.navigate('/login');

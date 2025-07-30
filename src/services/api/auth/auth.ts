@@ -1,5 +1,5 @@
 import api from '../../config/axios';
-import { LoginRequest, LoginResponse } from './interface';
+import { LoginRequest, LoginResponse } from '../../types/auth.type';
 
 export async function login(data: LoginRequest): Promise<LoginResponse> {
   const response = await api.post<LoginResponse>('/auth/login', data);

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { login, refreshAccessToken, logout } from '../../api/auth/auth';
-import { LoginRequest } from '../../api/auth/interface';
+import { LoginRequest } from '../../types/auth.type';
 
 function getStoredCsrfToken(): string | null {
   return localStorage.getItem('csrfToken');
