@@ -12,7 +12,7 @@ const StyledResetButton = styled(Button)(({ theme }) => ({
   borderColor: theme.palette.grey[400],
   color: theme.palette.text.secondary,
   '&:hover': {
-    borderColor: theme.palette.grey[500],
+    borderColor: '#439cd8',
     backgroundColor: theme.palette.action.hover,
   },
 }));
