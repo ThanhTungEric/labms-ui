@@ -69,6 +69,8 @@ export function useAuth() {
     if (isLoggedIn) {
       intervalRef.current = setInterval(() => {
         refreshSession().catch(() => {
+          logoutUser();
+          setError('Session refresh failed. Please log in again.');
         });
       }, 10 * 60 * 1000);
 
@@ -79,6 +81,7 @@ export function useAuth() {
       };
     }
   }, [isLoggedIn]);
+
 
   return {
     loginUser,
