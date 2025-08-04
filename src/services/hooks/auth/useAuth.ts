@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { login, refreshAccessToken, logout } from '../../api/auth/auth';
 import { LoginRequest } from '../../types/auth.type';
 
@@ -10,14 +10,18 @@ export function useAuth() {
   const [loading, setLoading] = useState(false);
   const [csrfToken, setCsrfToken] = useState<string | null>(getStoredCsrfToken);
   const [error, setError] = useState<string | null>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const loginUser = async (credentials: LoginRequest) => {
     setLoading(true);
     setError(null);
     try {
       const result = await login(credentials);
+
       setCsrfToken(result.csrfToken);
       localStorage.setItem('csrfToken', result.csrfToken);
+      localStorage.setItem('accessToken', result.accessToken);
+      localStorage.setItem('refreshToken', result.refreshToken);
     } catch (err: any) {
       if (err.response?.status === 401) {
         setError('Invalid username or password');
@@ -48,11 +52,33 @@ export function useAuth() {
       console.warn('Logout failed (maybe already logged out)', err);
     } finally {
       localStorage.removeItem('csrfToken');
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
       setCsrfToken(null);
+
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
     }
   };
 
   const isLoggedIn = !!csrfToken;
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      intervalRef.current = setInterval(() => {
+        refreshSession().catch(() => {
+        });
+      }, 10 * 60 * 1000);
+
+      return () => {
+        if (intervalRef.current) {
+          clearInterval(intervalRef.current);
+        }
+      };
+    }
+  }, [isLoggedIn]);
 
   return {
     loginUser,

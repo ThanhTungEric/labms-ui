@@ -5,4 +5,6 @@ export interface LoginRequest {
 
 export interface LoginResponse {
   csrfToken: string;
+  accessToken: string;
+  refreshToken: string;
 }
