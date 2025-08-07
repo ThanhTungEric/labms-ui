@@ -14,8 +14,8 @@ export default function Notification({
         event: React.SyntheticEvent | Event,
         reason?: string
     ) => {
-    // ✅ "clickaway" là khi người dùng click ngoài khung
-    // if (reason === 'clickaway') return;
+    //  "clickaway" là khi người dùng click ngoài khung
+     if (reason === 'clickaway') return;
     onClose();
   };
   return (

@@ -1,13 +1,7 @@
 // hooks/useNotification.ts
 import { useState } from 'react';
 
-export type NotificationSeverity = 'success' | 'error' | 'info' | 'warning';
-
-export interface Notify {
-  open: boolean;
-  message: string;
-  severity: NotificationSeverity;
-}
+import { NotificationSeverity, Notify } from '../../types/Notification.type';
 
 export function useNotification() {
   const [notify, setNotify] = useState<Notify>({
