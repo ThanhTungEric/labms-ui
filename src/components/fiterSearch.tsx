@@ -35,7 +35,10 @@ export default function FilterSection({ onSearch }: { onSearch: (filters: any) =
   };
 
   const handleSearch = () => {
-    onSearch(filters);
+    onSearch({
+    searchKeyword: filters.idOrName
+    
+  });
   };
 
   const handleReset = () => {
@@ -50,7 +53,10 @@ export default function FilterSection({ onSearch }: { onSearch: (filters: any) =
       dateTo: ''
     };
     setFilters(defaultValues);
-    onSearch(defaultValues);
+     onSearch({
+    searchKeyword: ''
+    
+  });
   };
 
   const smallFieldStyle = {
