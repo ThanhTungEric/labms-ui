@@ -2,13 +2,11 @@ import api from '../../config/axios';
 
 import { programsCSM } from '../../types/programCSM.type';
 
-export async function getProgramsCSM(params?: { searchKeyword?: string; }): Promise<programsCSM[]> {
- const token = localStorage.getItem('accessToken');
-  if (!token) throw new Error('Token is missing');
+export async function getProgramsCSM(
+  params: Record<string, any> = {}
+): Promise<programsCSM[]> {
   const response = await api.get<programsCSM[]>('/programs', {
-    params: params || {},
-    headers: { Authorization: `Bearer ${token}` },
+    params, // truyền params động vào query string
   });
-
   return response.data;
 }

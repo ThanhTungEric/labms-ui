@@ -36,7 +36,7 @@ export default function FilterSection({ onSearch }: { onSearch: (filters: any) =
 
   const handleSearch = () => {
     onSearch({
-    searchKeyword: filters.idOrName
+    search: filters.idOrName
     
   });
   };
@@ -54,7 +54,7 @@ export default function FilterSection({ onSearch }: { onSearch: (filters: any) =
     };
     setFilters(defaultValues);
      onSearch({
-    searchKeyword: ''
+    search: ''
     
   });
   };
