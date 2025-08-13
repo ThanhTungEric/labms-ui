@@ -1,24 +1,9 @@
-import React, { useState } from 'react';
-import {
-  Box,
-  RadioGroup,
-  FormControlLabel,
-  Radio,
-  TextField,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Checkbox,
-  Button,
-  Collapse,
-  useTheme
-} from '@mui/material';
-import FilterAltIcon from '@mui/icons-material/FilterAlt';
+// FilterSection.tsx
+import React, { useState, forwardRef, useImperativeHandle } from 'react';
+import { Box, TextField, Button, useTheme } from '@mui/material';
 
-export default function FilterSection({ onSearch }: { onSearch: (filters: any) => void }) {
+const FilterSection = forwardRef(({ onSearch }: { onSearch: (filters: any) => void }, ref) => {
   const theme = useTheme();
-  const [moreOpen, setMoreOpen] = useState(false);
   const [filters, setFilters] = useState({
     applicationType: 'all',
     idOrName: '',
@@ -35,10 +20,7 @@ export default function FilterSection({ onSearch }: { onSearch: (filters: any) =
   };
 
   const handleSearch = () => {
-    onSearch({
-    search: filters.idOrName
-    
-  });
+    onSearch({ search: filters.idOrName });
   };
 
   const handleReset = () => {
@@ -53,47 +35,31 @@ export default function FilterSection({ onSearch }: { onSearch: (filters: any) =
       dateTo: ''
     };
     setFilters(defaultValues);
-     onSearch({
-    search: ''
-    
-  });
+    onSearch({ search: '' });
   };
 
-  const smallFieldStyle = {
-    height: 36,
-    fontSize: 13
-  };
+  // Expose reset method to parent
+  useImperativeHandle(ref, () => ({
+    reset: handleReset
+  }));
 
   return (
-    <Box
-      p={2}
-      borderRadius={2}
-      boxShadow={1}
-      display="flex"
-      flexDirection="column"
-      border="1px solid #e0e0e0"
-      gap={2}
-    >
-      <Box display="flex" gap={2} flexWrap="wrap">
-        <TextField
-          fullWidth
-          size="small"
-          label="Please enter char to search"
-          value={filters.idOrName}
-          onChange={(e) => handleChange('idOrName', e.target.value)}
-          InputProps={{ sx: smallFieldStyle }}
-        />
-        <Button variant="contained" onClick={handleSearch}>
-          Search
-        </Button>
-        <Button variant="outlined" onClick={handleReset}>
-          Reset
-        </Button>
-      </Box>
-
-      
-
-      
+    <Box p={2} display="flex" gap={2} flexWrap="wrap">
+      <TextField
+        fullWidth
+        size="small"
+        label="Please enter char to search"
+        value={filters.idOrName}
+        onChange={(e) => handleChange('idOrName', e.target.value)}
+      />
+      <Button variant="contained" onClick={handleSearch}>
+        Search
+      </Button>
+      <Button variant="outlined" onClick={handleReset}>
+        Reset
+      </Button>
     </Box>
   );
-}
+});
+
+export default FilterSection;

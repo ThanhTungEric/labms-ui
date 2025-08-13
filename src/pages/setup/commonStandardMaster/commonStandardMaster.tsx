@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Box,
   Autocomplete,
@@ -44,6 +44,8 @@ export default function CommonStandardMaster() {
   const { functionalCategories, loadingFunctionalCategories, errorFunctionalCategories } = useFunctionalCategories();
 
   const { notify, showSuccess, showError, showInfo, showWarning, close } = useNotification();
+  const filterRef = useRef<{ reset: () => void }>(null);
+
   // Hiển thị thông báo khi có lỗi tải dữ liệu
   useEffect(() => {
     const error = errorAcademicTitles || errorProgramsCSM || errorPriceCategories || errorEquipmentStatuses || errorEquipmentForms || errorFaculties || errorLabPositions || errorFunctionalDomains || errorFunctionalCategories;
@@ -57,16 +59,17 @@ export default function CommonStandardMaster() {
 
 
   const isLoading =
-  loadingAcademicTitles ||
-  loadingProgramsCSM ||
-  loadingPriceCategories ||
-  loadingEquipmentStatuses ||
-  loadingFunctionalCategories ||
-  loadingFunctionalDomains ||
-  loadingLabPositions ||
-  loadingFaculties ||
-  loadingEquipmentForms;
-  
+    loadingAcademicTitles ||
+    loadingProgramsCSM ||
+    loadingPriceCategories ||
+    loadingEquipmentStatuses ||
+    loadingFunctionalCategories ||
+    loadingFunctionalDomains ||
+    loadingLabPositions ||
+    loadingFaculties ||
+    loadingEquipmentForms;
+
+
   const selectedItem = useMemo(() => {
     if (!selected) return [];
 
@@ -91,42 +94,48 @@ export default function CommonStandardMaster() {
       return rawData.data;
     }
     return [];
-  }, [selected, academicTitles, programsCSM, priceCategories, equipmentForms,equipmentStatuses, functionalCategories, functionalDomains, labPositions,faculties]);
+  }, [selected, academicTitles, programsCSM, priceCategories, equipmentForms, equipmentStatuses, functionalCategories, functionalDomains, labPositions, faculties]);
 
+  
   const items = selectedItem;
   const keys = items.length > 0
     ? Object.keys(items[0]).filter(k => k !== "faculty")
     : [];
   const handleFilter = (filters: any) => {
-  const keyword = filters.keyword?.trim();
+    const keyword = filters.search?.trim();
 
-  // Nếu rỗng -> clear kết quả hoặc giữ nguyên state, tùy ý
-  if (!keyword) {
-    // Ví dụ: clear dữ liệu
-    setSearchParams({});
-    return;
-  }
-
-  let apiParams: Record<string, any> = {};
-  switch (selected) {
-    
-    case "programs":
-      apiParams = { searchKeyword: keyword };
-      break;
-    default:
-      apiParams = { search: keyword };
-  }
-
-  setSearchParams(prev => {
-    if (JSON.stringify(prev) === JSON.stringify(apiParams)) {
-      return prev; // Không thay đổi -> không gọi lại API
+    // Nếu rỗng -> clear kết quả hoặc giữ nguyên state, tùy ý
+    if (!keyword) {
+      // Ví dụ: clear dữ liệu
+      setSearchParams({ _refresh: Date.now() });
+      return;
     }
-    return apiParams;
-  });
-};
+
+    let apiParams: Record<string, any> = {};
+    switch (selected) {
+      case "programs":
+        apiParams = { searchKeyword: keyword };
+        break;
+      default:
+        apiParams = { search: keyword };
+    }
+    console.log('TEST',apiParams)
+    setSearchParams(prev => {
+      if (JSON.stringify(prev) === JSON.stringify(apiParams)) {
+        return prev; // Không thay đổi -> không gọi lại API
+      }
+      return apiParams;
+    });
+  };
+  const handleChangeSelected = (value: string) => {
+    setSelected(value);
+    filterRef.current?.reset(); // Gọi reset ở FilterSection
+    setSearchParams({ _refresh: Date.now() });
+  };
+
 
   return (
-    
+
     <Box sx={{ p: 2 }}>
       {/* Popup loading */}
       <LoadingPopup open={isLoading} />
@@ -147,6 +156,7 @@ export default function CommonStandardMaster() {
         onChange={(event, newValue) => {
           const selectedValue = newValue?.basePath || '';
           setSelected(selectedValue);
+          handleChangeSelected(selectedValue);
 
         }}
         renderInput={(params) => (
@@ -160,7 +170,7 @@ export default function CommonStandardMaster() {
       />
       {selectedItem.length > 0 ? (
         <Box mt={2}>
-          <FilterSection onSearch={handleFilter} />
+          <FilterSection ref={filterRef} onSearch={handleFilter} />
           <ActionBar
             onImport={(file) => {
 
@@ -170,7 +180,7 @@ export default function CommonStandardMaster() {
             }}
           />
           <TableContainer component={Paper}>
-            <Table size="small"  
+            <Table size="small"
               sx={{
                 borderCollapse: "collapse",
                 "& td, & th": {
