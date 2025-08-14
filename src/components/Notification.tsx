@@ -10,12 +10,11 @@ export default function Notification({
   onClose,
   autoHideDuration = 3000,
 }: NotificationProps) {
-    const handleClose = (
-        event: React.SyntheticEvent | Event,
-        reason?: string
-    ) => {
-    //  "clickaway" là khi người dùng click ngoài khung
-     if (reason === 'clickaway') return;
+  const handleClose = (
+    event: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === 'clickaway') return;
     onClose();
   };
   return (
@@ -25,7 +24,7 @@ export default function Notification({
       onClose={handleClose}
       anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
     >
-      <Alert severity={severity} onClose={handleClose}  sx={{ width: '100%' }}>
+      <Alert severity={severity} onClose={handleClose} sx={{ width: '100%' }}>
         {message}
       </Alert>
     </Snackbar>
