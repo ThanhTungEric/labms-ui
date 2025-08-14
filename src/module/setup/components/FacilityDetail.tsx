@@ -54,8 +54,6 @@ export default function FacilityDetail({ selectedItemId }: FacilityDetailProps) 
         (async () => {
             setError(null);
             setDetail(null);
-
-            // Không có lựa chọn => clear
             if (!parsed) return;
 
             try {
@@ -234,11 +232,6 @@ function RoomSection({ data }: { data: RoomDetail }) {
                 <Typography variant="body2" sx={{ fontSize: '1rem' }}>
                     {data.building?.name || data.building?.code}
                 </Typography>
-                {data.building?.description && (
-                    <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.875rem' }}>
-                        {data.building.description}
-                    </Typography>
-                )}
             </Box>
         </Stack>
     );

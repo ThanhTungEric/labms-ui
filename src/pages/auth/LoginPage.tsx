@@ -32,7 +32,6 @@ function LoginPage({ onLoginSuccess }: { onLoginSuccess: () => void }) {
     await loginUser({ username, password });
   };
 
-  // ✅ Khi csrfToken có, nghĩa là login thành công → kích hoạt onLoginSuccess
   useEffect(() => {
     if (csrfToken) {
       onLoginSuccess();
