@@ -27,25 +27,20 @@ export default function BuildingTable() {
 
   const handleExport = useCallback(() => {
     console.log('[BuildingTable] Export all buildings, count =', buildings?.length ?? 0);
-    // TODO: implement export
   }, [buildings]);
 
   const handleCreate = useCallback(() => {
     console.log('[BuildingTable] Create new building');
-    // TODO: open create dialog / navigate
   }, []);
 
   const handleEdit = useCallback((building: Building) => {
     console.log('[BuildingTable] Edit:', building.id, building.code);
-    // TODO: open edit dialog / navigate
   }, []);
 
   const handleDelete = useCallback((building: Building) => {
     console.log('[BuildingTable] Delete:', building.id, building.code);
-    // TODO: confirm & call delete API
   }, []);
 
-  // Đảm bảo luôn là mảng (tránh undefined/null)
   const rows = useMemo<Building[]>(() => Array.isArray(buildings) ? buildings : [], [buildings]);
 
   return (
@@ -62,17 +57,14 @@ export default function BuildingTable() {
         <ActionButtons onExport={handleExport} onCreate={handleCreate} />
       </Box>
 
-      {/* Loading bar gọn gàng ở top */}
       {loading && <LinearProgress sx={{ mb: 2 }} />}
 
-      {/* Lỗi */}
       {error && (
         <Typography color="error" sx={{ mb: 2 }}>
           Error: {error.message}
         </Typography>
       )}
 
-      {/* Empty state */}
       {!loading && !error && rows.length === 0 && (
         <Paper sx={{ p: 3 }}>
           <Typography variant="body2" color="text.secondary">
@@ -81,7 +73,6 @@ export default function BuildingTable() {
         </Paper>
       )}
 
-      {/* Bảng dữ liệu */}
       {!loading && !error && rows.length > 0 && (
         <TableContainer component={Paper}>
           <Table size="small" aria-label="building table">

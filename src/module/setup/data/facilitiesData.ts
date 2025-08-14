@@ -1,5 +1,4 @@
-// src/pages/Facilities/useFacilityTree.ts
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useCallback } from 'react';
 import { TreeViewBaseItem } from '@mui/x-tree-view/models';
 import { Building, Floor, Room } from '../../../services/types';
 import { getBuildingById } from '../../../services/api/building/building';
@@ -17,12 +16,28 @@ export default function useFacilityTree(): {
   items: TreeItem[];
   loading: boolean;
   error: Error | null;
+  findItem: (id: string) => FacilityItem | null;
 } {
   const { buildings, loading: listLoading, error: listError } = useBuildings();
-
   const [items, setItems] = useState<TreeItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
+
+  const findItem = useCallback((id: string): FacilityItem | null => {
+    const search = (nodes: TreeItem[]): FacilityItem | null => {
+      for (const node of nodes) {
+        if (node.id === id) {
+          return node;
+        }
+        if (node.children) {
+          const found = search(node.children);
+          if (found) return found;
+        }
+      }
+      return null;
+    };
+    return search(items);
+  }, [items]);
 
   useEffect(() => {
     let active = true;
@@ -104,5 +119,5 @@ export default function useFacilityTree(): {
 
   const stableItems = useMemo(() => items, [items]);
 
-  return { items: stableItems, loading, error };
+  return { items: stableItems, loading, error, findItem };
 }
