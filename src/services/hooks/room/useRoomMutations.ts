@@ -18,13 +18,18 @@ export function useRoomMutations() {
 
     const update = useCallback(async (id: number, payload: UpdateRoomDto): Promise<RoomDetail> => {
         try {
-            setBusy(true); setError(null);
-            return await updateRoom(id, payload);
+            setBusy(true);
+            setError(null);
+            const result = await updateRoom(id, payload);
+            return result;
         } catch (e) {
             setError(e as Error);
             throw e;
-        } finally { setBusy(false); }
+        } finally {
+            setBusy(false);
+        }
     }, []);
+
 
     const remove = useCallback(async (id: number): Promise<void> => {
         try {

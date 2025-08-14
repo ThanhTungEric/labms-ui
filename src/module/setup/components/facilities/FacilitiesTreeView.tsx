@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import Box from '@mui/material/Box';
 import { RichTreeView } from '@mui/x-tree-view';
-import useFacilityTree from '../data/facilitiesData';
+import useFacilityTree from '../../data/facilitiesData';
 import { CircularProgress, Typography } from '@mui/material';
 
 type FacilitiesTreeViewProps = {
