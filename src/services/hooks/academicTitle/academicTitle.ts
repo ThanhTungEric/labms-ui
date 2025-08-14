@@ -5,7 +5,7 @@ export function useAcademicTitles(params: Record<string, any>) {
   const [academicTitles, setAcademicTitles] = useState<AcademicTitles[]>([]);
   const [loadingAcademicTitles, setLoading] = useState(true);
   const [errorAcademicTitles, setError] = useState<Error | null>(null);
-
+  
     useEffect(() => {
         let isMounted = true;
         

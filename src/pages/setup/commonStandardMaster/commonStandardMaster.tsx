@@ -25,16 +25,18 @@ import { useFaculties } from '../../../services/hooks/faculties/faculties';
 import { useLabPositions } from '../../../services/hooks/labPositions/labPositions';
 import { useFunctionalDomains } from '../../../services/hooks/functionalDomains/functionalDomains';
 import { useFunctionalCategories } from '../../../services/hooks/functionalCategories/functionalCategories ';
-import LoadingPopup from '../../../components/loadingPopup';
+import LoadingInline from '../../../components/loadingPopup';
 export default function CommonStandardMaster() {
 
   const [searchParams, setSearchParams] = useState<Record<string, any>>({});
+    const [searchKeywordParams, setSearchKeywworParams] = useState<Record<string, any>>({});
+
   const { masterData, loading, error } = useMasterData();
   const [selected, setSelected] = React.useState('');
   const [selectedIds, setSelectedIds] = React.useState<number[]>([]);
 
   const { academicTitles, loadingAcademicTitles, errorAcademicTitles } = useAcademicTitles(searchParams);
-  const { programsCSM, loadingProgramsCSM, errorProgramsCSM } = useProgramsCSM(searchParams);
+  const { programsCSM, loadingProgramsCSM, errorProgramsCSM } = useProgramsCSM(searchKeywordParams);
   const { priceCategories, loadingPriceCategories, errorPriceCategories } = usePriceCategories();
   const { equipmentStatuses, loadingEquipmentStatuses, errorEquipmentStatuses } = useEquipmentStatuses();
   const { equipmentForms, loadingEquipmentForms, errorEquipmentForms } = useEquipmentForms();
@@ -115,17 +117,24 @@ export default function CommonStandardMaster() {
     switch (selected) {
       case "programs":
         apiParams = { searchKeyword: keyword };
+        setSearchKeywworParams(prev => {
+          if (JSON.stringify(prev) === JSON.stringify(apiParams)) {
+            return prev; // Không thay đổi -> không gọi lại API
+          }
+          return apiParams;
+        });
         break;
       default:
         apiParams = { search: keyword };
+        setSearchParams(prev => {
+          if (JSON.stringify(prev) === JSON.stringify(apiParams)) {
+            return prev; // Không thay đổi -> không gọi lại API
+          }
+          return apiParams;
+        });
     }
-    console.log('TEST',apiParams)
-    setSearchParams(prev => {
-      if (JSON.stringify(prev) === JSON.stringify(apiParams)) {
-        return prev; // Không thay đổi -> không gọi lại API
-      }
-      return apiParams;
-    });
+   
+    
   };
   const handleChangeSelected = (value: string) => {
     setSelected(value);
@@ -138,7 +147,7 @@ export default function CommonStandardMaster() {
 
     <Box sx={{ p: 2 }}>
       {/* Popup loading */}
-      <LoadingPopup open={isLoading} />
+      <LoadingInline open={isLoading} />
       <Autocomplete
         disabled={loading || !!error}
         options={
