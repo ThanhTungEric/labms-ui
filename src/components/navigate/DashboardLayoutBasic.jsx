@@ -19,7 +19,7 @@ import ChevronRightOutlinedIcon from '@mui/icons-material/ChevronRightOutlined';
 
 // Pages
 import FacilitiesMaster from '../../pages/setup/facilitiesmaster';
-import CommonStandardMaster from '../../pages/operator/general/CommonStandardMaster';
+import CommonStandardMaster from '../../pages/setup/commonStandardMaster/commonStandardMaster';
 import EquipInfo from '../../pages/equipment/equipInfo/equipInfo';
 import LabAssets from '../../pages/equipment/labAssets/labAssets';
 import MaintenanceAndStocking from '../../pages/equipment/maintenanceAndStocking/maintenanceAndStocking';
