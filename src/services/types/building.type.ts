@@ -1,5 +1,8 @@
+import { Floor } from "./floor.type";
+
 export interface Building {
-    name: string,
-    description: string,
-    notes: string,
+    id: number;
+    code: string;
+    description: string;
+    floors: Floor[];
 }

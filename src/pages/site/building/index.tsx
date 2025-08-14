@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 import {
   Table,
   TableBody,
@@ -11,6 +11,7 @@ import {
   Typography,
   IconButton,
   Tooltip,
+  LinearProgress,
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -22,69 +23,107 @@ import ActionButtons from '../../../components/ActionButtons';
 export default function BuildingTable() {
   const { buildings, loading, error } = useBuildings();
 
-  const reducedPadding = {
-    padding: '4px 16px',
-  };
+  const reducedPadding = { padding: '4px 16px' };
 
-  const handleExport = () => {
-    console.log('Exporting all buildings...');
-  };
+  const handleExport = useCallback(() => {
+    console.log('[BuildingTable] Export all buildings, count =', buildings?.length ?? 0);
+    // TODO: implement export
+  }, [buildings]);
 
-  const handleCreate = () => {
-    console.log('Creating a new building...');
-  };
+  const handleCreate = useCallback(() => {
+    console.log('[BuildingTable] Create new building');
+    // TODO: open create dialog / navigate
+  }, []);
 
-  const handleEdit = (building: Building) => {
-    console.log('Editing building:', building.name);
-  };
+  const handleEdit = useCallback((building: Building) => {
+    console.log('[BuildingTable] Edit:', building.id, building.code);
+    // TODO: open edit dialog / navigate
+  }, []);
 
-  const handleDelete = (building: Building) => {
-    console.log('Deleting building:', building.name);
-  };
+  const handleDelete = useCallback((building: Building) => {
+    console.log('[BuildingTable] Delete:', building.id, building.code);
+    // TODO: confirm & call delete API
+  }, []);
+
+  // Đảm bảo luôn là mảng (tránh undefined/null)
+  const rows = useMemo<Building[]>(() => Array.isArray(buildings) ? buildings : [], [buildings]);
 
   return (
     <Box p={2}>
-      <Box sx={{
+      <Box
+        sx={{
           display: 'flex',
-          justifyContent: 'space-between', 
+          justifyContent: 'space-between',
           alignItems: 'center',
-          marginBottom: 2,
-        }}>
-        <Typography variant="h6">
-          Building List
-        </Typography>
-        <ActionButtons
-          onExport={handleExport}
-          onCreate={handleCreate}
-        />
+          mb: 2,
+        }}
+      >
+        <Typography variant="h6">Building List</Typography>
+        <ActionButtons onExport={handleExport} onCreate={handleCreate} />
       </Box>
 
-      {loading && <Typography>Loading...</Typography>}
-      {error && <Typography color="error">Error: {error.message}</Typography>}
+      {/* Loading bar gọn gàng ở top */}
+      {loading && <LinearProgress sx={{ mb: 2 }} />}
 
-      {!loading && buildings && (
+      {/* Lỗi */}
+      {error && (
+        <Typography color="error" sx={{ mb: 2 }}>
+          Error: {error.message}
+        </Typography>
+      )}
+
+      {/* Empty state */}
+      {!loading && !error && rows.length === 0 && (
+        <Paper sx={{ p: 3 }}>
+          <Typography variant="body2" color="text.secondary">
+            No buildings found.
+          </Typography>
+        </Paper>
+      )}
+
+      {/* Bảng dữ liệu */}
+      {!loading && !error && rows.length > 0 && (
         <TableContainer component={Paper}>
-          <Table size="small">
+          <Table size="small" aria-label="building table">
             <TableHead>
               <TableRow>
-                <TableCell sx={reducedPadding}><strong>Description</strong></TableCell>
-                <TableCell sx={reducedPadding}><strong>Notes</strong></TableCell>
-                <TableCell sx={reducedPadding} align="right"><strong>Actions</strong></TableCell>
+                <TableCell sx={reducedPadding}>
+                  <strong>ID</strong>
+                </TableCell>
+                <TableCell sx={reducedPadding}>
+                  <strong>Code</strong>
+                </TableCell>
+                <TableCell sx={reducedPadding}>
+                  <strong>Description</strong>
+                </TableCell>
+                <TableCell sx={reducedPadding} align="right">
+                  <strong>Actions</strong>
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {buildings.map((b: Building, index: number) => (
-                <TableRow key={index}>
+              {rows.map((b) => (
+                <TableRow key={String(b.id)}>
+                  <TableCell sx={reducedPadding}>{b.id}</TableCell>
+                  <TableCell sx={reducedPadding}>{b.code}</TableCell>
                   <TableCell sx={reducedPadding}>{b.description}</TableCell>
-                  <TableCell sx={reducedPadding}>{b.notes ?? '-'}</TableCell>
                   <TableCell sx={reducedPadding} align="right">
                     <Tooltip title="Edit">
-                      <IconButton size="small" onClick={() => handleEdit(b)}>
+                      <IconButton
+                        size="small"
+                        onClick={() => handleEdit(b)}
+                        aria-label={`Edit ${b.code}`}
+                      >
                         <EditIcon />
                       </IconButton>
                     </Tooltip>
                     <Tooltip title="Delete">
-                      <IconButton size="small" color="error" onClick={() => handleDelete(b)}>
+                      <IconButton
+                        size="small"
+                        color="error"
+                        onClick={() => handleDelete(b)}
+                        aria-label={`Delete ${b.code}`}
+                      >
                         <DeleteIcon />
                       </IconButton>
                     </Tooltip>

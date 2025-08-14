@@ -1,18 +1,32 @@
 import { useEffect, useState } from 'react';
-import { getAllBuildings } from '../../api/building/building';
+import { getAllBuildings, getBuildingById } from '../../api/building/building';
 import { Building } from '../../types/building.type';
 
-export function useBuildings() {
+export function useBuildings(id?: number) {
   const [buildings, setBuildings] = useState<Building[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
-    getAllBuildings()
-      .then((data) => setBuildings(data))
-      .catch((err) => setError(err))
-      .finally(() => setLoading(false));
-  }, []);
+    const fetchBuildings = async () => {
+      setLoading(true);
+      try {
+        if (id) {
+          const data = await getBuildingById(id);
+          setBuildings([data]);
+        } else {
+          const data = await getAllBuildings();
+          setBuildings(data);
+        }
+      } catch (err) {
+        setError(err as Error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBuildings();
+  }, [id]);
 
   return { buildings, loading, error };
 }
