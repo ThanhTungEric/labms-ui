@@ -13,13 +13,9 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
+import {actionBar} from '../services/types/actionBar.type';
 
-interface Props {
-  onImport?: (file: File) => void;
-  onExport?: () => void;
-}
-
-export default function ActionBar({ onImport, onExport }: Props) {
+export default function ActionBar({ onDelete, onImport, onExport, selectedIds  }: actionBar) {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file && typeof onImport === 'function') {
@@ -46,18 +42,22 @@ export default function ActionBar({ onImport, onExport }: Props) {
                 <AddIcon />
             </IconButton>
         </Tooltip>
-        <Tooltip title='View'>
+        {/* <Tooltip title='View'>
             <IconButton component="label" size="small" color="primary">
                 <VisibilityIcon />
             </IconButton>
-        </Tooltip>
-        <Tooltip title='Edit'>
+        </Tooltip> */}
+        {/* <Tooltip title='Edit'>
             <IconButton component="label" size="small" color="primary">
                 <EditIcon />
             </IconButton>
-        </Tooltip>
+        </Tooltip> */}
         <Tooltip title='Delete'>
-            <IconButton component="label" size="small" color="primary">
+            <IconButton component="label" size="small" color="primary" onClick={() => {
+              if (onDelete && selectedIds.length > 0) {
+                onDelete(selectedIds);
+              }
+            }}>
                 <DeleteIcon />
             </IconButton>
         </Tooltip>

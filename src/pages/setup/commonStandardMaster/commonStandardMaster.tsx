@@ -26,6 +26,7 @@ import { useLabPositions } from '../../../services/hooks/labPositions/labPositio
 import { useFunctionalDomains } from '../../../services/hooks/functionalDomains/functionalDomains';
 import { useFunctionalCategories } from '../../../services/hooks/functionalCategories/functionalCategories ';
 import LoadingInline from '../../../components/loadingPopup';
+import {  useDeleteEquipmentForms } from '../../../services/hooks/equipmentForms/eqipmentFormsDelete';
 export default function CommonStandardMaster() {
 
   const [searchParams, setSearchParams] = useState<Record<string, any>>({});
@@ -37,13 +38,14 @@ export default function CommonStandardMaster() {
 
   const { academicTitles, loadingAcademicTitles, errorAcademicTitles } = useAcademicTitles(searchParams);
   const { programsCSM, loadingProgramsCSM, errorProgramsCSM } = useProgramsCSM(searchKeywordParams);
-  const { priceCategories, loadingPriceCategories, errorPriceCategories } = usePriceCategories();
-  const { equipmentStatuses, loadingEquipmentStatuses, errorEquipmentStatuses } = useEquipmentStatuses();
-  const { equipmentForms, loadingEquipmentForms, errorEquipmentForms } = useEquipmentForms();
-  const { faculties, loadingFaculties, errorFaculties } = useFaculties();
-  const { labPositions, loadingLabPositions, errorLabPositions } = useLabPositions();
+  const { priceCategories, loadingPriceCategories, errorPriceCategories } = usePriceCategories(searchParams);
+  const { equipmentStatuses, loadingEquipmentStatuses, errorEquipmentStatuses } = useEquipmentStatuses(searchParams);
+  const { equipmentForms, loadingEquipmentForms, errorEquipmentForms } = useEquipmentForms(searchParams);
+  const { faculties, loadingFaculties, errorFaculties } = useFaculties(searchParams);
+  const { labPositions, loadingLabPositions, errorLabPositions } = useLabPositions(searchParams);
   const { functionalDomains, loadingFunctionalDomains, errorFunctionalDomains } = useFunctionalDomains(searchParams);
-  const { functionalCategories, loadingFunctionalCategories, errorFunctionalCategories } = useFunctionalCategories();
+  const { functionalCategories, loadingFunctionalCategories, errorFunctionalCategories } = useFunctionalCategories(searchParams);
+  const { deleteEquipmentForms, loadingDeleteEquipmentForms, errorDeleteEquipmentForms, deletedIds } = useDeleteEquipmentForms();
 
   const { notify, showSuccess, showError, showInfo, showWarning, close } = useNotification();
   const filterRef = useRef<{ reset: () => void }>(null);
@@ -143,6 +145,17 @@ export default function CommonStandardMaster() {
   };
 
 
+  const handleDelete = async (ids: number[]) => {
+    if(selected == "forms" && selectedIds.length > 0)
+    {
+        await deleteEquipmentForms(selectedIds);
+        if (deletedIds.length > 0) {
+          setSelectedIds([]);
+        }
+        }
+  };
+
+
   return (
 
     <Box sx={{ p: 2 }}>
@@ -181,6 +194,8 @@ export default function CommonStandardMaster() {
         <Box mt={2}>
           <FilterSection ref={filterRef} onSearch={handleFilter} />
           <ActionBar
+          selectedIds={selectedIds}
+            onDelete={handleDelete }
             onImport={(file) => {
 
             }}
