@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { login, refreshAccessToken, logout } from '../../api/auth/auth';
 import { LoginRequest } from '../../types/auth.type';
+import api from '../../config/axios';
 
 function getStoredCsrfToken(): string | null {
   return localStorage.getItem('csrfToken');
@@ -17,17 +18,16 @@ export function useAuth() {
     setError(null);
     try {
       const result = await login(credentials);
-
       setCsrfToken(result.csrfToken);
+
       localStorage.setItem('csrfToken', result.csrfToken);
       localStorage.setItem('accessToken', result.accessToken);
       localStorage.setItem('refreshToken', result.refreshToken);
+
+      api.defaults.headers.common.Authorization = `Bearer ${result.accessToken}`;
     } catch (err: any) {
-      if (err.response?.status === 401) {
-        setError('Invalid username or password');
-      } else {
-        setError('Login failed. Please try again later.');
-      }
+      if (err.response?.status === 401) setError('Invalid username or password');
+      else setError('Login failed. Please try again later.');
     } finally {
       setLoading(false);
     }
@@ -38,7 +38,9 @@ export function useAuth() {
     if (!storedToken) throw new Error('Missing CSRF token');
 
     try {
-      await refreshAccessToken();
+      const { accessToken } = await refreshAccessToken();
+      localStorage.setItem('accessToken', accessToken);
+      api.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
     } catch (err: any) {
       setError('Session refresh failed. Please log in again.');
       throw err;
@@ -60,28 +62,29 @@ export function useAuth() {
         clearInterval(intervalRef.current);
         intervalRef.current = null;
       }
+      delete api.defaults.headers.common.Authorization;
     }
   };
 
   const isLoggedIn = !!csrfToken;
 
   useEffect(() => {
-    if (isLoggedIn) {
-      intervalRef.current = setInterval(() => {
-        refreshSession().catch(() => {
-          logoutUser();
-          setError('Session refresh failed. Please log in again.');
-        });
-      }, 10 * 60 * 1000);
+    if (!isLoggedIn) return;
+    refreshSession().catch(() => {
+      logoutUser();
+    });
 
-      return () => {
-        if (intervalRef.current) {
-          clearInterval(intervalRef.current);
-        }
-      };
-    }
+    intervalRef.current = setInterval(() => {
+      refreshSession().catch(() => {
+        logoutUser();
+        setError('Session refresh failed. Please log in again.');
+      });
+    }, 10 * 60 * 1000);
+
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
   }, [isLoggedIn]);
-
 
   return {
     loginUser,

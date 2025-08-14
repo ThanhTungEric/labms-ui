@@ -1,24 +1,22 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   Box,
   Typography,
   IconButton,
-  Button, // Giữ lại Button cho Export và Reset
+  Button,
+  Grid,
+  Paper,
+  Divider,
 } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import FileDownloadIcon from '@mui/icons-material/FileDownload';
-
-// Import component MoreActionsMenu mới
 import MoreActionsMenu, { MoreActionItem } from '../../../components/MoreActionsMenu';
 import ExportReportButton from '../../../components/ExportReportButton';
 import ResetButton from '../../../components/ResetButton';
-
 import FacilitiesTreeView from '../../../module/setup/components/FacilitiesTreeView';
+import FacilityDetail from '../../../module/setup/components/FacilityDetail';
 
-
-// Định nghĩa các item cho More Actions menu
 const moreActionItems: MoreActionItem[] = [
   { key: 'action1', label: 'Action 1' },
   { key: 'action2', label: 'Action 2' },
@@ -27,75 +25,86 @@ const moreActionItems: MoreActionItem[] = [
 
 export default function FacilitiesMaster() {
 
-  // Logic xử lý khi chọn một item trong More Actions menu
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
+
   const handleMoreActionClick = (key: string) => {
     console.log(`More action "${key}" clicked`);
-
   };
 
-  const handleExportReport = () => {
+  const handleExportReport = useCallback(() => {
     console.log('Export Report clicked');
-  };
+  }, []);
 
-  const handleResetFilters = () => {
+  const handleResetFilters = useCallback(() => {
     console.log('Filters reset');
-  };
+  }, []);
 
-  const handleView = () => {
-    console.log('View clicked');
-  };
+  const handleEdit = useCallback(() => {
+    if (selectedItemId) {
+      console.log('Edit clicked for item:', selectedItemId);
+    }
+  }, [selectedItemId]);
 
-  const handleEdit = () => {
-    console.log('Edit clicked');
-  };
-
-  const handleDelete = () => {
-    console.log('Delete clicked');
-  };
+  const handleDelete = useCallback(() => {
+    if (selectedItemId) {
+      console.log('Delete clicked for item:', selectedItemId);
+    }
+  }, [selectedItemId]);
 
   return (
-    <Box>
+    <Box p={2}>
       <Box
         sx={{
           display: 'flex',
           alignItems: 'center',
           gap: 1.5,
-          mb: 3,
+          mb: 1.5,
           flexWrap: 'wrap',
         }}
       >
-        {/* Sử dụng component MoreActionsMenu mới */}
         <MoreActionsMenu
           items={moreActionItems}
           onActionClick={handleMoreActionClick}
         />
-
-        {/* Icon actions */}
-        <IconButton size="small" onClick={handleView}>
-          <VisibilityIcon />
-        </IconButton>
-        <IconButton size="small" onClick={handleEdit}>
+        <IconButton size="small" onClick={handleEdit} disabled={!selectedItemId}>
           <EditIcon />
         </IconButton>
-        <IconButton size="small" color="error" onClick={handleDelete}>
+        <IconButton size="small" color="error" onClick={handleDelete} disabled={!selectedItemId}>
           <DeleteIcon />
         </IconButton>
-
         <ExportReportButton onClick={handleExportReport} />
         <ResetButton onClick={handleResetFilters} />
       </Box>
 
-      {/* Tree View component */}
       <Box
         sx={{
-          flexGrow: 1,
-          maxWidth: 400,
-          border: '1px solid #ccc',
-          borderRadius: '4px',
-          p: 1,
+          display: 'flex',
+          flexDirection: { xs: 'column', md: 'row' },
+          gap: 2,
         }}
       >
-        <FacilitiesTreeView />
+        <Paper
+          sx={{
+            flex: '1 1 33%',
+            minWidth: 260,
+            border: '1px solid #ccc',
+            borderRadius: '4px',
+            p: 1,
+          }}
+        >
+          <FacilitiesTreeView onSelect={setSelectedItemId} />
+        </Paper>
+        <Paper
+          sx={{
+            flex: '1 1 67%',
+            border: '1px solid #ccc',
+            borderRadius: '4px',
+            p: 1,
+            minHeight: 352,
+          }}
+        >
+          <FacilityDetail selectedItemId={selectedItemId} />
+        </Paper>
       </Box>
     </Box>
   );
