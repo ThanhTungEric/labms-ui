@@ -17,8 +17,9 @@ export default function useFacilityTree(): {
   loading: boolean;
   error: Error | null;
   findItem: (id: string) => FacilityItem | null;
+  reload: () => void;
 } {
-  const { buildings, loading: listLoading, error: listError } = useBuildings();
+  const { buildings, loading: listLoading, error: listError, reload } = useBuildings();
   const [items, setItems] = useState<TreeItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
@@ -119,5 +120,5 @@ export default function useFacilityTree(): {
 
   const stableItems = useMemo(() => items, [items]);
 
-  return { items: stableItems, loading, error, findItem };
+  return { items: stableItems, loading, error, findItem, reload };
 }

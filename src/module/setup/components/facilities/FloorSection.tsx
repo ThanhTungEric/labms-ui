@@ -81,7 +81,7 @@ export default function FloorSection({
                         {edited.rooms.map((r) => (
                             <Box key={`r-${r.id}`}>
                                 <Typography variant="body2" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                                    {r.name}
+                                    🏠 {r.name} - {r.description}
                                 </Typography>
                             </Box>
                         ))}

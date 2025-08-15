@@ -31,8 +31,7 @@ export type RoomsListResponse = {
 export type CreateRoomDto = {
     name: string;
     description: string;
-    notes: string;
-    buildingId: number;
+    notes?: string;
     floorId: number;
 };
 
