@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { getAllBuildings, getBuildingById } from '../../api/building/building';
 import { Building } from '../../types/building.type';
 
@@ -7,26 +7,26 @@ export function useBuildings(id?: number) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
-  useEffect(() => {
-    const fetchBuildings = async () => {
-      setLoading(true);
-      try {
-        if (id) {
-          const data = await getBuildingById(id);
-          setBuildings([data]);
-        } else {
-          const data = await getAllBuildings();
-          setBuildings(data);
-        }
-      } catch (err) {
-        setError(err as Error);
-      } finally {
-        setLoading(false);
+  const fetchBuildings = useCallback(async () => {
+    setLoading(true);
+    try {
+      if (id) {
+        const data = await getBuildingById(id);
+        setBuildings([data]);
+      } else {
+        const data = await getAllBuildings();
+        setBuildings(data);
       }
-    };
-
-    fetchBuildings();
+    } catch (err) {
+      setError(err as Error);
+    } finally {
+      setLoading(false);
+    }
   }, [id]);
 
-  return { buildings, loading, error };
+  useEffect(() => {
+    fetchBuildings();
+  }, [fetchBuildings]);
+
+  return { buildings, loading, error, reload: fetchBuildings };
 }

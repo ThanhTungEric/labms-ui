@@ -1,5 +1,4 @@
 // src/pages/Facilities/FacilityDetail.tsx
-
 import React, { useEffect, useMemo, useState } from 'react';
 import { Box, Typography, LinearProgress, Divider } from '@mui/material';
 import useFacilityTree from '../../data/facilitiesData';
@@ -14,13 +13,17 @@ import { BuildingDetail } from '../../../../services/types/building.type';
 import { FloorDetail } from '../../../../services/types/floor.type';
 import { RoomDetail } from '../../../../services/types/room.type';
 
+// Child components
 import BuildingSection from './BuildingSection';
 import FloorSection from './FloorSection';
 import RoomSection from './RoomSection';
+import AddFloorForm from './AddFloorForm';
+import AddRoomForm from './AddRoomForm';
 
 type FacilityDetailProps = {
     selectedItemId: string | null;
     isEditing: boolean;
+    isAdding: boolean;
     saveTick?: number;
     cancelTick?: number;
     onSaved?: () => void;
@@ -40,7 +43,7 @@ function parseSelected(selectedId: string | null): { kind: 'building' | 'floor' 
     return null;
 }
 
-export default function FacilityDetail({ selectedItemId, isEditing, saveTick = 0, cancelTick = 0, onSaved }: FacilityDetailProps) {
+export default function FacilityDetail({ selectedItemId, isEditing, isAdding, saveTick = 0, cancelTick = 0, onSaved }: FacilityDetailProps) {
     const { loading: treeLoading, error: treeError } = useFacilityTree();
     const [detail, setDetail] = useState<DetailState>(null);
     const [loading, setLoading] = useState<boolean>(false);
@@ -90,10 +93,36 @@ export default function FacilityDetail({ selectedItemId, isEditing, saveTick = 0
         return <Typography color="error">Error loading facility data.</Typography>;
     }
 
-    if (!parsed || !detail) {
+    if (!parsed) {
         return (
             <Typography variant="body1" color="text.secondary">
                 Select a building, floor, or room to see details.
+            </Typography>
+        );
+    }
+
+    if (isAdding) {
+        if (!detail) {
+            return <LinearProgress />;
+        }
+        if (parsed.kind === 'floor' && detail.kind === 'floor') {
+            return <AddRoomForm parentFloorId={parsed.id} saveTick={saveTick} onSaved={onSaved} />;
+        }
+        if (parsed.kind === 'building' && detail.kind === 'building') {
+            return <AddFloorForm parentBuildingId={parsed.id} saveTick={saveTick} onSaved={onSaved} />;
+        }
+
+        return (
+            <Typography variant="body1" color="text.secondary">
+                Cannot add a child to this item.
+            </Typography>
+        );
+    }
+
+    if (!detail) {
+        return (
+            <Typography variant="body1" color="text.secondary">
+                No details available.
             </Typography>
         );
     }

@@ -9,3 +9,4 @@ export * from './notification/notification';
 export * from './room/useRoomMutations';
 export * from './building/useBuildingMutations';
 export * from './floor/useFloorMutations';
+export * from './floor/useFloor';

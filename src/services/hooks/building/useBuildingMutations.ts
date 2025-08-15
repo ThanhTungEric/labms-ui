@@ -3,11 +3,13 @@ import {
     createBuilding,
     updateBuilding,
     deleteBuilding,
+    getBuildingByFloorId
 } from '../../api/building/building';
 import {
     CreateBuildingDto,
     UpdateBuildingDto,
     BuildingListItem,
+    Building
 } from '../../types/building.type';
 
 export function useBuildingMutations() {
@@ -62,5 +64,23 @@ export function useBuildingMutations() {
         []
     );
 
-    return { create, update, remove, busy, error };
+    const getByFloorId = useCallback(
+        async (floorId: number): Promise<Building> => {
+            try {
+                setBusy(true);
+                setError(null);
+                return await getBuildingByFloorId(floorId);
+            } catch (e) {
+                setError(e as Error);
+                throw e;
+            } finally {
+                setBusy(false);
+            }
+        },
+        []
+    );
+
+    const resetError = useCallback(() => setError(null), []);
+
+    return { create, update, remove, getByFloorId, busy, error, resetError };
 }

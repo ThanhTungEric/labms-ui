@@ -30,3 +30,8 @@ export async function updateBuilding(id: number, payload: UpdateBuildingDto): Pr
 export async function deleteBuilding(id: number): Promise<void> {
   await api.delete(`/buildings/${id}`);
 }
+
+export async function getBuildingByFloorId(floorId: number): Promise<Building> {
+  const response = await api.get<Building>(`/buildings/by-floor/${floorId}`);
+  return response.data;
+}
