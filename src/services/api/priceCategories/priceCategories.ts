@@ -8,7 +8,9 @@ export async function getPriceCategories(params: Record<string, any> = {}): Prom
   if (search && search.trim() !== '') apiParams.search = search;
   try 
   {
-    const response = await api.get<priceCategories[]>('/forms', { params: apiParams });
+    const response = await api.get<priceCategories[]>('/price-categories', { params: apiParams });
+            
+
     return response.data;
   } 
   catch (error: any) 

@@ -8,7 +8,6 @@ export function useAcademicTitles(params: Record<string, any>) {
   
     useEffect(() => {
         let isMounted = true;
-        
         setLoading(true);
         getAcademicTitles(params)
           .then((data) => {

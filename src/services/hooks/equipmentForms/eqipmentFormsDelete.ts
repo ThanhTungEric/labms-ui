@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
-import api from '../../config/axios';
 import {deleteEquipmentFormItems as deleteApi } from '../../api/equipmentForms/equipmentFormsDelete'
 export function useDeleteEquipmentForms() {
   const [deletedIds, setDeletedIds] = useState<number[]>([]);
-  const [loadingDeleteEquipmentForms, setLoading] = useState(true);
+  const [loadingDeleteEquipmentForms, setLoading] = useState(false);
   const [errorDeleteEquipmentForms, setError] = useState<Error | null>(null);
 
 
@@ -18,7 +17,7 @@ export function useDeleteEquipmentForms() {
       setError(err as Error);
     } finally {
       setLoading(false);
-    
+      
   };
   }
 

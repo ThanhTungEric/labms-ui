@@ -1,14 +1,14 @@
 import api from '../../config/axios';
 import qs from 'qs';
 
-export async function deleteEquipmentFormItems(ids: number[]): Promise<void> {
+export async function deleteFunctionalDomainsItems(ids: number[]): Promise<void> {
 
   if (!ids || !Array.isArray(ids) || ids.length === 0) {
     throw new Error('Please select the row to delete');
   }
 
   try {
-      await api.delete('/forms', {
+      await api.delete('/functional-domains', {
       params: { ids },
       paramsSerializer: params => qs.stringify(params, { arrayFormat: 'repeat' }),
     });

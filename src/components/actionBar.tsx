@@ -15,7 +15,7 @@ import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import {actionBar} from '../services/types/actionBar.type';
 
-export default function ActionBar({ onDelete, onImport, onExport, selectedIds  }: actionBar) {
+export default function ActionBar({ onDelete, onImport, onExport, selectedIds, onAdd }: actionBar) {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file && typeof onImport === 'function') {
@@ -38,7 +38,7 @@ export default function ActionBar({ onDelete, onImport, onExport, selectedIds  }
     >
       <Box display="flex"  gap={1}>
         <Tooltip title='Add'>
-            <IconButton component="label" size="small" color="primary">
+            <IconButton component="label" size="small" onClick={onAdd}>
                 <AddIcon />
             </IconButton>
         </Tooltip>
@@ -53,7 +53,7 @@ export default function ActionBar({ onDelete, onImport, onExport, selectedIds  }
             </IconButton>
         </Tooltip> */}
         <Tooltip title='Delete'>
-            <IconButton component="label" size="small" color="primary" onClick={() => {
+            <IconButton component="label" size="small"  onClick={() => {
               if (onDelete && selectedIds.length > 0) {
                 onDelete(selectedIds);
               }
@@ -65,7 +65,7 @@ export default function ActionBar({ onDelete, onImport, onExport, selectedIds  }
 
         {/* Import CSV */}
         <Tooltip title="Import CSV">
-          <IconButton component="label" size="small" color="primary">
+          <IconButton component="label" size="small" >
             <FileUploadOutlinedIcon />
             <input
               type="file"
@@ -78,7 +78,7 @@ export default function ActionBar({ onDelete, onImport, onExport, selectedIds  }
 
         {/* Export CSV */}
         <Tooltip title="Export CSV">
-          <IconButton size="small" color="primary" onClick={onExport}>
+          <IconButton size="small" onClick={onExport}>
             <FileDownloadOutlinedIcon />
           </IconButton>
         </Tooltip>

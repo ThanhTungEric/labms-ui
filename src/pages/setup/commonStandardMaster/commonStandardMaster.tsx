@@ -29,6 +29,17 @@ import { useFunctionalCategories } from '../../../services/hooks/functionalCateg
 import LoadingInline from '../../../components/loadingPopup';
 import { useDeleteEquipmentForms } from '../../../services/hooks/equipmentForms/eqipmentFormsDelete';
 import DynamicDialog from '../../../components/dynamicDialog';
+import { useDeleteAcademicTitles } from '../../../services/hooks/academicTitle/academicTitlesDelete';
+import { useDeleteEquipmentStatuses } from '../../../services/hooks/equipmentStatuses/equipmentStatusesDelete';
+import { useDeleteFunctionalDomains } from '../../../services/hooks/functionalDomains/functionalDomainsDelete';
+import { useDeleteFaculties } from '../../../services/hooks/faculties/facultiesDelete';
+import { useDeleteLabPositions } from '../../../services/hooks/labPositions/labPositionsDelete';
+import { useDeletePriceCategories } from '../../../services/hooks/priceCategories/priceCategotiesDelete';
+import { useDeletePrograms } from '../../../services/hooks/programsCSM/programsDelete';
+import { useDeleteFunctionalCategories } from '../../../services/hooks/functionalCategories/functionalCategoriesDelete';
+import AddFormDialog from '../../../components/AddFormDialog';
+import { useAddFaculty } from '../../../services/hooks/faculties/facultiesAdd';
+import { useAddAcademicTitle } from '../../../services/hooks/academicTitle/academicTitleAdd';
 export default function CommonStandardMaster() {
 
   const [searchParams, setSearchParams] = useState<Record<string, any>>({});
@@ -39,6 +50,8 @@ export default function CommonStandardMaster() {
   const [selected, setSelected] = React.useState('');
   const [selectedIds, setSelectedIds] = React.useState<number[]>([]);
   const [openConfirm, setOpenConfirm] = useState(false);
+  const [openAdd, setOpenAdd] = useState(false);
+
 
   const { academicTitles, loadingAcademicTitles, errorAcademicTitles } = useAcademicTitles(searchParams);
   const { programsCSM, loadingProgramsCSM, errorProgramsCSM } = useProgramsCSM(searchKeywordParams);
@@ -49,20 +62,39 @@ export default function CommonStandardMaster() {
   const { labPositions, loadingLabPositions, errorLabPositions } = useLabPositions(searchParams);
   const { functionalDomains, loadingFunctionalDomains, errorFunctionalDomains } = useFunctionalDomains(searchParams);
   const { functionalCategories, loadingFunctionalCategories, errorFunctionalCategories } = useFunctionalCategories(searchParams);
-  const { deleteEquipmentForms, loadingDeleteEquipmentForms, errorDeleteEquipmentForms, deletedIds } = useDeleteEquipmentForms();
+  const { deleteEquipmentForms, loadingDeleteEquipmentForms, errorDeleteEquipmentForms } = useDeleteEquipmentForms();
+  const { deleteAcademicTitles, loadingDeleteAcademicTitles, errorDeleteAcademicTitles, deletedIds } = useDeleteAcademicTitles();
+  const { deleteEquipmentStatuses, loadingDeleteEquipmentStatuses, errorDeleteEquipmentStatuses } = useDeleteEquipmentStatuses();
+  const { deleteFunctionalDomains, loadingDeleteFunctionalDomains, errorDeleteFunctionalDomains } = useDeleteFunctionalDomains();
+  const { deleteFaculties, loadingDeleteFaculties, errorDeleteFaculties } = useDeleteFaculties();
+  const { deleteLabPositions, loadingDeleteLabPositions, errorDeleteLabPositions } = useDeleteLabPositions();
+  const { deletePriceCategories, loadingDeletePriceCategories, errorDeletePriceCategories } = useDeletePriceCategories();
+  const { deletePrograms, loadingDeletePrograms, errorDeletePrograms } = useDeletePrograms();
+  const { deleteFunctionalCategories, loadingDeleteFunctionalCategories, errorDeleteFunctionalCategories } = useDeleteFunctionalCategories();
+  const { addFaculty, loadingAddFaculty, errorAddFaculty } = useAddFaculty();
+  const { addAcademicTitle, loadingAddAcademicTitle, errorAddAcademicTitle } = useAddAcademicTitle();
+
+
+
+
+
+
 
   const { notify, showSuccess, showError, showInfo, showWarning, close } = useNotification();
   const filterRef = useRef<{ reset: () => void }>(null);
 
   // Hiển thị thông báo khi có lỗi tải dữ liệu
   useEffect(() => {
-    const error = errorAcademicTitles || errorProgramsCSM || errorPriceCategories || errorEquipmentStatuses || errorEquipmentForms || errorFaculties || errorLabPositions || errorFunctionalDomains || errorFunctionalCategories;
+    const error = errorAcademicTitles || errorProgramsCSM || errorPriceCategories || errorEquipmentStatuses || errorEquipmentForms || errorFaculties || errorLabPositions || errorFunctionalDomains || errorFunctionalCategories || errorDeleteAcademicTitles || errorDeleteEquipmentForms || errorDeleteEquipmentStatuses
+    || errorDeleteEquipmentStatuses ||errorDeleteFunctionalCategories || errorDeleteFunctionalDomains || errorDeleteFaculties || errorDeleteLabPositions || errorDeletePriceCategories || errorDeletePrograms ||errorAddFaculty || errorAddAcademicTitle;
     if (error?.message) {
       showError(error.message);
       const timer = setTimeout(() => close(), 3000);
       return () => clearTimeout(timer);
     }
-  }, [errorAcademicTitles, errorProgramsCSM, errorPriceCategories, errorEquipmentStatuses, errorEquipmentForms, errorFaculties, errorLabPositions, errorFunctionalDomains, errorFunctionalCategories]);
+  }, [errorAcademicTitles, errorProgramsCSM, errorPriceCategories, errorEquipmentStatuses, errorEquipmentForms, errorFaculties, errorLabPositions, errorFunctionalDomains, errorFunctionalCategories, errorDeleteAcademicTitles, errorDeleteEquipmentForms, errorDeleteEquipmentStatuses,
+    errorDeleteEquipmentStatuses, errorDeleteFunctionalDomains, errorDeleteFaculties, errorDeleteLabPositions, errorDeletePriceCategories, errorDeletePrograms, errorDeleteFunctionalCategories, errorAddAcademicTitle
+  ]);
 
 
 
@@ -75,7 +107,18 @@ export default function CommonStandardMaster() {
     loadingFunctionalDomains ||
     loadingLabPositions ||
     loadingFaculties ||
-    loadingEquipmentForms;
+    loadingEquipmentForms ||
+    loadingDeleteAcademicTitles ||
+    loadingDeleteEquipmentForms ||
+    loadingDeleteEquipmentStatuses ||
+    loadingDeleteFunctionalDomains 
+    loadingDeleteFaculties || 
+    loadingDeletePrograms ||
+    loadingDeleteLabPositions ||
+    loadingDeletePriceCategories ||
+    loadingAddAcademicTitle ||
+    loadingAddFaculty
+    ;
 
 
   const selectedItem = useMemo(() => {
@@ -156,14 +199,77 @@ const handleConfirmDelete = async () => {
     setSelectedIds([]);
     setOpenConfirm(false)
   }
+   if (selected === "academic-titles" && selectedIds.length > 0) {
+    await deleteAcademicTitles(selectedIds);
+    setSearchParams({ _refresh: Date.now() });
+    setSelectedIds([]);
+    setOpenConfirm(false)
+  }
+   if (selected === "functional-categories" && selectedIds.length > 0) {
+    await deleteFunctionalCategories(selectedIds);
+    setSearchParams({ _refresh: Date.now() });
+    setSelectedIds([]);
+    setOpenConfirm(false)
+  }
+  if (selected === "equipment-statuses" && selectedIds.length > 0) {
+    await deleteEquipmentStatuses(selectedIds);
+    setSearchParams({ _refresh: Date.now() });
+    setSelectedIds([]);
+    setOpenConfirm(false)
+  }
+  if (selected === "functional-domains" && selectedIds.length > 0) {
+    await deleteFunctionalDomains(selectedIds);
+    setSearchParams({ _refresh: Date.now() });
+    setSelectedIds([]);
+    setOpenConfirm(false)
+  }
+  if (selected === "lab-prositions" && selectedIds.length > 0) {
+    await deleteLabPositions(selectedIds);
+    setSearchParams({ _refresh: Date.now() });
+    setSelectedIds([]);
+    setOpenConfirm(false)
+  }
+  if (selected === "programs" && selectedIds.length > 0) {
+    await deletePrograms(selectedIds);
+    setSearchParams({ _refresh: Date.now() });
+    setSelectedIds([]);
+    setOpenConfirm(false)
+  }
+  if (selected === "faculty" && selectedIds.length > 0) {
+    await deleteFaculties(selectedIds);
+    setSearchParams({ _refresh: Date.now() });
+    setSelectedIds([]);
+    setOpenConfirm(false)
+  }
+  if (selected === "price-categories" && selectedIds.length > 0) {
+    await deletePriceCategories(selectedIds);
+    setSearchParams({ _refresh: Date.now() });
+    setSelectedIds([]);
+    setOpenConfirm(false)
+  }
+  
   setOpenConfirm(false);
 };
 
-
-
-  function setDialogOpen(arg0: boolean) {
-    throw new Error('Function not implemented.');
+const handleAdd = async (data: any) => {
+  const hasValue = Object.values(data).some(v => v !== null && v !== undefined && v !== "");
+  if (selected === "faculty" && hasValue === true) {  
+    await addFaculty(data);
+    setSearchParams({ _refresh: Date.now() });
+    setSelectedIds([]);
+    setOpenConfirm(false);
+    
   }
+    if (selected === "academic-titles" && hasValue === true) {  
+    await addAcademicTitle(data);
+    setSearchParams({ _refresh: Date.now() });
+    setSelectedIds([]);
+    setOpenConfirm(false);
+    
+  }
+  setSearchParams({ _refresh: Date.now() });
+  setOpenAdd(false);
+};
 
   return (
 
@@ -201,6 +307,9 @@ const handleConfirmDelete = async () => {
       />
       {selectedItem.length > 0 ? (
         <Box mt={2}>
+          
+
+          <FilterSection ref={filterRef} onSearch={handleFilter} />
           <TablePagination
             component="div"
             count={items.length}
@@ -213,11 +322,11 @@ const handleConfirmDelete = async () => {
             }}
             rowsPerPageOptions={[5, 10, 25, 50]}
           />
-
-          <FilterSection ref={filterRef} onSearch={handleFilter} />
           <ActionBar
             selectedIds={selectedIds}
             onDelete={() => setOpenConfirm(true)}
+            onAdd={() => setOpenAdd(true)}
+
             onImport={(file) => {
 
             }}
@@ -311,15 +420,21 @@ const handleConfirmDelete = async () => {
         onClose={close}
       />
       <DynamicDialog
-  open={openConfirm}
-  onClose={() => setOpenConfirm(false)}
-  onConfirm={handleConfirmDelete}
-  title="Delete Confirmation"
-  content="Are you sure you want to delete the selected items? This action cannot be undone."
-  confirmLabel="Delete"
-  cancelLabel="Cancel"
-  confirmColor="error"
-/>
+        open={openConfirm}
+        onClose={() => setOpenConfirm(false)}
+        onConfirm={handleConfirmDelete}
+        title="Delete Confirmation"
+        content="Are you sure you want to delete the selected items? This action cannot be undone."
+        confirmLabel="Delete"
+        cancelLabel="Cancel"
+        confirmColor="error"
+      />
+      <AddFormDialog
+         type={selected}   // "forms" | "users" | "equipments"
+  open={openAdd}
+  onClose={() => setOpenAdd(false)}
+  onSave={handleAdd}
+      />
 
 
     </Box>
