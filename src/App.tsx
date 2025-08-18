@@ -1,17 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import * as React from 'react';
+import { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import DashboardLayoutBasic from './components/navigate/DashboardLayoutBasic';
 import LoginPage from './pages/auth/LoginPage';
 import { useAuth } from './services/hooks/auth/useAuth';
 import './App.css';
 
-function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [authChecked, setAuthChecked] = useState(false);
+
+const App: React.FC = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [authChecked, setAuthChecked] = useState<boolean>(false);
+
   const { refreshSession, logoutUser } = useAuth();
 
   useEffect(() => {
-    const tryRestoreSession = async () => {
+    (async () => {
       try {
         await refreshSession();
         setIsLoggedIn(true);
@@ -20,32 +23,19 @@ function App() {
       } finally {
         setAuthChecked(true);
       }
-    };
+    })();
+  }, [refreshSession]);
 
-    tryRestoreSession();
-  }, []);
-
-  const handleLogout = async () => {
+  const handleLogout = React.useCallback(async () => {
     await logoutUser();
     setIsLoggedIn(false);
-  };
+  }, [logoutUser]);
 
   if (!authChecked) return null;
 
   return (
     <Router>
       <Routes>
-        <Route
-          path="/"
-          element={
-            isLoggedIn ? (
-              <DashboardLayoutBasic onLogout={handleLogout} />
-            ) : (
-              <Navigate to="/login" replace />
-            )
-          }
-        />
-
         <Route
           path="/login"
           element={
@@ -56,9 +46,19 @@ function App() {
             )
           }
         />
+        <Route
+          path="/*"
+          element={
+            isLoggedIn ? (
+              <DashboardLayoutBasic onLogout={handleLogout} />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
       </Routes>
     </Router>
   );
-}
+};
 
 export default App;
