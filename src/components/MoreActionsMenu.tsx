@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Button, Menu, MenuItem, styled } from '@mui/material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
-// Định nghĩa kiểu cho các item trong menu
 export interface MoreActionItem {
   key: string;
   label: string;
@@ -47,7 +46,7 @@ export default function MoreActionsMenu({ items, onActionClick }: MoreActionsMen
   return (
     <>
       <StyledMoreActionsButton
-        variant="outlined" // Đổi thành "outlined" để có viền
+        variant="outlined"
         onClick={handleOpenMenu}
         endIcon={<ArrowDropDownIcon />}
       >
