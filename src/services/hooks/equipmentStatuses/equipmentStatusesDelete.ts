@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { deleteEquipmentStatuesItems as deleteApi } from '../../api/equipmentStatues/equipmentStatuesDelete';
 export function useDeleteEquipmentStatuses() {
-  const [deletedIds, setDeletedIds] = useState<number[]>([]);
+  const [deletedEquipmentStatusesIds, setDeletedIds] = useState<number[]>([]);
   const [loadingDeleteEquipmentStatuses, setLoading] = useState(false);
   const [errorDeleteEquipmentStatuses, setError] = useState<Error | null>(null);
 
@@ -21,5 +21,5 @@ export function useDeleteEquipmentStatuses() {
   };
   }
 
-  return { deleteEquipmentStatuses, loadingDeleteEquipmentStatuses, errorDeleteEquipmentStatuses, deletedIds };
+  return { deleteEquipmentStatuses, loadingDeleteEquipmentStatuses, errorDeleteEquipmentStatuses, deletedEquipmentStatusesIds };
 }

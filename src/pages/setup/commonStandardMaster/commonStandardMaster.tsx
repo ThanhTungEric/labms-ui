@@ -40,7 +40,11 @@ import { useDeleteFunctionalCategories } from '../../../services/hooks/functiona
 import AddFormDialog from '../../../components/AddFormDialog';
 import { useAddFaculty } from '../../../services/hooks/faculties/facultiesAdd';
 import { useAddAcademicTitle } from '../../../services/hooks/academicTitle/academicTitleAdd';
+import { useAddEquipmentForms } from '../../../services/hooks/equipmentForms/equipmentFormsAdd';
+import { useAddFunctionalCategories } from '../../../services/hooks/functionalCategories/functionalCategoriesAdd';
+import { useAddFunctionalDomains } from '../../../services/hooks/functionalDomains/functionalDomainsAdd';
 export default function CommonStandardMaster() {
+  //--------------------------------------------------------------------------------------------------------- Khai báo 
 
   const [searchParams, setSearchParams] = useState<Record<string, any>>({});
   const [searchKeywordParams, setSearchKeywworParams] = useState<Record<string, any>>({});
@@ -51,6 +55,9 @@ export default function CommonStandardMaster() {
   const [selectedIds, setSelectedIds] = React.useState<number[]>([]);
   const [openConfirm, setOpenConfirm] = useState(false);
   const [openAdd, setOpenAdd] = useState(false);
+  const filterRef = useRef<{ reset: () => void }>(null);
+
+  //--------------------------------------------------------------------------------------------------------- Gọi custom hook và destructuring kết quả trả về cho master-data
 
 
   const { academicTitles, loadingAcademicTitles, errorAcademicTitles } = useAcademicTitles(searchParams);
@@ -62,41 +69,47 @@ export default function CommonStandardMaster() {
   const { labPositions, loadingLabPositions, errorLabPositions } = useLabPositions(searchParams);
   const { functionalDomains, loadingFunctionalDomains, errorFunctionalDomains } = useFunctionalDomains(searchParams);
   const { functionalCategories, loadingFunctionalCategories, errorFunctionalCategories } = useFunctionalCategories(searchParams);
-  const { deleteEquipmentForms, loadingDeleteEquipmentForms, errorDeleteEquipmentForms } = useDeleteEquipmentForms();
-  const { deleteAcademicTitles, loadingDeleteAcademicTitles, errorDeleteAcademicTitles, deletedIds } = useDeleteAcademicTitles();
-  const { deleteEquipmentStatuses, loadingDeleteEquipmentStatuses, errorDeleteEquipmentStatuses } = useDeleteEquipmentStatuses();
-  const { deleteFunctionalDomains, loadingDeleteFunctionalDomains, errorDeleteFunctionalDomains } = useDeleteFunctionalDomains();
-  const { deleteFaculties, loadingDeleteFaculties, errorDeleteFaculties } = useDeleteFaculties();
-  const { deleteLabPositions, loadingDeleteLabPositions, errorDeleteLabPositions } = useDeleteLabPositions();
-  const { deletePriceCategories, loadingDeletePriceCategories, errorDeletePriceCategories } = useDeletePriceCategories();
-  const { deletePrograms, loadingDeletePrograms, errorDeletePrograms } = useDeletePrograms();
-  const { deleteFunctionalCategories, loadingDeleteFunctionalCategories, errorDeleteFunctionalCategories } = useDeleteFunctionalCategories();
+
+
+    //--------------------------------------------------------------------------------------------------------- Gọi custom hook và destructuring kết quả trả về cho xóa data
+
+  const { deleteEquipmentForms, loadingDeleteEquipmentForms, errorDeleteEquipmentForms, deletedEquipmentFormsIds } = useDeleteEquipmentForms();
+  const { deleteAcademicTitles, loadingDeleteAcademicTitles, errorDeleteAcademicTitles, deletedAcademicTitlesIds } = useDeleteAcademicTitles();
+  const { deleteEquipmentStatuses, loadingDeleteEquipmentStatuses, errorDeleteEquipmentStatuses, deletedEquipmentStatusesIds } = useDeleteEquipmentStatuses();
+  const { deleteFunctionalDomains, loadingDeleteFunctionalDomains, errorDeleteFunctionalDomains, deletedFunctionalDomainsIds } = useDeleteFunctionalDomains();
+  const { deleteFaculties, loadingDeleteFaculties, errorDeleteFaculties, deletedFacultiesIds } = useDeleteFaculties();
+  const { deleteLabPositions, loadingDeleteLabPositions, errorDeleteLabPositions, deletedLabPositionsIds } = useDeleteLabPositions();
+  const { deletePriceCategories, loadingDeletePriceCategories, errorDeletePriceCategories, deletedPriceCategoriesIds} = useDeletePriceCategories();
+  const { deletePrograms, loadingDeletePrograms, errorDeletePrograms, deletedProgramsIds } = useDeletePrograms();
+  const { deleteFunctionalCategories, loadingDeleteFunctionalCategories, errorDeleteFunctionalCategories, deletedFunctionalCategoriesIds } = useDeleteFunctionalCategories();
+
+    //--------------------------------------------------------------------------------------------------------- Gọi custom hook và destructuring kết quả trả về cho thêm data
+
   const { addFaculty, loadingAddFaculty, errorAddFaculty } = useAddFaculty();
   const { addAcademicTitle, loadingAddAcademicTitle, errorAddAcademicTitle } = useAddAcademicTitle();
-
-
-
-
-
-
-
+  const { addEquipmentForm, loadingAddEquipmentForm, errorAddEquipmentForm } = useAddEquipmentForms();
+  const { addFunctionalCategories, loadingAddFunctionalCategories, errorAddFunctionalCategories } = useAddFunctionalCategories();
+  const { addFunctionalDomains, loadingAddFunctionalDomains, errorAddFunctionalDomains } = useAddFunctionalDomains();
   const { notify, showSuccess, showError, showInfo, showWarning, close } = useNotification();
-  const filterRef = useRef<{ reset: () => void }>(null);
+ 
 
-  // Hiển thị thông báo khi có lỗi tải dữ liệu
+  //--------------------------------------------------------------------------------------------------------- Hiển thị thông báo khi có lỗi tải dữ liệu
+
   useEffect(() => {
     const error = errorAcademicTitles || errorProgramsCSM || errorPriceCategories || errorEquipmentStatuses || errorEquipmentForms || errorFaculties || errorLabPositions || errorFunctionalDomains || errorFunctionalCategories || errorDeleteAcademicTitles || errorDeleteEquipmentForms || errorDeleteEquipmentStatuses
-    || errorDeleteEquipmentStatuses ||errorDeleteFunctionalCategories || errorDeleteFunctionalDomains || errorDeleteFaculties || errorDeleteLabPositions || errorDeletePriceCategories || errorDeletePrograms ||errorAddFaculty || errorAddAcademicTitle;
+      || errorDeleteEquipmentStatuses || errorDeleteFunctionalCategories || errorDeleteFunctionalDomains || errorDeleteFaculties || errorDeleteLabPositions || errorDeletePriceCategories || errorDeletePrograms || errorAddFaculty || errorAddAcademicTitle || errorAddEquipmentForm || errorAddFunctionalCategories
+    errorAddFunctionalDomains;
     if (error?.message) {
       showError(error.message);
       const timer = setTimeout(() => close(), 3000);
       return () => clearTimeout(timer);
     }
   }, [errorAcademicTitles, errorProgramsCSM, errorPriceCategories, errorEquipmentStatuses, errorEquipmentForms, errorFaculties, errorLabPositions, errorFunctionalDomains, errorFunctionalCategories, errorDeleteAcademicTitles, errorDeleteEquipmentForms, errorDeleteEquipmentStatuses,
-    errorDeleteEquipmentStatuses, errorDeleteFunctionalDomains, errorDeleteFaculties, errorDeleteLabPositions, errorDeletePriceCategories, errorDeletePrograms, errorDeleteFunctionalCategories, errorAddAcademicTitle
+    errorDeleteEquipmentStatuses, errorDeleteFunctionalDomains, errorDeleteFaculties, errorDeleteLabPositions, errorDeletePriceCategories, errorDeletePrograms, errorDeleteFunctionalCategories, errorAddAcademicTitle, errorAddEquipmentForm, errorAddFunctionalDomains, errorAddFunctionalCategories
   ]);
 
 
+  //--------------------------------------------------------------------------------------------------------- Tạo hành động loading 
 
   const isLoading =
     loadingAcademicTitles ||
@@ -111,19 +124,23 @@ export default function CommonStandardMaster() {
     loadingDeleteAcademicTitles ||
     loadingDeleteEquipmentForms ||
     loadingDeleteEquipmentStatuses ||
-    loadingDeleteFunctionalDomains 
-    loadingDeleteFaculties || 
+    loadingDeleteFunctionalDomains
+    loadingDeleteFaculties ||
     loadingDeletePrograms ||
     loadingDeleteLabPositions ||
     loadingDeletePriceCategories ||
     loadingAddAcademicTitle ||
-    loadingAddFaculty
+    loadingAddFaculty ||
+    loadingDeleteFunctionalCategories ||
+    loadingAddEquipmentForm ||
+    loadingAddFunctionalCategories ||
+    loadingAddFunctionalDomains
     ;
 
+  //--------------------------------------------------------------------------------------------------------- Gọi master-data cho dropdown select chính
 
   const selectedItem = useMemo(() => {
     if (!selected) return [];
-
     const dataMap: Record<string, any> = {
       "academic-titles": academicTitles || [],
       "programs": programsCSM || [],
@@ -147,10 +164,11 @@ export default function CommonStandardMaster() {
     return [];
   }, [selected, academicTitles, programsCSM, priceCategories, equipmentForms, equipmentStatuses, functionalCategories, functionalDomains, labPositions, faculties]);
 
+  //--------------------------------------------------------------------------------------------------------- Xử lý dữ liệu master-data đã tải
 
   const items = selectedItem;
   const keys = items.length > 0
-    ? Object.keys(items[0]).filter(k => k !== "faculty")
+    ? Object.keys(items[0]).filter(k => k !== "faculty" && k !== "id")
     : [];
   const handleFilter = (filters: any) => {
     const keyword = filters.search?.trim();
@@ -183,6 +201,7 @@ export default function CommonStandardMaster() {
         });
     }
 
+    //--------------------------------------------------------------------------------------------------------- Xử lý sự kiện change select
 
   };
   const handleChangeSelected = (value: string) => {
@@ -191,88 +210,149 @@ export default function CommonStandardMaster() {
     setSearchParams({ _refresh: Date.now() });
   };
 
-
-const handleConfirmDelete = async () => {
-  if (selected === "forms" && selectedIds.length > 0) {
-    await deleteEquipmentForms(selectedIds);
-    setSearchParams({ _refresh: Date.now() });
-    setSelectedIds([]);
-    setOpenConfirm(false)
-  }
-   if (selected === "academic-titles" && selectedIds.length > 0) {
-    await deleteAcademicTitles(selectedIds);
-    setSearchParams({ _refresh: Date.now() });
-    setSelectedIds([]);
-    setOpenConfirm(false)
-  }
-   if (selected === "functional-categories" && selectedIds.length > 0) {
-    await deleteFunctionalCategories(selectedIds);
-    setSearchParams({ _refresh: Date.now() });
-    setSelectedIds([]);
-    setOpenConfirm(false)
-  }
-  if (selected === "equipment-statuses" && selectedIds.length > 0) {
-    await deleteEquipmentStatuses(selectedIds);
-    setSearchParams({ _refresh: Date.now() });
-    setSelectedIds([]);
-    setOpenConfirm(false)
-  }
-  if (selected === "functional-domains" && selectedIds.length > 0) {
-    await deleteFunctionalDomains(selectedIds);
-    setSearchParams({ _refresh: Date.now() });
-    setSelectedIds([]);
-    setOpenConfirm(false)
-  }
-  if (selected === "lab-prositions" && selectedIds.length > 0) {
-    await deleteLabPositions(selectedIds);
-    setSearchParams({ _refresh: Date.now() });
-    setSelectedIds([]);
-    setOpenConfirm(false)
-  }
-  if (selected === "programs" && selectedIds.length > 0) {
-    await deletePrograms(selectedIds);
-    setSearchParams({ _refresh: Date.now() });
-    setSelectedIds([]);
-    setOpenConfirm(false)
-  }
-  if (selected === "faculty" && selectedIds.length > 0) {
-    await deleteFaculties(selectedIds);
-    setSearchParams({ _refresh: Date.now() });
-    setSelectedIds([]);
-    setOpenConfirm(false)
-  }
-  if (selected === "price-categories" && selectedIds.length > 0) {
-    await deletePriceCategories(selectedIds);
-    setSearchParams({ _refresh: Date.now() });
-    setSelectedIds([]);
-    setOpenConfirm(false)
-  }
-  
-  setOpenConfirm(false);
-};
-
-const handleAdd = async (data: any) => {
-  const hasValue = Object.values(data).some(v => v !== null && v !== undefined && v !== "");
-  if (selected === "faculty" && hasValue === true) {  
-    await addFaculty(data);
-    setSearchParams({ _refresh: Date.now() });
-    setSelectedIds([]);
+  //--------------------------------------------------------------------------------------------------------- Xử lý sự kiện xác nhận xóa
+  const handleConfirmDelete = async () => {
+    const varTextSuccess = "Deleted successfully";
+    if (selected === "forms" && selectedIds.length > 0) {
+      await deleteEquipmentForms(selectedIds);
+      if(deletedEquipmentFormsIds.length >0)
+      {
+        
+        setSearchParams({ _refresh: Date.now() });
+        setSelectedIds([]);
+        setOpenConfirm(false);
+        showSuccess(varTextSuccess);
+      }
+      
+    }
+    if (selected === "academic-titles" && selectedIds.length > 0) {
+      await deleteAcademicTitles(selectedIds);
+      if(deletedAcademicTitlesIds.length >0)
+      {
+        setSearchParams({ _refresh: Date.now() });
+        setSelectedIds([]);
+        setOpenConfirm(false);
+        showSuccess(varTextSuccess);
+      }
+      
+    }
+    if (selected === "functional-categories" && selectedIds.length > 0) {
+      await deleteFunctionalCategories(selectedIds);
+      if(deletedFunctionalCategoriesIds.length >0)
+      {
+        setSearchParams({ _refresh: Date.now() });
+        setSelectedIds([]);
+        setOpenConfirm(false);
+        showSuccess(varTextSuccess);
+      }
+    }
+    // if (selected === "equipment-statuses" && selectedIds.length > 0) {
+    //   if(deletedEquipmentStatusesIds.length >0)
+    //   {
+    //     await deleteEquipmentStatuses(selectedIds);
+    //     setSearchParams({ _refresh: Date.now() });
+    //     setSelectedIds([]);
+    //     setOpenConfirm(false);
+    //     showSuccess(varTextSuccess);
+    //   }
+    // }
+    if (selected === "functional-domains" && selectedIds.length > 0) {
+      await deleteFunctionalDomains(selectedIds);
+      if(deletedFunctionalDomainsIds.length >0)
+      {
+        
+        setSearchParams({ _refresh: Date.now() });
+        setSelectedIds([]);
+        setOpenConfirm(false);
+        showSuccess(varTextSuccess);
+      }
+    }
+    if (selected === "lab-prositions" && selectedIds.length > 0) {
+      await deleteLabPositions(selectedIds);
+      if(deletedLabPositionsIds.length >0)
+      {
+        
+        setSearchParams({ _refresh: Date.now() });
+        setSelectedIds([]);
+        setOpenConfirm(false);
+        showSuccess(varTextSuccess);
+      }
+    }
+    if (selected === "programs" && selectedIds.length > 0) {
+      await deletePrograms(selectedIds);
+      if(deletedProgramsIds.length >0)
+      {
+        
+        setSearchParams({ _refresh: Date.now() });
+        setSelectedIds([]);
+        setOpenConfirm(false);
+        showSuccess(varTextSuccess);
+      }
+    }
+    if (selected === "faculty" && selectedIds.length > 0) {
+      await deleteFaculties(selectedIds);
+      if(deletedFacultiesIds.length >0)
+      {
+        
+        setSearchParams({ _refresh: Date.now() });
+        setSelectedIds([]);
+        setOpenConfirm(false);
+        showSuccess(varTextSuccess);
+      }
+    }
+    if (selected === "price-categories" && selectedIds.length > 0) {
+      await deletePriceCategories(selectedIds);
+      if(deletedPriceCategoriesIds.length >0)
+      {
+        
+        setSearchParams({ _refresh: Date.now() });
+        setSelectedIds([]);
+        setOpenConfirm(false);
+        showSuccess(varTextSuccess);
+      }
+      
+    }
     setOpenConfirm(false);
-    
-  }
-    if (selected === "academic-titles" && hasValue === true) {  
-    await addAcademicTitle(data);
+  };
+  //--------------------------------------------------------------------------------------------------------- Xử lý sự kiện hiển thị popup form thêm và lưu
+
+  const handleAdd = async (data: any) => {
+    const hasValue = Object.values(data).some(v => v !== null && v !== undefined && v !== "");
+    if (selected === "faculty" && hasValue === true) {
+      await addFaculty(data);
+      setSearchParams({ _refresh: Date.now() });
+      setSelectedIds([]);
+      setOpenConfirm(false);
+    }
+    if (selected === "academic-titles" && hasValue === true) {
+      await addAcademicTitle(data);
+      setSearchParams({ _refresh: Date.now() });
+      setSelectedIds([]);
+      setOpenConfirm(false);
+    }
+    if (selected === "forms" && hasValue === true) {
+      await addEquipmentForm(data);
+      setSearchParams({ _refresh: Date.now() });
+      setSelectedIds([]);
+      setOpenConfirm(false);
+    }
+    if (selected === "functional-categories" && hasValue === true) {
+      await addFunctionalCategories(data);
+      setSearchParams({ _refresh: Date.now() });
+      setSelectedIds([]);
+      setOpenConfirm(false);
+    }
+    if (selected === "functional-domains" && hasValue === true) {
+      await addFunctionalDomains(data);
+      setSearchParams({ _refresh: Date.now() });
+      setSelectedIds([]);
+      setOpenConfirm(false);
+    }
     setSearchParams({ _refresh: Date.now() });
-    setSelectedIds([]);
-    setOpenConfirm(false);
-    
-  }
-  setSearchParams({ _refresh: Date.now() });
-  setOpenAdd(false);
-};
+    setOpenAdd(false);
+  };
 
   return (
-
     <Box sx={{ p: 2 }}>
       {/* Popup loading */}
       <LoadingInline open={isLoading} />
@@ -294,7 +374,6 @@ const handleAdd = async (data: any) => {
           const selectedValue = newValue?.basePath || '';
           setSelected(selectedValue);
           handleChangeSelected(selectedValue);
-
         }}
         renderInput={(params) => (
           <TextField
@@ -307,8 +386,6 @@ const handleAdd = async (data: any) => {
       />
       {selectedItem.length > 0 ? (
         <Box mt={2}>
-          
-
           <FilterSection ref={filterRef} onSearch={handleFilter} />
           <TablePagination
             component="div"
@@ -326,12 +403,9 @@ const handleAdd = async (data: any) => {
             selectedIds={selectedIds}
             onDelete={() => setOpenConfirm(true)}
             onAdd={() => setOpenAdd(true)}
-
             onImport={(file) => {
-
             }}
             onExport={() => {
-
             }}
           />
           <TableContainer component={Paper}>
@@ -405,8 +479,6 @@ const handleAdd = async (data: any) => {
               </TableBody>
             </Table>
           </TableContainer>
-
-          
         </Box>
       ) : (
         <Box mt={2} textAlign="center" color="gray">
@@ -430,14 +502,11 @@ const handleAdd = async (data: any) => {
         confirmColor="error"
       />
       <AddFormDialog
-         type={selected}   // "forms" | "users" | "equipments"
-  open={openAdd}
-  onClose={() => setOpenAdd(false)}
-  onSave={handleAdd}
+        type={selected}   // "forms" | "users" | "equipments"
+        open={openAdd}
+        onClose={() => setOpenAdd(false)}
+        onSave={handleAdd}
       />
-
-
     </Box>
-
   );
 }

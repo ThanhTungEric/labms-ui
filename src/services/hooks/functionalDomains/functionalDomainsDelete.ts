@@ -3,7 +3,7 @@ import { deleteFunctionalDomainsItems as deleteApi } from '../../api/functionalD
 
 export function useDeleteFunctionalDomains() {
 
-  const [deletedIds, setDeletedIds] = useState<number[]>([]);
+  const [deletedFunctionalDomainsIds, setDeletedIds] = useState<number[]>([]);
   const [loadingDeleteFunctionalDomains, setLoading] = useState(false);
   const [errorDeleteFunctionalDomains, setError] = useState<Error | null>(null);
 
@@ -23,5 +23,5 @@ export function useDeleteFunctionalDomains() {
   };
   }
 
-  return { deleteFunctionalDomains, loadingDeleteFunctionalDomains, errorDeleteFunctionalDomains, deletedIds };
+  return { deleteFunctionalDomains, loadingDeleteFunctionalDomains, errorDeleteFunctionalDomains, deletedFunctionalDomainsIds };
 }

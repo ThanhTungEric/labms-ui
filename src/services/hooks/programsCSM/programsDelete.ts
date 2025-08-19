@@ -3,7 +3,7 @@ import { deleteProgramItems as deleteApi } from '../../api/programs/programsDele
 
 export function useDeletePrograms() {
 
-  const [deletedIds, setDeletedIds] = useState<number[]>([]);
+  const [deletedProgramsIds, setDeletedIds] = useState<number[]>([]);
   const [loadingDeletePrograms, setLoading] = useState(false);
   const [errorDeletePrograms, setError] = useState<Error | null>(null);
 
@@ -23,5 +23,5 @@ export function useDeletePrograms() {
   };
   }
 
-  return { deletePrograms, loadingDeletePrograms, errorDeletePrograms, deletedIds };
+  return { deletePrograms, loadingDeletePrograms, errorDeletePrograms, deletedProgramsIds };
 }

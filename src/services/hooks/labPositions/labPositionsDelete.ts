@@ -3,7 +3,7 @@ import { deleteLabPositionItems as deleteApi } from '../../api/labPositions/labP
 
 export function useDeleteLabPositions() {
 
-  const [deletedIds, setDeletedIds] = useState<number[]>([]);
+  const [deletedLabPositionsIds, setDeletedIds] = useState<number[]>([]);
   const [loadingDeleteLabPositions, setLoading] = useState(false);
   const [errorDeleteLabPositions, setError] = useState<Error | null>(null);
 
@@ -23,5 +23,5 @@ export function useDeleteLabPositions() {
   };
   }
 
-  return { deleteLabPositions, loadingDeleteLabPositions, errorDeleteLabPositions, deletedIds };
+  return { deleteLabPositions, loadingDeleteLabPositions, errorDeleteLabPositions, deletedLabPositionsIds };
 }

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { deleteFunctionalCategoriesItems as deleteApi } from '../../api/functionalCategories/functionalCategoriesDelete';
 export function useDeleteFunctionalCategories() {
-  const [deletedIds, setDeletedIds] = useState<number[]>([]);
+  const [deletedFunctionalCategoriesIds, setDeletedIds] = useState<number[]>([]);
   const [loadingDeleteFunctionalCategories, setLoading] = useState(false);
   const [errorDeleteFunctionalCategories, setError] = useState<Error | null>(null);
 
@@ -21,5 +21,5 @@ export function useDeleteFunctionalCategories() {
   };
   }
 
-  return { deleteFunctionalCategories, loadingDeleteFunctionalCategories, errorDeleteFunctionalCategories, deletedIds };
+  return { deleteFunctionalCategories, loadingDeleteFunctionalCategories, errorDeleteFunctionalCategories, deletedFunctionalCategoriesIds };
 }

@@ -48,7 +48,10 @@ export default function AddDialog({ type, open, onClose, onSave }: AddDialogProp
         <Typography variant="h6" fontWeight="bold">
           {type === "faculty" && "Add New Faculty"}
           {type === "programs" && "Add New Program"}
+          {type === "forms" && "Add New Forms"}
           {type === "academic-titles" && "Add New Academic Title"}
+          {type === "functional-categories" && "Add New Functional Catgories"}
+          {type === "functional-domains" && "Add New Functional Domains"}
         </Typography>
         <Typography variant="body2" color="text.secondary">
           Fill in the information below and click Save to add new.
@@ -129,18 +132,65 @@ export default function AddDialog({ type, open, onClose, onSave }: AddDialogProp
                   fullWidth
                   size="small"
                   variant="outlined"
-                  label="Functional Categories Feild"
-                  value={formData.field || ""}
-                  onChange={(e) => handleChange("field", e.target.value)}
+                  label="Functional Categories Label"
+                  value={formData.label || ""}
+                  onChange={(e) => handleChange("label", e.target.value)}
                 />
              
                 <TextField
                   fullWidth
                   size="small"
                   variant="outlined"
-                  label="Functional Categories Direction"
-                  value={formData.direction || ""}
-                  onChange={(e) => handleChange("direction", e.target.value)}
+                  label="Functional Categories Description"
+                  value={formData.description || ""}
+                  onChange={(e) => handleChange("description", e.target.value)}
+                />
+              </Stack>
+            </>
+          )}
+          {type === "forms" && (
+            <>
+              <Stack spacing={2}>
+                <TextField
+                  fullWidth
+                  size="small"
+                  variant="outlined"
+                  label="Equipment Forms Name"
+                  value={formData.name || ""}
+                  onChange={(e) => handleChange("name", e.target.value)}
+                />
+             
+                <TextField
+                  fullWidth
+                  size="small"
+                  variant="outlined"
+                  label="Equipment Forms Description"
+                  value={formData.description || ""}
+                  onChange={(e) => handleChange("description", e.target.value)}
+                />
+              </Stack>
+            </>
+          )}
+          
+          {type === "functional-domains" && (
+            <>
+              <Stack spacing={2}>
+                <TextField
+                  fullWidth
+                  size="small"
+                  variant="outlined"
+                  label="Functional Domains Label"
+                  value={formData.label || ""}
+                  onChange={(e) => handleChange("label", e.target.value)}
+                />
+             
+                <TextField
+                  fullWidth
+                  size="small"
+                  variant="outlined"
+                  label="Functional Domains Description"
+                  value={formData.description || ""}
+                  onChange={(e) => handleChange("description", e.target.value)}
                 />
               </Stack>
             </>

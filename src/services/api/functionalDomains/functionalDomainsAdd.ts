@@ -1,5 +1,4 @@
 import api from '../../config/axios';
-import qs from 'qs';
 
 export async function addFunctionalDomainsItem(data: { label: string; description?: string }): Promise<void> {
   if (!data?.label) {

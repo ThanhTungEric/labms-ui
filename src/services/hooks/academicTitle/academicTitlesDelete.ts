@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { deleteAcademicTitleItems as deleteApi } from '../../api/academicTitle/academicTitlesDelete';
 export function useDeleteAcademicTitles() {
-  const [deletedIds, setDeletedIds] = useState<number[]>([]);
+  const [deletedAcademicTitlesIds, setDeletedIds] = useState<number[]>([]);
   const [loadingDeleteAcademicTitles, setLoading] = useState(false);
   const [errorDeleteAcademicTitles, setError] = useState<Error | null>(null);
 
@@ -21,5 +21,5 @@ export function useDeleteAcademicTitles() {
   };
   }
 
-  return { deleteAcademicTitles, loadingDeleteAcademicTitles, errorDeleteAcademicTitles, deletedIds };
+  return { deleteAcademicTitles, loadingDeleteAcademicTitles, errorDeleteAcademicTitles, deletedAcademicTitlesIds };
 }

@@ -6,7 +6,7 @@ export async function addEquipmentFormsItem(data: { name: string; description?: 
   }
 
   try {
-    await api.post("/form", data); 
+    await api.post("/forms", data); 
   } catch (error: any) {
     throw new Error(error?.message || "Add failed, please check and try again");
   }

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { deleteFacultiesItems  as deleteApi} from '../../api/faculties/facultiesDelete';
 export function useDeleteFaculties() {
-  const [deletedIds, setDeletedIds] = useState<number[]>([]);
+  const [deletedFacultiesIds, setDeletedIds] = useState<number[]>([]);
   const [loadingDeleteFaculties, setLoading] = useState(false);
   const [errorDeleteFaculties, setError] = useState<Error | null>(null);
 
@@ -21,5 +21,5 @@ export function useDeleteFaculties() {
   };
   }
 
-  return { deleteFaculties, loadingDeleteFaculties, errorDeleteFaculties, deletedIds };
+  return { deleteFaculties, loadingDeleteFaculties, errorDeleteFaculties, deletedFacultiesIds };
 }

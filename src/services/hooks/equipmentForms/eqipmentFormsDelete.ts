@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import {deleteEquipmentFormItems as deleteApi } from '../../api/equipmentForms/equipmentFormsDelete'
 export function useDeleteEquipmentForms() {
-  const [deletedIds, setDeletedIds] = useState<number[]>([]);
+  const [deletedEquipmentFormsIds, setDeletedIds] = useState<number[]>([]);
   const [loadingDeleteEquipmentForms, setLoading] = useState(false);
   const [errorDeleteEquipmentForms, setError] = useState<Error | null>(null);
 
@@ -21,5 +21,5 @@ export function useDeleteEquipmentForms() {
   };
   }
 
-  return { deleteEquipmentForms, loadingDeleteEquipmentForms, errorDeleteEquipmentForms, deletedIds };
+  return { deleteEquipmentForms, loadingDeleteEquipmentForms, errorDeleteEquipmentForms, deletedEquipmentFormsIds };
 }

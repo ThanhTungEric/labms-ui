@@ -3,7 +3,7 @@ import { deletePriceCategoriesItems as deleteApi } from '../../api/priceCategori
 
 export function useDeletePriceCategories() {
 
-  const [deletedIds, setDeletedIds] = useState<number[]>([]);
+  const [deletedPriceCategoriesIds, setDeletedIds] = useState<number[]>([]);
   const [loadingDeletePriceCategories, setLoading] = useState(false);
   const [errorDeletePriceCategories, setError] = useState<Error | null>(null);
 
@@ -23,5 +23,5 @@ export function useDeletePriceCategories() {
   };
   }
 
-  return { deletePriceCategories, loadingDeletePriceCategories, errorDeletePriceCategories, deletedIds };
+  return { deletePriceCategories, loadingDeletePriceCategories, errorDeletePriceCategories, deletedPriceCategoriesIds };
 }

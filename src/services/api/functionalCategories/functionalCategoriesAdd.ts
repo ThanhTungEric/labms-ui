@@ -1,8 +1,7 @@
 import api from '../../config/axios';
-import qs from 'qs';
 
-export async function addFunctionalCategoriesItem(data: { name: string; description?: string }): Promise<void> {
-  if (!data?.name) {
+export async function addFunctionalCategoriesItem(data: { label: string; description?: string }): Promise<void> {
+  if (!data?.label) {
     throw new Error("Functional Categories name is required");
   }
 
