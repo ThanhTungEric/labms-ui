@@ -17,7 +17,7 @@ import LabSecurity from '../../pages/process/labSecurity/labSecurity';
 import LabInventoryPlanning from '../../pages/inventory/labInventoryPlanning/labInventoryPlanning';
 import InventoryResultEvaluation from '../../pages/inventory/inventoryResultEvaluation/inventoryResultEvaluation';
 import ReportList from '../../pages/report/reportList/reportList';
-import LabInformation from '../../pages/Information/labInformation/labInformation';
+import LabManagement from '../../pages/site/lab';
 import BuildingTable from '../../pages/site/building';
 import DashboardContent from './DashboardContent';
 
@@ -46,7 +46,7 @@ const DashboardRoutes: React.FC<DashboardRoutesProps> = ({ onLogout }) => {
             <Route path="/" element={<DashboardContent />} />
 
             <Route path="site/building" element={<BuildingTable />} />
-            <Route path="site/lab" element={<LabInformation />} />
+            <Route path="site/lab" element={<LabManagement />} />
 
             <Route path="equipment/equipInfo" element={<EquipInfo />} />
             <Route path="equipment/labAssets" element={<LabAssets />} />
