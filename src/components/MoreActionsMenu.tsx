@@ -10,6 +10,7 @@ export interface MoreActionItem {
 interface MoreActionsMenuProps {
   items: MoreActionItem[];
   onActionClick: (key: string) => void;
+  label?: string;
 }
 
 const StyledMoreActionsButton = styled(Button)(({ theme }) => ({

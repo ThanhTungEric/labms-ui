@@ -1,27 +1,14 @@
-// src/pages/LabManagement.tsx
 import React, { useState } from 'react';
-import {
-    Box,
-    CircularProgress,
-    IconButton,
-} from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
+import { Box, CircularProgress } from '@mui/material';
 
-// Import the new component
 import LabsTable from '../../../module/site/lab/LabsTable';
-
-import MoreActionsMenu, { MoreActionItem } from '../../../components/MoreActionsMenu';
-import ExportReportButton from '../../../components/ExportReportButton';
-import SaveButton from '../../../components/SaveButton';
-import CancelButton from '../../../components/CancelButton';
-import ResetButton from '../../../components/ResetButton';
+import LabActions from '../../../module/site/lab/LabActions';
+import DynamicModal from '../../../components/DynamicModal';
+import LabForm from '../../../module/site/lab/LabForm';
 
 import { useLabs } from '../../../services/hooks';
+import { MoreActionItem } from '../../../components/MoreActionsMenu';
 
-
-// ---- Types (match your API shapes) ----
 interface LabStatusDto {
     id: number;
     name: string;
@@ -40,32 +27,27 @@ const LabManagement: React.FC = () => {
     const rows = (labs as unknown as LabRow[]) ?? [];
 
     const [selectedItemId, setSelectedItemId] = useState<number | null>(null);
-    const [isEditing, setIsEditing] = useState<boolean>(false);
-    const [isAdding, setIsAdding] = useState<boolean>(false);
+    const [modalOpen, setModalOpen] = useState<boolean>(false);
     const [canAdd] = useState<boolean>(true);
 
-    const moreActionItems: MoreActionItem[] = [
-    ];
+    const moreActionItems: MoreActionItem[] = [];
 
     const handleMoreActionClick = (key: string) => {
         console.log('More action clicked:', key);
-        // Handle actions by key
     };
 
     const handleAdd = () => {
-        setIsAdding(true);
         setSelectedItemId(null);
+        setModalOpen(true);
     };
 
-    const handleEdit = (id?: number | null) => {
-        if (id == null) return;
-        setIsEditing(true);
-        setIsAdding(false);
-        setSelectedItemId(id);
+    const handleEdit = () => {
+        if (selectedItemId == null) return;
+        setModalOpen(true);
     };
 
-    const handleDelete = async (id?: number | null) => {
-        if (id == null) return;
+    const handleDelete = async () => {
+        if (selectedItemId == null) return;
         try {
             setSelectedItemId(null);
             reload();
@@ -74,26 +56,20 @@ const LabManagement: React.FC = () => {
         }
     };
 
-    const handleSave = () => {
-        // TODO: call create/update depending on isAdding / isEditing
-        console.log(isAdding ? 'Save (create)...' : 'Save (update)...');
-        setIsAdding(false);
-        setIsEditing(false);
+    const handleSave = (formData: any) => {
+        console.log(selectedItemId ? 'Save (update)...' : 'Save (create)...', formData);
+        setModalOpen(false);
+        setSelectedItemId(null);
         reload();
     };
 
     const handleCancel = () => {
-        setIsAdding(false);
-        setIsEditing(false);
+        setModalOpen(false);
         setSelectedItemId(null);
     };
 
     const handleExportReport = () => {
         console.log('Exporting report...');
-    };
-
-    const handleResetFilters = () => {
-        console.log('Resetting filters...');
     };
 
     if (loading) {
@@ -112,54 +88,39 @@ const LabManagement: React.FC = () => {
         );
     }
 
+    const isEditing = selectedItemId != null;
+
     return (
         <Box>
-            {/* Actions Bar */}
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1.5, flexWrap: 'wrap' }}>
-                <MoreActionsMenu items={moreActionItems} onActionClick={handleMoreActionClick} />
+            <LabActions
+                selectedItemId={selectedItemId}
+                canAdd={canAdd}
+                moreActionItems={moreActionItems}
+                onAdd={handleAdd}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                onExportReport={handleExportReport}
+                onMoreActionClick={handleMoreActionClick}
+            />
 
-                {!isEditing && !isAdding && (
-                    <IconButton size="small" onClick={handleAdd} disabled={!canAdd}>
-                        <AddIcon />
-                    </IconButton>
-                )}
-                {!isEditing && !isAdding && (
-                    <IconButton
-                        size="small"
-                        onClick={() => handleEdit(selectedItemId)}
-                        disabled={selectedItemId == null}
-                    >
-                        <EditIcon />
-                    </IconButton>
-                )}
-                {!isEditing && !isAdding && (
-                    <IconButton
-                        size="small"
-                        color="error"
-                        onClick={() => handleDelete(selectedItemId)}
-                        disabled={selectedItemId == null}
-                    >
-                        <DeleteIcon />
-                    </IconButton>
-                )}
-
-                {(isEditing || isAdding) && (
-                    <>
-                        <SaveButton variant="contained" size="small" onClick={handleSave} />
-                        <CancelButton variant="outlined" size="small" onClick={handleCancel} />
-                    </>
-                )}
-
-                <ExportReportButton onClick={handleExportReport} />
-                <ResetButton onClick={handleResetFilters} />
-            </Box>
-
-            {/* Table */}
             <LabsTable
                 rows={rows}
                 selectedItemId={selectedItemId}
                 setSelectedItemId={setSelectedItemId}
             />
+
+            <DynamicModal
+                open={modalOpen}
+                onClose={handleCancel}
+                title={isEditing ? 'Edit lab' : 'Add new lab'}
+            >
+                <LabForm
+                    isEditing={isEditing}
+                    editingId={selectedItemId ?? undefined}
+                    onSave={handleSave}
+                    onCancel={handleCancel}
+                />
+            </DynamicModal>
         </Box>
     );
 };
