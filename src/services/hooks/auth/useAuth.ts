@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { login, refreshAccessToken, logout } from '../../api/auth/auth';
 import { LoginRequest } from '../../types/auth.type';
 import api from '../../config/axios';
+import { getFingerprint } from '../fingerprint/fingerprint';
 
 function getStoredCsrfToken(): string | null {
   return localStorage.getItem('csrfToken');
@@ -17,7 +18,11 @@ export function useAuth() {
     setLoading(true);
     setError(null);
     try {
-      const result = await login(credentials);
+      const fingerprint = getFingerprint();
+
+      const loginPayload = { ...credentials, fingerprint };
+
+      const result = await login(loginPayload);
       setCsrfToken(result.csrfToken);
 
       localStorage.setItem('csrfToken', result.csrfToken);

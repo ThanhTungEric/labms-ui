@@ -10,9 +10,7 @@ import './App.css';
 const App: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [authChecked, setAuthChecked] = useState<boolean>(false);
-
   const { refreshSession, logoutUser } = useAuth();
-
   useEffect(() => {
     (async () => {
       try {

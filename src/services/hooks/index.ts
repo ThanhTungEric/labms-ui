@@ -10,3 +10,7 @@ export * from './room/useRoomMutations';
 export * from './building/useBuildingMutations';
 export * from './floor/useFloorMutations';
 export * from './floor/useFloor';
+export * from './lab/useLabMutations';
+export * from './lab/useLabStatuses';
+export * from './lab/useLabs';
+export * from './fingerprint/fingerprint';

@@ -95,6 +95,38 @@ const demoTheme = createTheme({
   colorSchemes: { light: true, dark: true },
   cssVariables: { colorSchemeSelector: 'class' },
   breakpoints: { values: { xs: 0, sm: 600, md: 600, lg: 1200, xl: 1536 } },
+  components: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        '& ::-webkit-scrollbar': {
+          width: '6px',
+          height: '6px',
+          backgroundColor: 'transparent',
+        },
+        '& ::-webkit-scrollbar-thumb': {
+          backgroundColor: 'rgba(0,0,0,.1)',
+          borderRadius: '10px',
+        },
+        '& ::-webkit-scrollbar-thumb:hover': {
+          backgroundColor: 'rgba(0,0,0,.3)',
+        },
+        '.MuiDrawer-paper': {
+          '&::-webkit-scrollbar': {
+            width: '6px',
+            height: '6px',
+            backgroundColor: 'transparent',
+          },
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: 'rgba(0,0,0,.1)',
+            borderRadius: '10px',
+          },
+          '&::-webkit-scrollbar-thumb:hover': {
+            backgroundColor: 'rgba(0,0,0,.3)',
+          },
+        },
+      },
+    },
+  },
 });
 
 interface DashboardLayoutBasicProps {
