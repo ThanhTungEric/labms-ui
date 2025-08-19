@@ -6,8 +6,27 @@ import {
     UpdateRoomDto,
 } from '../../types/room.type';
 
-export async function getAllRooms(): Promise<RoomsListResponse> {
-    const res = await api.get<RoomsListResponse>('/rooms');
+export type RoomsSort = { field: string; direction: 'asc' | 'desc' };
+
+export async function getAllRooms(params?: {
+    skip?: number;
+    take?: number;
+    search?: string;
+    sorts?: RoomsSort[] | RoomsSort;
+}): Promise<RoomsListResponse> {
+    const qs = new URLSearchParams();
+
+    if (typeof params?.skip === 'number') qs.set('skip', String(params.skip));
+    if (typeof params?.take === 'number') qs.set('take', String(params.take));
+    if (params?.search) qs.set('search', params.search);
+
+    if (params?.sorts) {
+        const arr = Array.isArray(params.sorts) ? params.sorts : [params.sorts];
+        qs.set('sorts', JSON.stringify(arr));
+    }
+
+    const url = `/rooms${qs.toString() ? `?${qs}` : ''}`;
+    const res = await api.get<RoomsListResponse>(url);
     return res.data;
 }
 

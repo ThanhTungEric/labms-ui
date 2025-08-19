@@ -266,7 +266,7 @@ export default function BasicTable() {
       )}
 
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>{isEditing ? 'Edit Lab' : 'Add New Lab'}</DialogTitle>
+        <DialogTitle>{isEditing ? 'Edit lab' : 'Add new lab'}</DialogTitle>
         <DialogContent>
           {['labcode', 'labname', 'faculty', 'location', 'area', 'supervisor', 'state'].map((field) => (
             <TextField
