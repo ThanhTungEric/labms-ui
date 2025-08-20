@@ -16,7 +16,7 @@ interface LabFormProps {
         layout: string | null;
         condition: string[] | null;
         status: string;
-        room: number | null; // id phòng được chọn
+        room: number | null;
     };
     isEditing: boolean;
     editingId?: number;
@@ -33,8 +33,7 @@ const ConditionInputBox = styled(Box)({
     display: 'flex',
     flexDirection: 'column',
     gap: 8,
-    borderRadius: 4,
-    padding: 8,
+    padding: 5,
     minHeight: 40,
     '&:hover': { borderColor: '#000' },
 });
@@ -53,7 +52,6 @@ const emptyForm = {
     room: null as number | null,
 };
 
-// ==== Helpers ================================================================
 function getFloorCode(floor?: { code?: string; level?: string }) {
     return floor?.code ?? floor?.level ?? 'Unknown floor';
 }
@@ -63,34 +61,39 @@ function formatRoomLabel(r: any) {
     const room = r?.name ?? `Room #${r?.id ?? ''}`;
     return `${building} - ${floor} - ${room}`;
 }
-// ============================================================================
 
 const LabForm: React.FC<LabFormProps> = ({ initialData, isEditing, editingId, onSave, onCancel }) => {
-    // fetch lab detail khi edit
     const { labs, loading: labLoading, error: labError } = useLabs(isEditing && editingId ? editingId : undefined);
-    // fetch toàn bộ rooms
     const { rooms, loading: roomsLoading, error: roomsError } = useRooms();
 
-    // Prefill từ lab detail (API bạn trả rooms là mảng)
     const fetchedDetail = useMemo(() => {
         if (!isEditing || !editingId || !labs || labs.length === 0) return undefined;
         const d: any = labs[0];
+
+        let statusValue = 'ACTIVE';
+        if (d?.status) {
+            if (d.status.name) statusValue = d.status.name.toString().toUpperCase();
+            else if (d.status.id === 1) statusValue = 'ACTIVE';
+            else if (d.status.id === 2) statusValue = 'INACTIVE';
+        }
+
         return {
             name: d?.name ?? '',
             area: d?.area ?? null,
             layout: d?.layout ?? '',
             condition: d?.condition ?? [],
-            status: (d?.status?.name ?? 'ACTIVE').toString().toUpperCase(),
-            room: Array.isArray(d?.rooms) && d.rooms.length > 0 ? d.rooms[0]?.id ?? null : null,
+            status: statusValue,
+            room: d?.roomId ?? (Array.isArray(d?.rooms) && d.rooms.length > 0 ? d.rooms[0]?.id ?? null : null),
         };
     }, [isEditing, editingId, labs]);
 
-    // Map RoomListItem[] -> items cho StyledSearchSelect
+
+
     const roomItems = useMemo(
         () =>
             (rooms ?? []).map((r: any) => ({
                 key: r.id,
-                label: formatRoomLabel(r), // "building code - floor code/level - room name"
+                label: formatRoomLabel(r),
             })),
         [rooms]
     );
@@ -98,7 +101,6 @@ const LabForm: React.FC<LabFormProps> = ({ initialData, isEditing, editingId, on
     const [formData, setFormData] = useState(() => initialData ?? emptyForm);
     const [newCondition, setNewCondition] = useState('');
 
-    // Prefill khi có dữ liệu (edit/create)
     useEffect(() => {
         if (isEditing && fetchedDetail) setFormData(fetchedDetail);
         if (!isEditing && initialData) setFormData(initialData);
@@ -130,17 +132,20 @@ const LabForm: React.FC<LabFormProps> = ({ initialData, isEditing, editingId, on
         setFormData((prev) => ({ ...prev, status: lastSelectedKey }));
     };
 
-    const handleRoomSelect = (key: number | null) => {
-        setFormData((prev) => ({ ...prev, room: key }));
+    const handleRoomSelect = (key: number | string | null) => {
+        const value = key === null || key === '' ? null : Number(key);
+        setFormData((prev) => ({ ...prev, room: value }));
     };
 
+
     const handleSubmit = () => {
-        // Nếu API update/create cần rooms là mảng { id }, map tại đây:
+        const statusId = formData.status === 'ACTIVE' ? 1 : 2;
         const payload = {
             ...formData,
             rooms: formData.room ? [{ id: formData.room }] : [],
-            status: { name: formData.status }, // nếu backend cần object
+            statusId: statusId,
         };
+
         onSave(payload);
     };
 
@@ -162,7 +167,6 @@ const LabForm: React.FC<LabFormProps> = ({ initialData, isEditing, editingId, on
     return (
         <Box sx={{ p: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
             <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap: 2 }}>
-                {/* Left column */}
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, flex: 1, minWidth: '45%' }}>
                     <StyledTextBox
                         label="Lab Name"
@@ -184,18 +188,25 @@ const LabForm: React.FC<LabFormProps> = ({ initialData, isEditing, editingId, on
                     />
                 </Box>
 
-                {/* Right column */}
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, flex: 1, minWidth: '45%' }}>
                     <Box>
                         <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 700, fontSize: 14, mb: 1 }}>
                             Condition:
                         </Typography>
                         <ConditionInputBox>
-                            <ConditionChipContainer>
+                            <ConditionChipContainer
+                                style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}
+                            >
                                 {formData.condition?.map((condition) => (
-                                    <Chip key={condition} label={condition} onDelete={() => handleDeleteCondition(condition)} size="small" />
+                                    <Chip
+                                        key={condition}
+                                        label={condition}
+                                        onDelete={() => handleDeleteCondition(condition)}
+                                        size="small"
+                                    />
                                 ))}
                             </ConditionChipContainer>
+
                             <TextField
                                 value={newCondition}
                                 onChange={(e) => setNewCondition(e.target.value)}
