@@ -6,7 +6,7 @@ export function useAddPrograms() {
   const [loadingAddPrograms, setLoading] = useState(false);
   const [errorAddPrograms, setError] = useState<Error | null>(null);
 
-  const addPrograms = async (data: { code: string; description?: string ; facultyId: number}) => {
+  const addPrograms = async (data: { code: string; name?: string ; facultyId: number}) => {
     setLoading(true);
     setError(null);
 

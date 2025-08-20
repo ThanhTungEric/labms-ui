@@ -14,8 +14,12 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import {actionBar} from '../services/types/actionBar.type';
+import { useNotification } from '../services/hooks/notification/notification';
 
-export default function ActionBar({ onDelete, onImport, onExport, selectedIds, onAdd }: actionBar) {
+export default function ActionBar({ type, onDelete, onImport, onExport, selectedIds, onAdd }: actionBar) {
+  const hiddenAddTypes = ["equipment-statuses", "lab-positions", "something-else"];
+  const { notify, showSuccess, showError, showInfo, showWarning, close } = useNotification();
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file && typeof onImport === 'function') {
@@ -23,6 +27,8 @@ export default function ActionBar({ onDelete, onImport, onExport, selectedIds, o
     }
     e.target.value = ''; // reset input để chọn lại cùng file
   };
+
+ 
 
   return (
     <Box
@@ -37,11 +43,15 @@ export default function ActionBar({ onDelete, onImport, onExport, selectedIds, o
       mb={1}
     >
       <Box display="flex"  gap={1}>
-        <Tooltip title='Add'>
+        {!hiddenAddTypes.includes(type) && (
+          <Tooltip title="Add">
             <IconButton component="label" size="small" onClick={onAdd}>
-                <AddIcon />
+              <AddIcon />
             </IconButton>
-        </Tooltip>
+          </Tooltip>
+        )}
+
+        
         {/* <Tooltip title='View'>
             <IconButton component="label" size="small" color="primary">
                 <VisibilityIcon />
@@ -52,16 +62,18 @@ export default function ActionBar({ onDelete, onImport, onExport, selectedIds, o
                 <EditIcon />
             </IconButton>
         </Tooltip> */}
-        <Tooltip title='Delete'>
+        
+        {!hiddenAddTypes.includes(type) && (
+          <Tooltip title='Delete'>
             <IconButton component="label" size="small"  onClick={() => {
-              if (onDelete && selectedIds.length > 0) {
+              if (onDelete ) {
                 onDelete(selectedIds);
               }
             }}>
                 <DeleteIcon />
             </IconButton>
         </Tooltip>
-        
+        )}
 
         {/* Import CSV */}
         <Tooltip title="Import CSV">

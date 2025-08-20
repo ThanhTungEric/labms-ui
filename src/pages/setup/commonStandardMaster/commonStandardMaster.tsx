@@ -43,6 +43,7 @@ import { useAddAcademicTitle } from '../../../services/hooks/academicTitle/acade
 import { useAddEquipmentForms } from '../../../services/hooks/equipmentForms/equipmentFormsAdd';
 import { useAddFunctionalCategories } from '../../../services/hooks/functionalCategories/functionalCategoriesAdd';
 import { useAddFunctionalDomains } from '../../../services/hooks/functionalDomains/functionalDomainsAdd';
+import { useAddPrograms } from '../../../services/hooks/programsCSM/programsAdd';
 export default function CommonStandardMaster() {
   //--------------------------------------------------------------------------------------------------------- Khai báo 
 
@@ -90,6 +91,7 @@ export default function CommonStandardMaster() {
   const { addEquipmentForm, loadingAddEquipmentForm, errorAddEquipmentForm } = useAddEquipmentForms();
   const { addFunctionalCategories, loadingAddFunctionalCategories, errorAddFunctionalCategories } = useAddFunctionalCategories();
   const { addFunctionalDomains, loadingAddFunctionalDomains, errorAddFunctionalDomains } = useAddFunctionalDomains();
+  const { addPrograms, loadingAddPrograms, errorAddPrograms } = useAddPrograms();
   const { notify, showSuccess, showError, showInfo, showWarning, close } = useNotification();
  
 
@@ -170,6 +172,7 @@ export default function CommonStandardMaster() {
   const keys = items.length > 0
     ? Object.keys(items[0]).filter(k => k !== "faculty" && k !== "id")
     : [];
+
   const handleFilter = (filters: any) => {
     const keyword = filters.search?.trim();
 
@@ -211,40 +214,52 @@ export default function CommonStandardMaster() {
   };
 
   //--------------------------------------------------------------------------------------------------------- Xử lý sự kiện xác nhận xóa
+  const checkDelete = (ids: number[]) => {
+  if (!ids || ids.length === 0) {
+    showError("Please select the row to delete");
+    return;
+  }
+  setOpenConfirm(true);
+};
+
+
   const handleConfirmDelete = async () => {
+    if (selected ==="")
+    {
+      showError("Please select master-data type");
+    }
+   
+    
     const varTextSuccess = "Deleted successfully";
     if (selected === "forms" && selectedIds.length > 0) {
       await deleteEquipmentForms(selectedIds);
-      if(deletedEquipmentFormsIds.length >0)
-      {
+      
         
         setSearchParams({ _refresh: Date.now() });
         setSelectedIds([]);
         setOpenConfirm(false);
         showSuccess(varTextSuccess);
-      }
+      
       
     }
     if (selected === "academic-titles" && selectedIds.length > 0) {
       await deleteAcademicTitles(selectedIds);
-      if(deletedAcademicTitlesIds.length >0)
-      {
+      
         setSearchParams({ _refresh: Date.now() });
         setSelectedIds([]);
         setOpenConfirm(false);
         showSuccess(varTextSuccess);
-      }
+      
       
     }
     if (selected === "functional-categories" && selectedIds.length > 0) {
       await deleteFunctionalCategories(selectedIds);
-      if(deletedFunctionalCategoriesIds.length >0)
-      {
+      
         setSearchParams({ _refresh: Date.now() });
         setSelectedIds([]);
         setOpenConfirm(false);
         showSuccess(varTextSuccess);
-      }
+      
     }
     // if (selected === "equipment-statuses" && selectedIds.length > 0) {
     //   if(deletedEquipmentStatusesIds.length >0)
@@ -258,58 +273,53 @@ export default function CommonStandardMaster() {
     // }
     if (selected === "functional-domains" && selectedIds.length > 0) {
       await deleteFunctionalDomains(selectedIds);
-      if(deletedFunctionalDomainsIds.length >0)
-      {
+      
         
         setSearchParams({ _refresh: Date.now() });
         setSelectedIds([]);
         setOpenConfirm(false);
         showSuccess(varTextSuccess);
-      }
+      
     }
     if (selected === "lab-prositions" && selectedIds.length > 0) {
       await deleteLabPositions(selectedIds);
-      if(deletedLabPositionsIds.length >0)
-      {
+      
         
         setSearchParams({ _refresh: Date.now() });
         setSelectedIds([]);
         setOpenConfirm(false);
         showSuccess(varTextSuccess);
-      }
+      
     }
     if (selected === "programs" && selectedIds.length > 0) {
       await deletePrograms(selectedIds);
-      if(deletedProgramsIds.length >0)
-      {
+      
         
         setSearchParams({ _refresh: Date.now() });
         setSelectedIds([]);
         setOpenConfirm(false);
         showSuccess(varTextSuccess);
-      }
+      
     }
     if (selected === "faculty" && selectedIds.length > 0) {
       await deleteFaculties(selectedIds);
-      if(deletedFacultiesIds.length >0)
-      {
+      
         
         setSearchParams({ _refresh: Date.now() });
         setSelectedIds([]);
         setOpenConfirm(false);
         showSuccess(varTextSuccess);
-      }
+      
     }
     if (selected === "price-categories" && selectedIds.length > 0) {
       await deletePriceCategories(selectedIds);
-      if(deletedPriceCategoriesIds.length >0)
-      {
+      
         
         setSearchParams({ _refresh: Date.now() });
         setSelectedIds([]);
         setOpenConfirm(false);
         showSuccess(varTextSuccess);
-      }
+      
       
     }
     setOpenConfirm(false);
@@ -318,11 +328,18 @@ export default function CommonStandardMaster() {
 
   const handleAdd = async (data: any) => {
     const hasValue = Object.values(data).some(v => v !== null && v !== undefined && v !== "");
+    const varTextSuccess = "Save successfully";
+    if (selected ==="")
+    {
+      showError("Please select master-data type");
+    }
+    
     if (selected === "faculty" && hasValue === true) {
       await addFaculty(data);
       setSearchParams({ _refresh: Date.now() });
       setSelectedIds([]);
       setOpenConfirm(false);
+      showSuccess(varTextSuccess);
     }
     if (selected === "academic-titles" && hasValue === true) {
       await addAcademicTitle(data);
@@ -344,6 +361,12 @@ export default function CommonStandardMaster() {
     }
     if (selected === "functional-domains" && hasValue === true) {
       await addFunctionalDomains(data);
+      setSearchParams({ _refresh: Date.now() });
+      setSelectedIds([]);
+      setOpenConfirm(false);
+    }
+    if (selected === "programs" && hasValue === true) {
+      await addPrograms(data);
       setSearchParams({ _refresh: Date.now() });
       setSelectedIds([]);
       setOpenConfirm(false);
@@ -384,7 +407,7 @@ export default function CommonStandardMaster() {
           />
         )}
       />
-      {selectedItem.length > 0 ? (
+      {selected ? (
         <Box mt={2}>
           <FilterSection ref={filterRef} onSearch={handleFilter} />
           <TablePagination
@@ -400,8 +423,9 @@ export default function CommonStandardMaster() {
             rowsPerPageOptions={[5, 10, 25, 50]}
           />
           <ActionBar
+            type = {selected} 
             selectedIds={selectedIds}
-            onDelete={() => setOpenConfirm(true)}
+            onDelete={checkDelete}
             onAdd={() => setOpenAdd(true)}
             onImport={(file) => {
             }}
@@ -506,6 +530,8 @@ export default function CommonStandardMaster() {
         open={openAdd}
         onClose={() => setOpenAdd(false)}
         onSave={handleAdd}
+          faculty={faculties?.data || []}   // lấy mảng data, fallback []
+
       />
     </Box>
   );

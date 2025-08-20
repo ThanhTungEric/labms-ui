@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal, useState } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -12,17 +12,19 @@ import {
   Stack
 } from "@mui/material";
 import Grid from "@mui/material/Grid";
+import {  faculties, fucultyItems } from "../services/types/faculties.type";
 
 interface AddDialogProps {
   type: string;
   open: boolean;
   onClose: () => void;
   onSave: (data: any) => void;
+  faculty: fucultyItems[];  
 }
 
-export default function AddDialog({ type, open, onClose, onSave }: AddDialogProps) {
+export default function AddDialog({ type, open, onClose, onSave, faculty }: AddDialogProps) {
+  
   const [formData, setFormData] = useState<any>({});
-
   const handleChange = (field: string, value: any) => {
     setFormData((prev: any) => ({ ...prev, [field]: value }));
   };
@@ -195,8 +197,49 @@ export default function AddDialog({ type, open, onClose, onSave }: AddDialogProp
               </Stack>
             </>
           )}
-      </DialogContent>
+          {type === "programs" && (
+            <>
+              <Stack spacing={2}>
+                <TextField
+                  fullWidth
+                  size="small"
+                  variant="outlined"
+                  label="Functional Domains Label"
+                  value={formData.code || ""}
+                  onChange={(e) => handleChange("code", e.target.value)}
+                />
+             
+                <TextField
+                  fullWidth
+                  size="small"
+                  variant="outlined"
+                  label="Functional Domains Description"
+                  value={formData.name || ""}
+                  onChange={(e) => handleChange("name", e.target.value)}
+                />
+                 <TextField
+                  select
+                  fullWidth
+                  size="small"
+                  label="Select Faculty"
+                  value={formData.facultyId || ""}
+                  onChange={(e) => handleChange("facultyId", e.target.value)}
+                >
+                  {faculty && faculty.length > 0 ? (
+                    faculty.map((d) => (
+                      <MenuItem key={d.id} value={d.id}>
+                        {d.name}
+                      </MenuItem>
+                    ))
+                  ) : (
+                    <MenuItem disabled>No faculties</MenuItem>
+                  )}
+                </TextField>
 
+              </Stack>
+            </>
+          )}
+      </DialogContent>
       <DialogActions sx={{ p: 2 }}>
         <Button
           onClick={onClose}
