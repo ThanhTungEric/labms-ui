@@ -19,6 +19,7 @@ import InventoryResultEvaluation from '../../pages/inventory/inventoryResultEval
 import ReportList from '../../pages/report/reportList/reportList';
 import LabManagement from '../../pages/site/lab';
 import FloorManagement from '../../pages/site/floor';
+import RoomManagement from '../../pages/site/room';
 import BuildingTable from '../../pages/site/building';
 import DashboardContent from './DashboardContent';
 
@@ -48,6 +49,7 @@ const DashboardRoutes: React.FC<DashboardRoutesProps> = ({ onLogout }) => {
 
             <Route path="site/building" element={<BuildingTable />} />
             <Route path="site/floor" element={<FloorManagement />} />
+            <Route path="site/room" element={<RoomManagement />} />
             <Route path="site/lab" element={<LabManagement />} />
 
             <Route path="equipment/equipInfo" element={<EquipInfo />} />
