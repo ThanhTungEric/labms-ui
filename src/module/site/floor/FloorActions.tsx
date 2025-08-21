@@ -39,22 +39,11 @@ const FloorActions: React.FC<FloorActionsProps> = ({
     return (
         <Stack spacing={1.5} sx={{ mb: 2 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap' }}>
-                <MoreActionsMenu items={moreActionItems} onActionClick={onMoreActionClick} />
-
-                <IconButton size="small" onClick={onAdd} disabled={!canAdd}>
-                    <AddIcon />
-                </IconButton>
-                <IconButton size="small" onClick={onEdit} disabled={selectedItemId == null}>
-                    <EditIcon />
-                </IconButton>
-                <IconButton size="small" color="error" onClick={onDelete} disabled={selectedItemId == null}>
-                    <DeleteIcon />
-                </IconButton>
 
                 <ExportReportButton onClick={onExportReport} />
                 <TextField
                     size="small"
-                    placeholder="Search by lab code/name…"
+                    placeholder="Search by Floor Level / …"
                     value={searchValue}
                     onChange={(e) => onSearchChange(e.target.value)}
                     InputProps={{

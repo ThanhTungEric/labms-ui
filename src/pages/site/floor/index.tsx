@@ -1,4 +1,4 @@
-// src/pages/site/lab/LabManagement.tsx
+
 import React, { useState } from 'react';
 import { Box, CircularProgress, Paper } from '@mui/material';
 
