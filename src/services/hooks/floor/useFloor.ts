@@ -1,38 +1,50 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { getAllFloors, getFloorById } from '../../api/floor/floor';
-import { FloorListItem, FloorDetail } from '../../types/floor.type';
+import { FloorListItem, FloorDetail } from '../../types';
 
 type FloorAny = FloorListItem | FloorDetail;
 
-export function useFloors(id?: number) {
+
+
+type UseFloorsOpts = {
+    id: number;
+    level: string;
+    description: string;
+};
+
+export function useFloors(id?: number, initial?: UseFloorsOpts) {
     const [floors, setFloors] = useState<FloorAny[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<Error | null>(null);
-    const [version, setVersion] = useState(0); // để reload
+    //const [version, setVersion] = useState(0); // để reload
+    //const reload = () => setVersion((v) => v + 1);
 
-    const reload = () => setVersion((v) => v + 1);
+    const fetchFloors = useCallback(async () => {
+        setLoading(true);
+        setError(null);
+        try {
+            if (initial?.id) {
+                const data = await getFloorById(initial.id);
+                setFloors([data]);
+            } else {
+                const data = await getAllFloors();
+                setFloors(data);
+            }
+        } catch (err) {
+            setError(err as Error);
+        } finally {
+            setLoading(false);
+        }
+    }, [initial?.id]);
 
     useEffect(() => {
-        let active = true;
-        (async () => {
-            setLoading(true);
-            setError(null);
-            try {
-                if (id !== undefined && id !== null) {
-                    const data = await getFloorById(id);
-                    if (active) setFloors([data]);
-                } else {
-                    const data = await getAllFloors();
-                    if (active) setFloors(Array.isArray(data) ? data : []);
-                }
-            } catch (err) {
-                if (active) setError(err as Error);
-            } finally {
-                if (active) setLoading(false);
-            }
-        })();
-        return () => { active = false; };
-    }, [id, version]);
+        fetchFloors();
+    }, [fetchFloors]);
 
-    return { floors, loading, error, reload };
+    return {
+        floors,
+        loading,
+        error,
+        reload: fetchFloors,
+    };
 }
