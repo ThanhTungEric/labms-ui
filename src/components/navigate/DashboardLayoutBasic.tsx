@@ -38,10 +38,8 @@ const NAVIGATION: Navigation = [
     title: 'Equipment',
     icon: <DevicesOtherIcon />,
     children: [
-      { segment: 'equipInfo', title: 'Information', icon: <ChevronRightOutlinedIcon /> },
-      { segment: 'labAssets', title: 'Lab Assets', icon: <ChevronRightOutlinedIcon /> },
-      { segment: 'maintenanceAndStocking', title: 'Maintenance & Stocking', icon: <ChevronRightOutlinedIcon /> },
-      { segment: 'upgradeAndInvestment', title: 'Upgrade & Investment', icon: <ChevronRightOutlinedIcon /> },
+      { segment: 'master-equipment', title: 'Master equipment', icon: <ChevronRightOutlinedIcon /> },
+      { segment: 'equipment-item', title: 'Equipment item', icon: <ChevronRightOutlinedIcon /> },
     ],
   },
   {

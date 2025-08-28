@@ -4,10 +4,6 @@ import { Routes, Route, useNavigate } from 'react-router-dom';
 // Import tất cả các trang
 import FacilitiesMaster from '../../pages/setup/facilitiesmaster';
 import CommonStandardMaster from '../../pages/setup/commonStandardMaster/commonStandardMaster';
-import EquipInfo from '../../pages/equipment/equipInfo/equipInfo';
-import LabAssets from '../../pages/equipment/labAssets/labAssets';
-import MaintenanceAndStocking from '../../pages/equipment/maintenanceAndStocking/maintenanceAndStocking';
-import UpgradeAndInvestment from '../../pages/equipment/upgradeAndInvestment/upgradeAndInvestment';
 import LabBudget from '../../pages/financial/labBudget/labBudget';
 import LabIncomeExpense from '../../pages/financial/labIncomeExpense/labIncomeExpense';
 import LabResourceDemand from '../../pages/operation/labResourceDemand/labResourceDemand';
@@ -22,6 +18,8 @@ import FloorManagement from '../../pages/site/floor';
 import RoomManagement from '../../pages/site/room';
 import BuildingTable from '../../pages/site/building';
 import DashboardContent from './DashboardContent';
+
+import EquipmentManagement from '../../pages/equipment/master';
 
 interface LogoutProps {
     onLogout: () => void;
@@ -52,10 +50,7 @@ const DashboardRoutes: React.FC<DashboardRoutesProps> = ({ onLogout }) => {
             <Route path="site/room" element={<RoomManagement />} />
             <Route path="site/lab" element={<LabManagement />} />
 
-            <Route path="equipment/equipInfo" element={<EquipInfo />} />
-            <Route path="equipment/labAssets" element={<LabAssets />} />
-            <Route path="equipment/maintenanceAndStocking" element={<MaintenanceAndStocking />} />
-            <Route path="equipment/upgradeAndInvestment" element={<UpgradeAndInvestment />} />
+            <Route path="equipment/master-equipment" element={<EquipmentManagement />} />
 
             <Route path="financial/labBudget" element={<LabBudget />} />
             <Route path="financial/labIncomeExpense" element={<LabIncomeExpense />} />

@@ -16,8 +16,6 @@ export function useFloors(id?: number, initial?: UseFloorsOpts) {
     const [floors, setFloors] = useState<FloorAny[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<Error | null>(null);
-    //const [version, setVersion] = useState(0); // để reload
-    //const reload = () => setVersion((v) => v + 1);
 
     const fetchFloors = useCallback(async () => {
         setLoading(true);
