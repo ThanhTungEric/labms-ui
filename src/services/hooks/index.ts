@@ -15,3 +15,4 @@ export * from './lab/useLabStatuses';
 export * from './lab/useLabs';
 export * from './fingerprint/fingerprint';
 export * from './room/useRoom';
+export * from './equipment/useEquipment';

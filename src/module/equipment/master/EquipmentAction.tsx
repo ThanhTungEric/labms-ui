@@ -8,7 +8,7 @@ import MoreActionsMenu, { MoreActionItem } from '../../../components/MoreActions
 import ExportReportButton from '../../../components/ExportReportButton';
 import LabSearch from '../../../components/LabSearch';
 
-interface LabActionsProps {
+interface EquipmentActionsProps {
     selectedItemId: number | null;
     canAdd: boolean;
     moreActionItems: MoreActionItem[];
@@ -22,7 +22,7 @@ interface LabActionsProps {
     onSearchChange: (v: string) => void;
 }
 
-const LabActions: React.FC<LabActionsProps> = ({
+const EquipmentActions: React.FC<EquipmentActionsProps> = ({
     selectedItemId,
     canAdd,
     moreActionItems,
@@ -57,4 +57,4 @@ const LabActions: React.FC<LabActionsProps> = ({
     );
 };
 
-export default LabActions;
+export default EquipmentActions;

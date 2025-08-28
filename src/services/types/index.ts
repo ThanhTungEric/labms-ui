@@ -4,3 +4,4 @@ export * from './room.type';
 export * from './floor.type';
 export * from './lab.type';
 export * from './lab-status.types'
+export * from './equipment.type'
