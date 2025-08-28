@@ -5,62 +5,37 @@ import {
 } from '@mui/material';
 import NameWithIdChip from '../../../components/NameWithIdChip';
 
+import type { EquipmentListItem, EquipmentForm, EquipmentCategory, EquipmentDomain, Order } from '../../../services/types';
 
-interface CategoryOrDomain {
-    id: number;
-    label: string;
-    description: string;
-}
+import type { EquipmentQuery, EquipmentSort } from '../../../services/types';
 
-interface Form {
-    id: number;
-    name: string;
-    description: string;
-}
-
-export interface EquipmentRow {
-    id: number;
-    code: string;
-    name: string;
-    manufacturer: string;
-    photo: string;
-    manual: string;
-    price: number;
-    priceCategory: string;
-    modelCode: string;
-    components: string[];
-    specifications: string[];
-    form: Form;
-    categories: CategoryOrDomain[];
-    domains: CategoryOrDomain[];
-}
-
-type Order = 'asc' | 'desc';
+export type EquipmentRow = EquipmentListItem;
 
 interface EquipmentTableProps {
     rows: EquipmentRow[];
     selectedItemId: number | null;
     setSelectedItemId: (id: number | null) => void;
-
     order: Order;
     orderBy: keyof Pick<EquipmentRow, 'id' | 'code' | 'name' | 'manufacturer' | 'price' | 'modelCode'>;
     onRequestSort: (field: EquipmentTableProps['orderBy']) => void;
-
     page: number;
     pageSize: number;
     total: number;
     onPageChange: (page: number) => void;
     onPageSizeChange: (size: number) => void;
+
+    columnsVisible: Record<keyof Pick<EquipmentRow, 'id' | 'code' | 'name' | 'manufacturer' | 'price' | 'modelCode' | 'form' | 'categories' | 'domains'>, boolean>;
 }
 
 
-const formatLabels = (items?: CategoryOrDomain[] | null): string =>
+const formatLabels = (items?: EquipmentCategory[] | EquipmentDomain[] | null): string =>
     items && items.length > 0 ? items.map(item => item.label).join(', ') : '-';
 
 const EquipmentTable: React.FC<EquipmentTableProps> = ({
     rows, selectedItemId, setSelectedItemId,
     order, orderBy, onRequestSort,
     page, pageSize, total, onPageChange, onPageSizeChange,
+    columnsVisible,
 }) => {
     const createSortHandler = (field: EquipmentTableProps['orderBy']) => () => onRequestSort(field);
 
@@ -72,54 +47,64 @@ const EquipmentTable: React.FC<EquipmentTableProps> = ({
                 <Table sx={{ minWidth: 900 }} aria-label="equipment table" size="small">
                     <TableHead>
                         <TableRow>
-                            <TableCell sx={{ fontWeight: 'bold' }}>
-                                <TableSortLabel
-                                    active={orderBy === 'id'}
-                                    direction={orderBy === 'id' ? order : 'asc'}
-                                    onClick={createSortHandler('id')}
-                                >
-                                    ID
-                                </TableSortLabel>
-                            </TableCell>
-                            <TableCell sx={{ fontWeight: 'bold' }}>
-                                <TableSortLabel
-                                    active={orderBy === 'code'}
-                                    direction={orderBy === 'code' ? order : 'asc'}
-                                    onClick={createSortHandler('code')}
-                                >
-                                    Code
-                                </TableSortLabel>
-                            </TableCell>
-                            <TableCell sx={{ fontWeight: 'bold' }}>
-                                <TableSortLabel
-                                    active={orderBy === 'name'}
-                                    direction={orderBy === 'name' ? order : 'asc'}
-                                    onClick={createSortHandler('name')}
-                                >
-                                    Name
-                                </TableSortLabel>
-                            </TableCell>
-                            <TableCell sx={{ fontWeight: 'bold' }}>
-                                <TableSortLabel
-                                    active={orderBy === 'manufacturer'}
-                                    direction={orderBy === 'manufacturer' ? order : 'asc'}
-                                    onClick={createSortHandler('manufacturer')}
-                                >
-                                    Manufacturer
-                                </TableSortLabel>
-                            </TableCell>
-                            <TableCell sx={{ fontWeight: 'bold' }}>Form</TableCell>
-                            <TableCell sx={{ fontWeight: 'bold' }}>Categories</TableCell>
-                            <TableCell sx={{ fontWeight: 'bold' }}>Domains</TableCell>
-                            <TableCell align="right" sx={{ fontWeight: 'bold' }}>
-                                <TableSortLabel
-                                    active={orderBy === 'price'}
-                                    direction={orderBy === 'price' ? order : 'asc'}
-                                    onClick={createSortHandler('price')}
-                                >
-                                    Price
-                                </TableSortLabel>
-                            </TableCell>
+                            {columnsVisible.id && (
+                                <TableCell sx={{ fontWeight: 'bold' }}>
+                                    <TableSortLabel
+                                        active={orderBy === 'id'}
+                                        direction={orderBy === 'id' ? order : 'asc'}
+                                        onClick={createSortHandler('id')}
+                                    >
+                                        ID
+                                    </TableSortLabel>
+                                </TableCell>
+                            )}
+                            {columnsVisible.code && (
+                                <TableCell sx={{ fontWeight: 'bold' }}>
+                                    <TableSortLabel
+                                        active={orderBy === 'code'}
+                                        direction={orderBy === 'code' ? order : 'asc'}
+                                        onClick={createSortHandler('code')}
+                                    >
+                                        Code
+                                    </TableSortLabel>
+                                </TableCell>
+                            )}
+                            {columnsVisible.name && (
+                                <TableCell sx={{ fontWeight: 'bold' }}>
+                                    <TableSortLabel
+                                        active={orderBy === 'name'}
+                                        direction={orderBy === 'name' ? order : 'asc'}
+                                        onClick={createSortHandler('name')}
+                                    >
+                                        Name
+                                    </TableSortLabel>
+                                </TableCell>
+                            )}
+                            {columnsVisible.manufacturer && (
+                                <TableCell sx={{ fontWeight: 'bold' }}>
+                                    <TableSortLabel
+                                        active={orderBy === 'manufacturer'}
+                                        direction={orderBy === 'manufacturer' ? order : 'asc'}
+                                        onClick={createSortHandler('manufacturer')}
+                                    >
+                                        Manufacturer
+                                    </TableSortLabel>
+                                </TableCell>
+                            )}
+                            {columnsVisible.form && <TableCell sx={{ fontWeight: 'bold' }}>Form</TableCell>}
+                            {columnsVisible.categories && <TableCell sx={{ fontWeight: 'bold' }}>Categories</TableCell>}
+                            {columnsVisible.domains && <TableCell sx={{ fontWeight: 'bold' }}>Domains</TableCell>}
+                            {columnsVisible.price && (
+                                <TableCell align="right" sx={{ fontWeight: 'bold' }}>
+                                    <TableSortLabel
+                                        active={orderBy === 'price'}
+                                        direction={orderBy === 'price' ? order : 'asc'}
+                                        onClick={createSortHandler('price')}
+                                    >
+                                        Price
+                                    </TableSortLabel>
+                                </TableCell>
+                            )}
                         </TableRow>
                     </TableHead>
 
@@ -132,16 +117,18 @@ const EquipmentTable: React.FC<EquipmentTableProps> = ({
                                 hover
                                 sx={{ cursor: 'pointer', height: '40px' }}
                             >
-                                <TableCell>
-                                    <NameWithIdChip id={row.id} />
-                                </TableCell>
-                                <TableCell>{row.code}</TableCell>
-                                <TableCell>{row.name}</TableCell>
-                                <TableCell>{row.manufacturer}</TableCell>
-                                <TableCell>{row.form?.name ?? '-'}</TableCell>
-                                <TableCell>{formatLabels(row.categories)}</TableCell>
-                                <TableCell>{formatLabels(row.domains)}</TableCell>
-                                <TableCell align="right">{row.price.toLocaleString()}</TableCell>
+                                {columnsVisible.id && (
+                                    <TableCell>
+                                        <NameWithIdChip id={row.id} />
+                                    </TableCell>
+                                )}
+                                {columnsVisible.code && <TableCell>{row.code}</TableCell>}
+                                {columnsVisible.name && <TableCell>{row.name}</TableCell>}
+                                {columnsVisible.manufacturer && <TableCell>{row.manufacturer}</TableCell>}
+                                {columnsVisible.form && <TableCell>{row.form?.name ?? '-'}</TableCell>}
+                                {columnsVisible.categories && <TableCell>{formatLabels(row.categories)}</TableCell>}
+                                {columnsVisible.domains && <TableCell>{formatLabels(row.domains)}</TableCell>}
+                                {columnsVisible.price && <TableCell align="right">{row.price.toLocaleString()}</TableCell>}
                             </TableRow>
                         ))}
                         {rows.length === 0 && (

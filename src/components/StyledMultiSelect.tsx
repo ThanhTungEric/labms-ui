@@ -2,14 +2,10 @@ import React, { useState } from 'react';
 import {
     Box,
     Button,
-    Chip,
     Menu,
     MenuItem,
     styled,
-    Select,
-    OutlinedInput,
-    FormControl,
-    InputLabel,
+    Typography,
 } from '@mui/material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
@@ -23,73 +19,127 @@ interface StyledMultiSelectProps {
     selectedKeys: string[];
     onSelectChange: (keys: string[]) => void;
     label: string;
+    placeholder?: string;
+    multiple?: boolean;
+    fullWidth?: boolean;
 }
 
 const StyledSelectButton = styled(Button)(({ theme }) => ({
-    height: '30px',
-    minWidth: '120px',
-    borderRadius: '5px',
+    height: 32,
+    minWidth: 160,
+    borderRadius: 4,
     backgroundColor: theme.palette.common.white,
-    color: theme.palette.text.secondary,
-    borderColor: theme.palette.grey[400],
-    padding: '8px 8px',
+    color: theme.palette.text.primary,
+    borderColor: theme.palette.divider,
+    padding: '4px 10px',
     justifyContent: 'space-between',
+    textTransform: 'none',
+    fontSize: 14,
     '&:hover': {
         backgroundColor: theme.palette.action.hover,
-        borderColor: theme.palette.grey[500],
+        borderColor: theme.palette.divider,
     },
 }));
 
-const StyledMultiSelect: React.FC<StyledMultiSelectProps> = ({ items, selectedKeys, onSelectChange, label }) => {
+const FieldContainer = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8,
+}));
+
+const LabelText = styled(Typography)(({ theme }) => ({
+    fontWeight: 700,
+    fontSize: 14,
+    color: theme.palette.text.secondary,
+    flexShrink: 0,
+}));
+
+const ButtonWrapper = styled(Box)(({ theme }) => ({
+    flex: 1,
+    display: 'flex',
+    alignItems: 'center',
+}));
+
+const StyledMultiSelect: React.FC<StyledMultiSelectProps> = ({
+    items,
+    selectedKeys,
+    onSelectChange,
+    label,
+    placeholder = '—',
+    multiple = true,
+    fullWidth = true,
+}) => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
 
     const handleOpenMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
     };
-
-    const handleCloseMenu = () => {
-        setAnchorEl(null);
-    };
+    const handleCloseMenu = () => setAnchorEl(null);
 
     const handleMenuItemClick = (key: string) => {
-        const newKeys = selectedKeys.includes(key)
-            ? selectedKeys.filter((k) => k !== key)
-            : [...selectedKeys, key];
-        onSelectChange(newKeys);
+        if (multiple) {
+            const newKeys = selectedKeys.includes(key)
+                ? selectedKeys.filter((k) => k !== key)
+                : [...selectedKeys, key];
+            onSelectChange(newKeys);
+
+        } else {
+            onSelectChange([key]);
+            handleCloseMenu();
+        }
     };
 
-    const displayLabel = selectedKeys
-        .map((key) => items.find((item) => item.key === key)?.label)
-        .filter(Boolean)
-        .join(', ');
+    const displayLabel =
+        selectedKeys
+            .map((key) => items.find((item) => item.key === key)?.label)
+            .filter(Boolean)
+            .join(', ') || placeholder;
 
     return (
-        <Box>
-            <StyledSelectButton
-                variant="outlined"
-                onClick={handleOpenMenu}
-                endIcon={<ArrowDropDownIcon />}
-            >
-                {displayLabel || label}
-            </StyledSelectButton>
+        <FieldContainer>
+            <LabelText variant="body2">{label}:</LabelText>
+            <ButtonWrapper sx={{ width: fullWidth ? '100%' : 'auto' }}>
+                <StyledSelectButton
+                    variant="outlined"
+                    onClick={handleOpenMenu}
+                    endIcon={<ArrowDropDownIcon />}
+                    fullWidth={fullWidth}
+                >
+                    <Box
+                        sx={{
+                            display: 'inline-block',
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                        }}
+                    >
+                        {displayLabel}
+                    </Box>
+                </StyledSelectButton>
+            </ButtonWrapper>
+
             <Menu
                 anchorEl={anchorEl}
                 open={open}
                 onClose={handleCloseMenu}
                 MenuListProps={{ 'aria-labelledby': 'multi-select-button' }}
             >
-                {items.map((item) => (
-                    <MenuItem
-                        key={item.key}
-                        onClick={() => handleMenuItemClick(item.key)}
-                        selected={selectedKeys.includes(item.key)}
-                    >
-                        {item.label}
-                    </MenuItem>
-                ))}
+                {items.map((item) => {
+                    const selected = selectedKeys.includes(item.key);
+                    return (
+                        <MenuItem
+                            key={item.key}
+                            onClick={() => handleMenuItemClick(item.key)}
+                            selected={selected}
+                            dense
+                        >
+                            {item.label}
+                        </MenuItem>
+                    );
+                })}
             </Menu>
-        </Box>
+        </FieldContainer>
     );
 };
 

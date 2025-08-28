@@ -1,36 +1,15 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Box, CircularProgress, Paper } from '@mui/material';
-import { useEquipment } from '../../../services/hooks';
 
 import EquipmentTable, { EquipmentRow } from '../../../module/equipment/master/EquipmentTable';
 import EquipmentActions from '../../../module/equipment/master/EquipmentAction';
 import ConfirmationModal from '../../../components/ConfirmationModal';
-import { MoreActionItem } from '../../../components/MoreActionsMenu';
-import { useDebounce } from '../../../utils';
+import ColumnSelectionDialog from '../../../module/equipment/master/ColumnSelectionDialog';
+import EquipmentDialog from '../../../module/equipment/master/EquipmentDialog';
 
-import type { EquipmentListItem, EquipmentSort } from '../../../services/types';
-
-
-type UiField = 'id' | 'code' | 'name' | 'manufacturer' | 'price' | 'modelCode';
-const mapSortFieldToApi = (f: UiField): EquipmentSort['field'] => {
-    switch (f) {
-        case 'id':
-            return 'id';
-        case 'code':
-            return 'code';
-        case 'name':
-            return 'name';
-        case 'manufacturer':
-            return 'manufacturer';
-        case 'price':
-            return 'price';
-        case 'modelCode':
-            return 'modelCode';
-        default:
-            return 'id';
-    }
-};
-
+import { useEquipmentData, useEquipmentMutations } from '@/services/hooks';
+import type { EquipmentListItem } from '@/services/types';
+import { MoreActionItem } from '@/services/types';
 
 const toRow = (item: EquipmentListItem): EquipmentRow => ({
     id: item.id,
@@ -49,81 +28,68 @@ const toRow = (item: EquipmentListItem): EquipmentRow => ({
     domains: item.domains,
 });
 
+const allColumns: (keyof EquipmentRow)[] = ['id', 'code', 'name', 'name', 'manufacturer', 'price', 'modelCode', 'form', 'categories', 'domains'];
+
 const EquipmentManagement: React.FC = () => {
-
-    const [page, setPage] = useState(1);
-    const [pageSize, setPageSize] = useState(10);
-    const [search, setSearch] = useState('');
-    const [sorts, setSorts] = useState<Array<{ field: UiField; dir: 'asc' | 'desc' }>>([]);
-
     const [selectedItemId, setSelectedItemId] = useState<number | null>(null);
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
-    const [canAdd] = useState<boolean>(true);
+    const [isColumnDialogVisible, setIsColumnDialogVisible] = useState(false);
+    const [isFormModalOpen, setIsFormModalOpen] = useState<boolean>(false); // Thêm state cho form dialog
 
-    const [searchInput, setSearchInput] = useState(search);
-    const debouncedSearch = useDebounce(searchInput, 400);
-    useEffect(() => {
-        setSearch(debouncedSearch);
-        setPage(1);
-    }, [debouncedSearch]);
-
-    const apiSorts: EquipmentSort[] = useMemo(() => {
-        if (!sorts.length) return [];
-        return sorts.map(s => ({ field: mapSortFieldToApi(s.field), dir: s.dir }));
-    }, [sorts]);
-
-    const {
-        equipment,
-        loading,
-        error,
-        total,
-        reload,
-    } = useEquipment(undefined, {
-        page,
-        pageSize,
-        search: search || undefined,
-        sorts: apiSorts,
+    const [columnsVisible, setColumnsVisible] = useState<Record<keyof EquipmentRow, boolean>>({
+        id: true, code: true, name: true, manufacturer: true, price: true, modelCode: true,
+        form: true, categories: true, domains: true, photo: false, manual: false,
+        priceCategory: false, components: false, specifications: false,
     });
 
-    const rows: EquipmentRow[] = useMemo(
-        () => (equipment as EquipmentListItem[]).map(toRow),
-        [equipment]
-    );
+    const {
+        data, loading, error, total, page, setPage, pageSize, setPageSize,
+        searchInput, setSearchInput, sorts, onRequestSort, reload,
+    } = useEquipmentData();
 
-    const handleMoreActionClick = (key: string) => console.log('More action clicked:', key);
-    const moreActionItems: MoreActionItem[] = [];
+    const { remove } = useEquipmentMutations(); // Lấy hàm remove từ hook
 
+    const rows: EquipmentRow[] = useMemo(() => (data || []).map(toRow), [data]);
+
+    const handleColumnToggle = (field: keyof EquipmentRow) => {
+        setColumnsVisible(prev => ({ ...prev, [field]: !prev[field] }));
+    };
+
+    const handleExportReport = () => console.log('Exporting equipment report...');
+
+    // Cập nhật hàm xử lý
     const handleAdd = () => {
         setSelectedItemId(null);
+        setIsFormModalOpen(true);
     };
+
     const handleEdit = () => {
         if (selectedItemId == null) return;
+        setIsFormModalOpen(true);
     };
+
     const handleDelete = () => {
         if (selectedItemId == null) return;
         setIsConfirmModalOpen(true);
     };
+
     const handleConfirmDelete = async () => {
         if (selectedItemId == null) return;
-        setIsConfirmModalOpen(false);
-        reload();
-    };
-    const handleExportReport = () => console.log('Exporting equipment report...');
-
-    const orderBy = (sorts?.[0]?.field as UiField) || 'id';
-    const order = (sorts?.[0]?.dir as 'asc' | 'desc') || 'asc';
-
-    const onRequestSort = (field: UiField) => {
-        if (sorts?.[0]?.field === field) {
-            const nextDir = sorts[0].dir === 'asc' ? 'desc' : 'asc';
-            setSorts([{ field, dir: nextDir }]);
-        } else {
-            setSorts([{ field, dir: 'asc' }]);
+        try {
+            await remove(selectedItemId);
+            setIsConfirmModalOpen(false);
+            reload();
+            setSelectedItemId(null);
+        } catch (error) {
+            console.error('Failed to delete equipment:', error);
         }
-        setPage(1);
     };
 
-    const isEditing = selectedItemId != null;
+    const orderBy = sorts?.[0]?.field || 'id';
+    const order = sorts?.[0]?.dir || 'asc';
+    const canAdd = true;
+    const moreActionItems: MoreActionItem[] = [];
+    const handleMoreActionClick = (key: string) => console.log('More action clicked:', key);
 
     return (
         <Box>
@@ -136,6 +102,7 @@ const EquipmentManagement: React.FC = () => {
                 onDelete={handleDelete}
                 onExportReport={handleExportReport}
                 onMoreActionClick={handleMoreActionClick}
+                onColumnClick={() => setIsColumnDialogVisible(true)}
                 searchValue={searchInput}
                 onSearchChange={setSearchInput}
             />
@@ -145,22 +112,21 @@ const EquipmentManagement: React.FC = () => {
                     <CircularProgress />
                 </Paper>
             ) : error ? (
-                <Box sx={{ color: 'error.main', mb: 2 }}>
-                    Failed to load data
-                </Box>
+                <Box sx={{ color: 'error.main', mb: 2 }}>Failed to load data</Box>
             ) : (
                 <EquipmentTable
                     rows={rows}
                     selectedItemId={selectedItemId}
                     setSelectedItemId={setSelectedItemId}
                     order={order}
-                    orderBy={orderBy}
-                    onRequestSort={onRequestSort}
+                    orderBy={orderBy as any}
+                    onRequestSort={onRequestSort as any}
                     page={page}
                     pageSize={pageSize}
                     total={total}
                     onPageChange={setPage}
                     onPageSizeChange={(n) => { setPageSize(n); setPage(1); }}
+                    columnsVisible={columnsVisible}
                 />
             )}
 
@@ -170,6 +136,25 @@ const EquipmentManagement: React.FC = () => {
                 onConfirm={handleConfirmDelete}
                 title="Confirm Deletion"
                 message="Are you sure you want to delete this equipment? This action cannot be undone."
+            />
+
+            <ColumnSelectionDialog
+                open={isColumnDialogVisible}
+                onClose={() => setIsColumnDialogVisible(false)}
+                allColumns={allColumns}
+                columnsVisible={columnsVisible as any}
+                onColumnToggle={handleColumnToggle as any}
+            />
+
+            <EquipmentDialog
+                open={isFormModalOpen}
+                onClose={() => setIsFormModalOpen(false)}
+                onSuccess={() => {
+                    setIsFormModalOpen(false);
+                    reload();
+                    setSelectedItemId(null);
+                }}
+                equipment={rows.find(row => row.id === selectedItemId)}
             />
         </Box>
     );

@@ -16,3 +16,8 @@ export * from './lab/useLabs';
 export * from './fingerprint/fingerprint';
 export * from './room/useRoom';
 export * from './equipment/useEquipment';
+export * from './equipment/useEquipmentData';
+export * from './equipment/equipmentMutations';
+export * from './functionalCategories/functionalCategories';
+export * from './functionalDomains/functionalDomains';
+export * from './equipment/useEquipmentForm';

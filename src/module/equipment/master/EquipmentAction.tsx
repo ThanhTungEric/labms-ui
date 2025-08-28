@@ -3,24 +3,9 @@ import { Box, IconButton, Stack } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { CustomButton, MoreActionsMenu, ExportReportButton, LabSearch } from '@/components';
 
-import MoreActionsMenu, { MoreActionItem } from '../../../components/MoreActionsMenu';
-import ExportReportButton from '../../../components/ExportReportButton';
-import LabSearch from '../../../components/LabSearch';
-
-interface EquipmentActionsProps {
-    selectedItemId: number | null;
-    canAdd: boolean;
-    moreActionItems: MoreActionItem[];
-    onAdd: () => void;
-    onEdit: () => void;
-    onDelete: () => void;
-    onExportReport: () => void;
-    onMoreActionClick: (key: string) => void;
-
-    searchValue: string;
-    onSearchChange: (v: string) => void;
-}
+import type { EquipmentActionsProps } from './types/EquipmentActions.types';
 
 const EquipmentActions: React.FC<EquipmentActionsProps> = ({
     selectedItemId,
@@ -31,12 +16,15 @@ const EquipmentActions: React.FC<EquipmentActionsProps> = ({
     onDelete,
     onExportReport,
     onMoreActionClick,
+    onColumnClick,
     searchValue,
     onSearchChange,
 }) => {
     return (
         <Stack spacing={1.5} sx={{ mb: 2 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap' }}>
+                <CustomButton onClick={onColumnClick}>Columns</CustomButton>
+
                 <MoreActionsMenu items={moreActionItems} onActionClick={onMoreActionClick} />
 
                 <IconButton size="small" onClick={onAdd} disabled={!canAdd}>

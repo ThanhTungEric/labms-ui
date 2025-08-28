@@ -25,7 +25,7 @@ import { useEquipmentForms } from '../../../services/hooks/equipmentForms/equipm
 import { useFaculties } from '../../../services/hooks/faculties/faculties';
 import { useLabPositions } from '../../../services/hooks/labPositions/labPositions';
 import { useFunctionalDomains } from '../../../services/hooks/functionalDomains/functionalDomains';
-import { useFunctionalCategories } from '../../../services/hooks/functionalCategories/functionalCategories ';
+import { useFunctionalCategories } from '../../../services/hooks/functionalCategories/functionalCategories';
 import LoadingInline from '../../../components/loadingPopup';
 import { useDeleteEquipmentForms } from '../../../services/hooks/equipmentForms/eqipmentFormsDelete';
 import DynamicDialog from '../../../components/dynamicDialog';
@@ -149,15 +149,15 @@ export default function CommonStandardMaster() {
   };
 
 
-const handleConfirmDelete = async () => {
-  if (selected === "forms" && selectedIds.length > 0) {
-    await deleteEquipmentForms(selectedIds);
-    setSearchParams({ _refresh: Date.now() });
-    setSelectedIds([]);
-    setOpenConfirm(false)
-  }
-  setOpenConfirm(false);
-};
+  const handleConfirmDelete = async () => {
+    if (selected === "forms" && selectedIds.length > 0) {
+      await deleteEquipmentForms(selectedIds);
+      setSearchParams({ _refresh: Date.now() });
+      setSelectedIds([]);
+      setOpenConfirm(false)
+    }
+    setOpenConfirm(false);
+  };
 
 
 
@@ -297,7 +297,7 @@ const handleConfirmDelete = async () => {
             </Table>
           </TableContainer>
 
-          
+
         </Box>
       ) : (
         <Box mt={2} textAlign="center" color="gray">
@@ -311,15 +311,15 @@ const handleConfirmDelete = async () => {
         onClose={close}
       />
       <DynamicDialog
-  open={openConfirm}
-  onClose={() => setOpenConfirm(false)}
-  onConfirm={handleConfirmDelete}
-  title="Delete Confirmation"
-  content="Are you sure you want to delete the selected items? This action cannot be undone."
-  confirmLabel="Delete"
-  cancelLabel="Cancel"
-  confirmColor="error"
-/>
+        open={openConfirm}
+        onClose={() => setOpenConfirm(false)}
+        onConfirm={handleConfirmDelete}
+        title="Delete Confirmation"
+        content="Are you sure you want to delete the selected items? This action cannot be undone."
+        confirmLabel="Delete"
+        cancelLabel="Cancel"
+        confirmColor="error"
+      />
 
 
     </Box>

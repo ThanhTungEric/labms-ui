@@ -7,15 +7,27 @@ interface ConfirmationModalProps {
     onConfirm: () => void;
     title: string;
     message: string;
+    confirmText?: string;
+    cancelText?: string;
 }
 
-const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ open, onClose, onConfirm, title, message }) => {
+const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
+    open,
+    onClose,
+    onConfirm,
+    title,
+    message,
+    confirmText = "Delete",
+    cancelText = "Cancel",
+}) => {
     return (
         <Dialog
             open={open}
             onClose={onClose}
             aria-labelledby="confirmation-dialog-title"
             aria-describedby="confirmation-dialog-description"
+            maxWidth="xs"
+            fullWidth
         >
             <DialogTitle id="confirmation-dialog-title">{title}</DialogTitle>
             <DialogContent>
@@ -23,12 +35,26 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ open, onClose, on
                     {message}
                 </DialogContentText>
             </DialogContent>
-            <DialogActions>
-                <Button onClick={onClose} color="primary" variant="outlined">
-                    Cancel
+            <DialogActions sx={{ padding: '16px 24px' }}>
+                <Button
+                    onClick={onClose}
+                    color="inherit"
+                    variant="outlined"
+                    sx={{
+                        '&:hover': {
+                            backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                        }
+                    }}
+                >
+                    {cancelText}
                 </Button>
-                <Button onClick={onConfirm} color="error" variant="contained">
-                    Delete
+                <Button
+                    onClick={onConfirm}
+                    color="error"
+                    variant="contained"
+                    autoFocus
+                >
+                    {confirmText}
                 </Button>
             </DialogActions>
         </Dialog>

@@ -75,8 +75,8 @@ export type CreateEquipmentDto = {
     formId: number;
     components: string[];
     specifications: string[];
-    categoryIds: number[];
-    domainIds: number[];
+    categoryIds?: number[];
+    domainIds?: number[];
 };
 
 export type UpdateEquipmentDto = {

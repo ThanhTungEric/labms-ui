@@ -5,13 +5,11 @@ export async function getEquipmentForms(params: Record<string, any> = {}): Promi
   const { _refresh, search, ...rest } = params;
   const apiParams: Record<string, any> = { ...rest };
   if (search && search.trim() !== '') apiParams.search = search;
-  try 
-  {
+  try {
     const response = await api.get<equipmentForms[]>('/forms', { params: apiParams });
     return response.data;
-  } 
-  catch (error: any) 
-  {
+  }
+  catch (error: any) {
     throw new error
   }
 }

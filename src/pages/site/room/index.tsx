@@ -1,29 +1,22 @@
-// src/pages/site/lab/LabManagement.tsx
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Box, CircularProgress, Paper } from '@mui/material';
 
-import LabsTable, { LabRow } from '../../../module/site/lab/LabsTable';
-import LabActions from '../../../module/site/lab/LabActions';
+import RoomsTable, { RoomRow } from '../../../module/site/room/RoomTable';
+import RoomActions from '../../../module/site/room/RoomActions';
 import DynamicModal from '../../../components/DynamicModal';
-import LabForm from '../../../module/site/lab/LabForm';
+import RoomForm from '../../../module/site/room/RoomForm';
 import ConfirmationModal from '../../../components/ConfirmationModal';
 
-import { useLabs } from '../../../services/hooks';
-import { useLabMutations } from '../../../services/hooks';
-import { MoreActionItem } from '@/components';
+import { useRooms } from '../../../services/hooks';
+import { useRoomMutations } from '../../../services/hooks';
+import { MoreActionItem } from '../../../components/MoreActionsMenu';
 import { useDebounce } from '../../../utils';
 
-const LabManagement: React.FC = () => {
-    const {
-        labs, loading, error, reload,
-        page, setPage, pageSize, setPageSize,
-        total,
-        search, setSearch,
-        sorts, setSorts,
-    } = useLabs();
+const RoomManagement: React.FC = () => {
+    const { rooms, loading, error, reload } = useRooms();
+    const { create, update, remove, busy, error: mutationError } = useRoomMutations();
 
-    const { create, update, remove, busy, error: mutationError } = useLabMutations();
-    const rows = (labs as unknown as LabRow[]) ?? [];
+    const rows = (rooms as unknown as RoomRow[]) ?? [];
 
     const [selectedItemId, setSelectedItemId] = useState<number | null>(null);
     const [modalOpen, setModalOpen] = useState<boolean>(false);
@@ -55,10 +48,6 @@ const LabManagement: React.FC = () => {
         payload.statusId = payload.status === 'ACTIVE' ? 1 : 2;
         delete payload.status;
 
-        if (payload.room != null) payload.roomId = payload.room;
-        delete payload.room;
-        delete payload.rooms;
-
         try {
             if (selectedItemId) await update(selectedItemId, payload);
             else await create(payload);
@@ -67,40 +56,27 @@ const LabManagement: React.FC = () => {
             setSelectedItemId(null);
             reload();
         } catch (e) {
-            console.error('Failed to save lab:', e);
+            console.error('Failed to save room:', e);
         }
     };
 
     const handleCancel = () => { setModalOpen(false); setSelectedItemId(null); };
     const handleExportReport = () => console.log('Exporting report...');
 
-    type Field = 'id' | 'name' | 'area' | 'layout' | 'condition';
-    const orderBy = (sorts?.[0]?.field as Field) || 'id';
-    const order = (sorts?.[0]?.dir as 'asc' | 'desc') || 'asc';
+    // Sorting (placeholder, you can wire real sort later)
+    const orderBy: 'id' = 'id';
+    const order: 'asc' | 'desc' = 'asc';
+    const onRequestSort = () => { /* not implemented yet */ };
 
-    const onRequestSort = (field: Field) => {
-        if (sorts?.[0]?.field === field) {
-            const nextDir = sorts[0].dir === 'asc' ? 'desc' : 'asc';
-            setSorts([{ field, dir: nextDir }]);
-        } else {
-            setSorts([{ field, dir: 'asc' }]);
-        }
-        setPage(1);
-    };
-
-    const [searchInput, setSearchInput] = useState(search);
+    // Search
+    const [searchInput, setSearchInput] = useState("");
     const debouncedSearch = useDebounce(searchInput, 400);
-
-    useEffect(() => {
-        setSearch(debouncedSearch);
-        setPage(1);
-    }, [debouncedSearch, setSearch, setPage]);
 
     const isEditing = selectedItemId != null;
 
     return (
         <Box>
-            <LabActions
+            <RoomActions
                 selectedItemId={selectedItemId}
                 canAdd={canAdd}
                 moreActionItems={moreActionItems}
@@ -122,23 +98,23 @@ const LabManagement: React.FC = () => {
                     Failed to load data: {error?.message || mutationError?.message}
                 </Box>
             ) : (
-                <LabsTable
+                <RoomsTable
                     rows={rows}
                     selectedItemId={selectedItemId}
                     setSelectedItemId={setSelectedItemId}
                     order={order}
                     orderBy={orderBy}
                     onRequestSort={onRequestSort}
-                    page={page}
-                    pageSize={pageSize}
-                    total={total}
-                    onPageChange={setPage}
-                    onPageSizeChange={(n) => { setPageSize(n); setPage(1); }}
+                    page={1} // fixed for now
+                    pageSize={rows.length} // no paging, show all
+                    total={rows.length}
+                    onPageChange={() => { }}
+                    onPageSizeChange={() => { }}
                 />
             )}
 
-            <DynamicModal open={modalOpen} onClose={handleCancel} title={isEditing ? 'Edit lab' : 'Add new lab'}>
-                <LabForm
+            <DynamicModal open={modalOpen} onClose={handleCancel} title={isEditing ? 'Edit room' : 'Add new room'}>
+                <RoomForm
                     isEditing={isEditing}
                     editingId={selectedItemId ?? undefined}
                     onSave={handleSave}
@@ -151,10 +127,10 @@ const LabManagement: React.FC = () => {
                 onClose={() => setIsConfirmModalOpen(false)}
                 onConfirm={handleConfirmDelete}
                 title="Confirm Deletion"
-                message="Are you sure you want to delete this lab? This action cannot be undone."
+                message="Are you sure you want to delete this room? This action cannot be undone."
             />
         </Box>
     );
 };
 
-export default LabManagement;
+export default RoomManagement;

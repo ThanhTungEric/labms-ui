@@ -12,6 +12,7 @@ const StyledExportReportButton = styled(Button)(({ theme }) => ({
   borderRadius: '8px',
   borderColor: theme.palette.grey[400],
   color: theme.palette.text.secondary,
+  textTransform: 'none',
   '&:hover': {
     borderColor: theme.palette.grey[500],
     backgroundColor: theme.palette.action.hover,

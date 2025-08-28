@@ -1,17 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Menu, MenuItem, styled } from '@mui/material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-
-export interface MoreActionItem {
-  key: string;
-  label: string;
-}
-
-interface MoreActionsMenuProps {
-  items: MoreActionItem[];
-  onActionClick: (key: string) => void;
-  label?: string;
-}
+import { MoreActionsMenuProps } from '@/services/types'
 
 const StyledMoreActionsButton = styled(Button)(({ theme }) => ({
   height: '30px',
@@ -21,6 +11,7 @@ const StyledMoreActionsButton = styled(Button)(({ theme }) => ({
   color: theme.palette.text.secondary,
   borderColor: theme.palette.grey[400],
   padding: '8px 8px',
+  textTransform: 'none',
   '&:hover': {
     backgroundColor: theme.palette.action.hover,
     borderColor: theme.palette.grey[500],
