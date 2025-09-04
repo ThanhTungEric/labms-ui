@@ -3,4 +3,9 @@ export * from './building.type';
 export * from './room.type';
 export * from './floor.type';
 export * from './lab.type';
-export * from './lab-status.types'
+export * from './lab-status.types';
+export * from './equipment.type';
+export * from './common.type';
+export * from './moreActionsMenu.types';
+export * from './functionalCategories.type';
+export * from './functionalDomains.type';

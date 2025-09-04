@@ -1,30 +1,40 @@
+// src/module/site/room/RoomsTable.tsx
 import React from 'react';
 import {
     Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-    Paper, Typography, TableSortLabel, TableFooter, TablePagination, Box
+    Paper, TableSortLabel, TableFooter, TablePagination
 } from '@mui/material';
 import NameWithIdChip from '../../../components/NameWithIdChip';
 
-interface LabStatusDto { id: number; name: string; }
-export interface LabRow {
+export interface RoomRow {
     id: number;
     name: string;
-    area: number | null;
-    layout: string | null;
-    condition: string[] | null;
-    status: LabStatusDto;
+    description: string;
+    notes: string;
+    // floor: string;
+    // building: string;
+    floor: {
+        id: number;
+        level: string;
+        description: string;
+    };
+    building: {
+        id: number;
+        name: string;
+        description: string;
+    };
 }
 
 type Order = 'asc' | 'desc';
 
-interface LabsTableProps {
-    rows: LabRow[];
+interface RoomsTableProps {
+    rows: RoomRow[];
     selectedItemId: number | null;
     setSelectedItemId: (id: number | null) => void;
 
     order: Order;
-    orderBy: keyof Pick<LabRow, 'id' | 'name' | 'area' | 'layout' | 'condition'>;
-    onRequestSort: (field: LabsTableProps['orderBy']) => void;
+    orderBy: keyof Pick<RoomRow, 'id' | 'name' | 'description' | 'notes'>;
+    onRequestSort: (field: RoomsTableProps['orderBy']) => void;
 
     page: number;
     pageSize: number;
@@ -33,28 +43,19 @@ interface LabsTableProps {
     onPageSizeChange: (size: number) => void;
 }
 
-const formatCondition = (condition?: string[] | null): string =>
-    condition && condition.length > 0 ? condition.join(', ') : '-';
-
-const statusColor = (name: string): string => {
-    if (name === 'ACTIVE') return 'success.main';
-    if (name === 'INACTIVE') return 'error.main';
-    return 'warning.main';
-};
-
-const LabsTable: React.FC<LabsTableProps> = ({
+const RoomsTable: React.FC<RoomsTableProps> = ({
     rows, selectedItemId, setSelectedItemId,
     order, orderBy, onRequestSort,
     page, pageSize, total, onPageChange, onPageSizeChange,
 }) => {
-    const createSortHandler = (field: LabsTableProps['orderBy']) => () => onRequestSort(field);
+    const createSortHandler = (field: RoomsTableProps['orderBy']) => () => onRequestSort(field);
 
     const totalPages = Math.max(1, Math.ceil(total / pageSize));
 
     return (
         <Paper elevation={3} sx={{ borderRadius: 2 }}>
             <TableContainer>
-                <Table sx={{ minWidth: 900 }} aria-label="lab table" size="small">
+                <Table sx={{ minWidth: 800 }} aria-label="rooms table" size="small">
                     <TableHead>
                         <TableRow>
                             <TableCell sx={{ fontWeight: 'bold' }}>
@@ -73,73 +74,68 @@ const LabsTable: React.FC<LabsTableProps> = ({
                                     direction={orderBy === 'name' ? order : 'asc'}
                                     onClick={createSortHandler('name')}
                                 >
-                                    Lab Name
-                                </TableSortLabel>
-                            </TableCell>
-
-                            <TableCell align="right" sx={{ fontWeight: 'bold' }}>
-                                <TableSortLabel
-                                    active={orderBy === 'area'}
-                                    direction={orderBy === 'area' ? order : 'asc'}
-                                    onClick={createSortHandler('area')}
-                                >
-                                    Area
+                                    Name
                                 </TableSortLabel>
                             </TableCell>
 
                             <TableCell sx={{ fontWeight: 'bold' }}>
                                 <TableSortLabel
-                                    active={orderBy === 'layout'}
-                                    direction={orderBy === 'layout' ? order : 'asc'}
-                                    onClick={createSortHandler('layout')}
+                                    active={orderBy === 'description'}
+                                    direction={orderBy === 'description' ? order : 'asc'}
+                                    onClick={createSortHandler('description')}
                                 >
-                                    Layout
+                                    Description
                                 </TableSortLabel>
                             </TableCell>
 
                             <TableCell sx={{ fontWeight: 'bold' }}>
                                 <TableSortLabel
-                                    active={orderBy === 'condition'}
-                                    direction={orderBy === 'condition' ? order : 'asc'}
-                                    onClick={createSortHandler('condition')}
+                                    active={orderBy === 'notes'}
+                                    direction={orderBy === 'notes' ? order : 'asc'}
+                                    onClick={createSortHandler('notes')}
                                 >
-                                    Condition
+                                    Notes
                                 </TableSortLabel>
                             </TableCell>
 
-                            <TableCell align="right" sx={{ fontWeight: 'bold' }}>
-                                Status
+                            <TableCell sx={{ fontWeight: 'bold' }}>
+                                Floor
+                            </TableCell>
+
+                            <TableCell sx={{ fontWeight: 'bold' }}>
+                                Building
                             </TableCell>
                         </TableRow>
                     </TableHead>
 
                     <TableBody>
-                        {rows.map((lab) => (
+                        {rows.map((room) => (
                             <TableRow
-                                key={lab.id}
-                                onClick={() => setSelectedItemId(lab.id)}
-                                selected={lab.id === selectedItemId}
+                                key={room.id}
+                                onClick={() => setSelectedItemId(room.id)}
+                                selected={room.id === selectedItemId}
                                 hover
                                 sx={{ cursor: 'pointer', height: '40px' }}
                             >
                                 <TableCell>
-                                    <NameWithIdChip id={lab.id} />
+                                    <NameWithIdChip id={room.id} />
                                 </TableCell>
-                                <TableCell>{lab.name}</TableCell>
-                                <TableCell align="right">{lab.area ?? '-'}</TableCell>
-                                <TableCell>{lab.layout ?? '-'}</TableCell>
-                                <TableCell>{formatCondition(lab.condition)}</TableCell>
-                                <TableCell align="right">
-                                    <Typography sx={{ color: statusColor(lab.status.name), fontWeight: 'bold' }}>
-                                        {lab.status.name}
-                                    </Typography>
+                                <TableCell>{room.name}</TableCell>
+                                <TableCell>{room.description}</TableCell>
+                                <TableCell>{room.notes}</TableCell>
+                                <TableCell>
+                                    {room.floor.level}
+                                </TableCell>
+                                <TableCell>
+                                    {room.building.description}
                                 </TableCell>
                             </TableRow>
                         ))}
+
                         {rows.length === 0 && (
                             <TableRow>
                                 <TableCell colSpan={6} align="center" sx={{ py: 4, color: 'text.secondary' }}>
-                                    No labs found.
+                                    No rooms found.
                                 </TableCell>
                             </TableRow>
                         )}
@@ -155,7 +151,8 @@ const LabsTable: React.FC<LabsTableProps> = ({
                                 onRowsPerPageChange={(e) => onPageSizeChange(parseInt(e.target.value, 10))}
                                 rowsPerPageOptions={[10, 20, 50]}
                                 labelRowsPerPage="Rows per page:"
-                                labelDisplayedRows={({ from, to, count }) => `${from}-${to} of ${count} (page ${page}/${totalPages})`}
+                                labelDisplayedRows={({ from, to, count }) =>
+                                    `${from}-${to} of ${count} (page ${page}/${totalPages})`}
                             />
                         </TableRow>
                     </TableFooter>
@@ -165,4 +162,4 @@ const LabsTable: React.FC<LabsTableProps> = ({
     );
 };
 
-export default LabsTable;
+export default RoomsTable;

@@ -5,16 +5,8 @@ export function useFunctionalDomains(params: Record<string, any>) {
   const [functionalDomains, setFunctionalDomains] = useState<functionalDomains[]>([]);
   const [loadingFunctionalDomains, setLoading] = useState(true);
   const [errorFunctionalDomains, setError] = useState<Error | null>(null);
- 
-  // useEffect(async (customParams = params) => {
-  //   setLoading(true);
-  //     await getFunctionalDomains(customParams)
-  //     .then((data) => setFunctionalDomains(data))
-  //     .catch((err) => setError(err))
-  //     .finally(() => setLoading(false));
 
-  // }, []);
-   useEffect(() => {
+  useEffect(() => {
     let isMounted = true;
     setLoading(true);
     getFunctionalDomains(params)
@@ -29,7 +21,7 @@ export function useFunctionalDomains(params: Record<string, any>) {
       });
 
     return () => { isMounted = false };
-  }, [params]); // <-- khi params đổi thì gọi lại API
+  }, [params]);
 
   return { functionalDomains, loadingFunctionalDomains, errorFunctionalDomains };
 }
