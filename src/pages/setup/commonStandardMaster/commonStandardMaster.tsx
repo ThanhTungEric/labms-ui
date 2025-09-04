@@ -72,7 +72,7 @@ export default function CommonStandardMaster() {
   const { functionalCategories, loadingFunctionalCategories, errorFunctionalCategories } = useFunctionalCategories(searchParams);
 
 
-    //--------------------------------------------------------------------------------------------------------- Gọi custom hook và destructuring kết quả trả về cho xóa data
+  //--------------------------------------------------------------------------------------------------------- Gọi custom hook và destructuring kết quả trả về cho xóa data
 
   const { deleteEquipmentForms, loadingDeleteEquipmentForms, errorDeleteEquipmentForms, deletedEquipmentFormsIds } = useDeleteEquipmentForms();
   const { deleteAcademicTitles, loadingDeleteAcademicTitles, errorDeleteAcademicTitles, deletedAcademicTitlesIds } = useDeleteAcademicTitles();
@@ -80,11 +80,11 @@ export default function CommonStandardMaster() {
   const { deleteFunctionalDomains, loadingDeleteFunctionalDomains, errorDeleteFunctionalDomains, deletedFunctionalDomainsIds } = useDeleteFunctionalDomains();
   const { deleteFaculties, loadingDeleteFaculties, errorDeleteFaculties, deletedFacultiesIds } = useDeleteFaculties();
   const { deleteLabPositions, loadingDeleteLabPositions, errorDeleteLabPositions, deletedLabPositionsIds } = useDeleteLabPositions();
-  const { deletePriceCategories, loadingDeletePriceCategories, errorDeletePriceCategories, deletedPriceCategoriesIds} = useDeletePriceCategories();
+  const { deletePriceCategories, loadingDeletePriceCategories, errorDeletePriceCategories, deletedPriceCategoriesIds } = useDeletePriceCategories();
   const { deletePrograms, loadingDeletePrograms, errorDeletePrograms, deletedProgramsIds } = useDeletePrograms();
   const { deleteFunctionalCategories, loadingDeleteFunctionalCategories, errorDeleteFunctionalCategories, deletedFunctionalCategoriesIds } = useDeleteFunctionalCategories();
 
-    //--------------------------------------------------------------------------------------------------------- Gọi custom hook và destructuring kết quả trả về cho thêm data
+  //--------------------------------------------------------------------------------------------------------- Gọi custom hook và destructuring kết quả trả về cho thêm data
 
   const { addFaculty, loadingAddFaculty, errorAddFaculty } = useAddFaculty();
   const { addAcademicTitle, loadingAddAcademicTitle, errorAddAcademicTitle } = useAddAcademicTitle();
@@ -93,21 +93,22 @@ export default function CommonStandardMaster() {
   const { addFunctionalDomains, loadingAddFunctionalDomains, errorAddFunctionalDomains } = useAddFunctionalDomains();
   const { addPrograms, loadingAddPrograms, errorAddPrograms } = useAddPrograms();
   const { notify, showSuccess, showError, showInfo, showWarning, close } = useNotification();
- 
+
 
   //--------------------------------------------------------------------------------------------------------- Hiển thị thông báo khi có lỗi tải dữ liệu
 
   useEffect(() => {
     const error = errorAcademicTitles || errorProgramsCSM || errorPriceCategories || errorEquipmentStatuses || errorEquipmentForms || errorFaculties || errorLabPositions || errorFunctionalDomains || errorFunctionalCategories || errorDeleteAcademicTitles || errorDeleteEquipmentForms || errorDeleteEquipmentStatuses
       || errorDeleteEquipmentStatuses || errorDeleteFunctionalCategories || errorDeleteFunctionalDomains || errorDeleteFaculties || errorDeleteLabPositions || errorDeletePriceCategories || errorDeletePrograms || errorAddFaculty || errorAddAcademicTitle || errorAddEquipmentForm || errorAddFunctionalCategories
-    errorAddFunctionalDomains;
+    errorAddFunctionalDomains || errorAddPrograms;
     if (error?.message) {
       showError(error.message);
       const timer = setTimeout(() => close(), 3000);
       return () => clearTimeout(timer);
     }
   }, [errorAcademicTitles, errorProgramsCSM, errorPriceCategories, errorEquipmentStatuses, errorEquipmentForms, errorFaculties, errorLabPositions, errorFunctionalDomains, errorFunctionalCategories, errorDeleteAcademicTitles, errorDeleteEquipmentForms, errorDeleteEquipmentStatuses,
-    errorDeleteEquipmentStatuses, errorDeleteFunctionalDomains, errorDeleteFaculties, errorDeleteLabPositions, errorDeletePriceCategories, errorDeletePrograms, errorDeleteFunctionalCategories, errorAddAcademicTitle, errorAddEquipmentForm, errorAddFunctionalDomains, errorAddFunctionalCategories
+    errorDeleteEquipmentStatuses, errorDeleteFunctionalDomains, errorDeleteFaculties, errorDeleteLabPositions, errorDeletePriceCategories, errorDeletePrograms, errorDeleteFunctionalCategories, errorAddAcademicTitle, errorAddEquipmentForm, errorAddFunctionalDomains, errorAddFunctionalCategories, 
+    errorAddPrograms
   ]);
 
 
@@ -127,7 +128,7 @@ export default function CommonStandardMaster() {
     loadingDeleteEquipmentForms ||
     loadingDeleteEquipmentStatuses ||
     loadingDeleteFunctionalDomains
-    loadingDeleteFaculties ||
+  loadingDeleteFaculties ||
     loadingDeletePrograms ||
     loadingDeleteLabPositions ||
     loadingDeletePriceCategories ||
@@ -136,7 +137,8 @@ export default function CommonStandardMaster() {
     loadingDeleteFunctionalCategories ||
     loadingAddEquipmentForm ||
     loadingAddFunctionalCategories ||
-    loadingAddFunctionalDomains
+    loadingAddFunctionalDomains ||
+    loadingAddPrograms
     ;
 
   //--------------------------------------------------------------------------------------------------------- Gọi master-data cho dropdown select chính
@@ -215,51 +217,50 @@ export default function CommonStandardMaster() {
 
   //--------------------------------------------------------------------------------------------------------- Xử lý sự kiện xác nhận xóa
   const checkDelete = (ids: number[]) => {
-  if (!ids || ids.length === 0) {
-    showError("Please select the row to delete");
-    return;
-  }
-  setOpenConfirm(true);
-};
+    if (!ids || ids.length === 0) {
+      showError("Please select the row to delete");
+      return;
+    }
+    setOpenConfirm(true);
+  };
 
 
   const handleConfirmDelete = async () => {
-    if (selected ==="")
-    {
-      showError("Please select master-data type");
+    if (selected === "") {
+      showError("Please select master data type");
     }
-   
-    
+
+
     const varTextSuccess = "Deleted successfully";
     if (selected === "forms" && selectedIds.length > 0) {
       await deleteEquipmentForms(selectedIds);
-      
-        
-        setSearchParams({ _refresh: Date.now() });
-        setSelectedIds([]);
-        setOpenConfirm(false);
-        showSuccess(varTextSuccess);
-      
-      
+
+
+      setSearchParams({ _refresh: Date.now() });
+      setSelectedIds([]);
+      setOpenConfirm(false);
+      showSuccess(varTextSuccess);
+
+
     }
     if (selected === "academic-titles" && selectedIds.length > 0) {
       await deleteAcademicTitles(selectedIds);
-      
-        setSearchParams({ _refresh: Date.now() });
-        setSelectedIds([]);
-        setOpenConfirm(false);
-        showSuccess(varTextSuccess);
-      
-      
+
+      setSearchParams({ _refresh: Date.now() });
+      setSelectedIds([]);
+      setOpenConfirm(false);
+      showSuccess(varTextSuccess);
+
+
     }
     if (selected === "functional-categories" && selectedIds.length > 0) {
       await deleteFunctionalCategories(selectedIds);
-      
-        setSearchParams({ _refresh: Date.now() });
-        setSelectedIds([]);
-        setOpenConfirm(false);
-        showSuccess(varTextSuccess);
-      
+
+      setSearchParams({ _refresh: Date.now() });
+      setSelectedIds([]);
+      setOpenConfirm(false);
+      showSuccess(varTextSuccess);
+
     }
     // if (selected === "equipment-statuses" && selectedIds.length > 0) {
     //   if(deletedEquipmentStatusesIds.length >0)
@@ -273,54 +274,54 @@ export default function CommonStandardMaster() {
     // }
     if (selected === "functional-domains" && selectedIds.length > 0) {
       await deleteFunctionalDomains(selectedIds);
-      
-        
-        setSearchParams({ _refresh: Date.now() });
-        setSelectedIds([]);
-        setOpenConfirm(false);
-        showSuccess(varTextSuccess);
-      
+
+
+      setSearchParams({ _refresh: Date.now() });
+      setSelectedIds([]);
+      setOpenConfirm(false);
+      showSuccess(varTextSuccess);
+
     }
     if (selected === "lab-prositions" && selectedIds.length > 0) {
       await deleteLabPositions(selectedIds);
-      
-        
-        setSearchParams({ _refresh: Date.now() });
-        setSelectedIds([]);
-        setOpenConfirm(false);
-        showSuccess(varTextSuccess);
-      
+
+
+      setSearchParams({ _refresh: Date.now() });
+      setSelectedIds([]);
+      setOpenConfirm(false);
+      showSuccess(varTextSuccess);
+
     }
     if (selected === "programs" && selectedIds.length > 0) {
       await deletePrograms(selectedIds);
-      
-        
-        setSearchParams({ _refresh: Date.now() });
-        setSelectedIds([]);
-        setOpenConfirm(false);
-        showSuccess(varTextSuccess);
-      
+
+
+      setSearchParams({ _refresh: Date.now() });
+      setSelectedIds([]);
+      setOpenConfirm(false);
+      showSuccess(varTextSuccess);
+
     }
     if (selected === "faculty" && selectedIds.length > 0) {
       await deleteFaculties(selectedIds);
-      
-        
-        setSearchParams({ _refresh: Date.now() });
-        setSelectedIds([]);
-        setOpenConfirm(false);
-        showSuccess(varTextSuccess);
-      
+
+
+      setSearchParams({ _refresh: Date.now() });
+      setSelectedIds([]);
+      setOpenConfirm(false);
+      showSuccess(varTextSuccess);
+
     }
     if (selected === "price-categories" && selectedIds.length > 0) {
       await deletePriceCategories(selectedIds);
-      
-        
-        setSearchParams({ _refresh: Date.now() });
-        setSelectedIds([]);
-        setOpenConfirm(false);
-        showSuccess(varTextSuccess);
-      
-      
+
+
+      setSearchParams({ _refresh: Date.now() });
+      setSelectedIds([]);
+      setOpenConfirm(false);
+      showSuccess(varTextSuccess);
+
+
     }
     setOpenConfirm(false);
   };
@@ -329,11 +330,10 @@ export default function CommonStandardMaster() {
   const handleAdd = async (data: any) => {
     const hasValue = Object.values(data).some(v => v !== null && v !== undefined && v !== "");
     const varTextSuccess = "Save successfully";
-    if (selected ==="")
-    {
+    if (selected === "") {
       showError("Please select master-data type");
     }
-    
+
     if (selected === "faculty" && hasValue === true) {
       await addFaculty(data);
       setSearchParams({ _refresh: Date.now() });
@@ -375,6 +375,8 @@ export default function CommonStandardMaster() {
     setOpenAdd(false);
   };
 
+
+  
   return (
     <Box sx={{ p: 2 }}>
       {/* Popup loading */}
@@ -423,7 +425,7 @@ export default function CommonStandardMaster() {
             rowsPerPageOptions={[5, 10, 25, 50]}
           />
           <ActionBar
-            type = {selected} 
+            type={selected}
             selectedIds={selectedIds}
             onDelete={checkDelete}
             onAdd={() => setOpenAdd(true)}
@@ -530,7 +532,7 @@ export default function CommonStandardMaster() {
         open={openAdd}
         onClose={() => setOpenAdd(false)}
         onSave={handleAdd}
-          faculty={faculties?.data || []}   // lấy mảng data, fallback []
+        faculty={faculties?.data || []}   // lấy mảng data, fallback []
 
       />
     </Box>
