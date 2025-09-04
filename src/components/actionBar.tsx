@@ -15,11 +15,14 @@ import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import {actionBar} from '../services/types/actionBar.type';
 import { useNotification } from '../services/hooks/notification/notification';
+import LabSearch from './LabSearch';
+import FilterSection from './fiterSearch';
+import { useRef } from 'react';
 
-export default function ActionBar({ type, onDelete, onImport, onExport, selectedIds, onAdd }: actionBar) {
+export default function ActionBar({ type, onDelete, onImport, onExport, selectedIds, onAdd, handleFilter }: actionBar) {
   const hiddenAddTypes = ["equipment-statuses", "lab-positions", "something-else"];
   const { notify, showSuccess, showError, showInfo, showWarning, close } = useNotification();
-
+  const filterRef = useRef<{ reset: () => void }>(null);
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file && typeof onImport === 'function') {
@@ -27,7 +30,7 @@ export default function ActionBar({ type, onDelete, onImport, onExport, selected
     }
     e.target.value = ''; // reset input để chọn lại cùng file
   };
-
+  
  
 
   return (
@@ -44,7 +47,9 @@ export default function ActionBar({ type, onDelete, onImport, onExport, selected
     >
       <Box display="flex"  gap={1}>
         {!hiddenAddTypes.includes(type) && (
+          
           <Tooltip title="Add">
+            
             <IconButton component="label" size="small" onClick={onAdd}>
               <AddIcon />
             </IconButton>
@@ -94,6 +99,8 @@ export default function ActionBar({ type, onDelete, onImport, onExport, selected
             <FileDownloadOutlinedIcon />
           </IconButton>
         </Tooltip>
+                  <FilterSection ref={filterRef} onSearch={handleFilter} />
+
       </Box>
     </Box>
   );

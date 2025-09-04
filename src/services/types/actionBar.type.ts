@@ -5,4 +5,5 @@ export interface actionBar {
   onAdd?: () => void;
   onDelete?: (selectedIds: number[]) => void;
   selectedIds: number[];
+    handleFilter: (v: string) => void;
 }

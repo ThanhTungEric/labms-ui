@@ -125,7 +125,7 @@ const StyledMultiSelect: React.FC<StyledMultiSelectProps> = ({
                 onClose={handleCloseMenu}
                 MenuListProps={{ 'aria-labelledby': 'multi-select-button' }}
             >
-                {items.map((item) => {
+                {items?.map((item) => {
                     const selected = selectedKeys.includes(item.key);
                     return (
                         <MenuItem

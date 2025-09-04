@@ -25,7 +25,7 @@ import { useEquipmentForms } from '../../../services/hooks/equipmentForms/equipm
 import { useFaculties } from '../../../services/hooks/faculties/faculties';
 import { useLabPositions } from '../../../services/hooks/labPositions/labPositions';
 import { useFunctionalDomains } from '../../../services/hooks/functionalDomains/functionalDomains';
-import { useFunctionalCategories } from '../../../services/hooks/functionalCategories/functionalCategories ';
+
 import LoadingInline from '../../../components/loadingPopup';
 import { useDeleteEquipmentForms } from '../../../services/hooks/equipmentForms/eqipmentFormsDelete';
 import DynamicDialog from '../../../components/dynamicDialog';
@@ -44,6 +44,7 @@ import { useAddEquipmentForms } from '../../../services/hooks/equipmentForms/equ
 import { useAddFunctionalCategories } from '../../../services/hooks/functionalCategories/functionalCategoriesAdd';
 import { useAddFunctionalDomains } from '../../../services/hooks/functionalDomains/functionalDomainsAdd';
 import { useAddPrograms } from '../../../services/hooks/programsCSM/programsAdd';
+import { useFunctionalCategories } from '@/services/hooks/functionalCategories/functionalCategories';
 export default function CommonStandardMaster() {
   //--------------------------------------------------------------------------------------------------------- Khai báo 
 
@@ -128,7 +129,7 @@ export default function CommonStandardMaster() {
     loadingDeleteEquipmentForms ||
     loadingDeleteEquipmentStatuses ||
     loadingDeleteFunctionalDomains
-  loadingDeleteFaculties ||
+    loadingDeleteFaculties ||
     loadingDeletePrograms ||
     loadingDeleteLabPositions ||
     loadingDeletePriceCategories ||
@@ -411,7 +412,6 @@ export default function CommonStandardMaster() {
       />
       {selected ? (
         <Box mt={2}>
-          <FilterSection ref={filterRef} onSearch={handleFilter} />
           <TablePagination
             component="div"
             count={items.length}
@@ -430,10 +430,10 @@ export default function CommonStandardMaster() {
             onDelete={checkDelete}
             onAdd={() => setOpenAdd(true)}
             onImport={(file) => {
-            }}
+            } }
             onExport={() => {
-            }}
-          />
+            } } handleFilter={handleFilter}         />
+           
           <TableContainer component={Paper}>
             <Table size="small" sx={{ borderCollapse: "collapse", "& td, & th": { border: "1px solid rgba(224, 224, 224, 1)" } }}>
               <TableHead>
