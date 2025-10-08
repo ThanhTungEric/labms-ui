@@ -45,6 +45,8 @@ import { useAddFunctionalCategories } from '../../../services/hooks/functionalCa
 import { useAddFunctionalDomains } from '../../../services/hooks/functionalDomains/functionalDomainsAdd';
 import { useAddPrograms } from '../../../services/hooks/programsCSM/programsAdd';
 import { useFunctionalCategories } from '@/services/hooks/functionalCategories/functionalCategories';
+import { data } from 'react-router-dom';
+import CustomTablePagination from '@/components/CustomTablePagination';
 export default function CommonStandardMaster() {
   //--------------------------------------------------------------------------------------------------------- Khai báo 
 
@@ -424,6 +426,8 @@ export default function CommonStandardMaster() {
             }}
             rowsPerPageOptions={[5, 10, 25, 50]}
           />
+          
+
           <ActionBar
             type={selected}
             selectedIds={selectedIds}
@@ -532,8 +536,7 @@ export default function CommonStandardMaster() {
         open={openAdd}
         onClose={() => setOpenAdd(false)}
         onSave={handleAdd}
-        faculty={faculties?.data || []}   // lấy mảng data, fallback []
-
+        faculty={faculties?.data|| []}   // lấy mảng data, fallback []
       />
     </Box>
   );

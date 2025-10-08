@@ -17,7 +17,10 @@ import {actionBar} from '../services/types/actionBar.type';
 import { useNotification } from '../services/hooks/notification/notification';
 import LabSearch from './LabSearch';
 import FilterSection from './fiterSearch';
-import { useRef } from 'react';
+import { useCallback, useRef } from 'react';
+import ExportReportButton from './ExportReportButton';
+import ImportReportButton from './ImportButton';
+import ImportButton from './ImportButton';
 
 export default function ActionBar({ type, onDelete, onImport, onExport, selectedIds, onAdd, handleFilter }: actionBar) {
   const hiddenAddTypes = ["equipment-statuses", "lab-positions", "something-else"];
@@ -30,7 +33,8 @@ export default function ActionBar({ type, onDelete, onImport, onExport, selected
     }
     e.target.value = ''; // reset input để chọn lại cùng file
   };
-  
+    const handleExportReport = useCallback(() => console.log('Export Report clicked'), []);
+
  
 
   return (
@@ -77,29 +81,16 @@ export default function ActionBar({ type, onDelete, onImport, onExport, selected
             }}>
                 <DeleteIcon />
             </IconButton>
+            
         </Tooltip>
         )}
 
         {/* Import CSV */}
-        <Tooltip title="Import CSV">
-          <IconButton component="label" size="small" >
-            <FileUploadOutlinedIcon />
-            <input
-              type="file"
-              hidden
-              accept=".csv"
-              onChange={handleFileChange}
-            />
-          </IconButton>
-        </Tooltip>
-
+        <ImportButton onClick={handleExportReport} />
         {/* Export CSV */}
-        <Tooltip title="Export CSV">
-          <IconButton size="small" onClick={onExport}>
-            <FileDownloadOutlinedIcon />
-          </IconButton>
-        </Tooltip>
-                  <FilterSection ref={filterRef} onSearch={handleFilter} />
+        <ExportReportButton onClick={handleExportReport} />
+        {/* Filter */}
+        <FilterSection ref={filterRef} onSearch={handleFilter} />
 
       </Box>
     </Box>
