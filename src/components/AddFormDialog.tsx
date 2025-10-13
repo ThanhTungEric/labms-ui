@@ -1,4 +1,4 @@
-import { JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal, useState } from "react";
+import React, { useState } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -8,23 +8,21 @@ import {
   Button,
   MenuItem,
   Typography,
-  Box,
-  Stack
+  Stack,
 } from "@mui/material";
-import Grid from "@mui/material/Grid";
-import {  faculties, fucultyItems } from "../services/types/faculties.type";
+import { fucultyItems } from "../services/types/faculties.type";
 
 interface AddDialogProps {
   type: string;
   open: boolean;
   onClose: () => void;
   onSave: (data: any) => void;
-  faculty: fucultyItems[];  
+  faculty: fucultyItems[];
 }
 
 export default function AddDialog({ type, open, onClose, onSave, faculty }: AddDialogProps) {
-  
   const [formData, setFormData] = useState<any>({});
+
   const handleChange = (field: string, value: any) => {
     setFormData((prev: any) => ({ ...prev, [field]: value }));
   };
@@ -34,6 +32,11 @@ export default function AddDialog({ type, open, onClose, onSave, faculty }: AddD
     setFormData({});
     onClose();
   };
+
+  // Kiểm tra xem có ô nào có giá trị không rỗng
+  const isFormFilled = Object.values(formData).some(
+    (val) => val && val.toString().trim() !== ""
+  );
 
   return (
     <Dialog
@@ -46,14 +49,13 @@ export default function AddDialog({ type, open, onClose, onSave, faculty }: AddD
       }}
     >
       <DialogTitle component="div">
-
         <Typography variant="h6" fontWeight="bold">
           {type === "faculty" && "Add New Faculty"}
           {type === "programs" && "Add New Program"}
-          {type === "forms" && "Add New Forms"}
+          {type === "forms" && "Add New Form"}
           {type === "academic-titles" && "Add New Academic Title"}
-          {type === "functional-categories" && "Add New Functional Catgories"}
-          {type === "functional-domains" && "Add New Functional Domains"}
+          {type === "functional-categories" && "Add New Functional Category"}
+          {type === "functional-domains" && "Add New Functional Domain"}
         </Typography>
         <Typography variant="body2" color="text.secondary">
           Fill in the information below and click Save to add new.
@@ -61,199 +63,178 @@ export default function AddDialog({ type, open, onClose, onSave, faculty }: AddD
       </DialogTitle>
 
       <DialogContent dividers sx={{ mt: 1 }}>
-          {/* Form cho "faculty" */}
-          {type === "faculty" && (
-            <>
-            <Stack spacing={2}>
-                <TextField
-                fullWidth
-                size="small"
-                variant="outlined"
-                label="Faculty name"
-                value={formData.name || ""}
-                onChange={(e) => handleChange("name", e.target.value)}
-                />
+        {/* Faculty */}
+        {type === "faculty" && (
+          <Stack spacing={2}>
+            <TextField
+              fullWidth
+              size="small"
+              label="Faculty Name"
+              value={formData.name || ""}
+              onChange={(e) => handleChange("name", e.target.value)}
+            />
+            <TextField
+              fullWidth
+              size="small"
+              multiline
+              rows={3}
+              label="Description"
+              value={formData.description || ""}
+              onChange={(e) => handleChange("description", e.target.value)}
+            />
+          </Stack>
+        )}
 
-                <TextField
-                fullWidth
-                size="small"
-                variant="outlined"
-                multiline
-                rows={3}
-                label="Description"
-                value={formData.description || ""}
-                onChange={(e) => handleChange("description", e.target.value)}
-                />
-            </Stack>
-            </>
-          )}
+        {/* Academic Titles */}
+        {type === "academic-titles" && (
+          <Stack spacing={2}>
+            <TextField
+              fullWidth
+              size="small"
+              label="Academic Title Label"
+              value={formData.label || ""}
+              onChange={(e) => handleChange("label", e.target.value)}
+            />
+            <TextField
+              fullWidth
+              size="small"
+              label="Academic Title Description"
+              value={formData.description || ""}
+              onChange={(e) => handleChange("description", e.target.value)}
+            />
+          </Stack>
+        )}
 
-          {/* Form cho "programs" */}
-          {type === "academic-titles" && (
-            <>
-              <Stack spacing={2}>
-                <TextField
-                  fullWidth
-                  size="small"
-                  variant="outlined"
-                  label="Academic Title Label"
-                  value={formData.label || ""}
-                  onChange={(e) => handleChange("label", e.target.value)}
-                />
-                <TextField
-                  fullWidth
-                  size="small"
-                  variant="outlined"
-                  label="Academic Title Description"
-                  value={formData.description || ""}
-                  onChange={(e) => handleChange("description", e.target.value)}
-                />
-              
-                {/* <TextField
-                  select
-                  fullWidth
-                  size="small"
-                  variant="outlined"
-                  label="Vai Trò"
-                  value={formData.role || ""}
-                  onChange={(e) => handleChange("role", e.target.value)}
-                >
-                  <MenuItem value="admin">Admin</MenuItem>
-                  <MenuItem value="editor">Editor</MenuItem>
-                  <MenuItem value="viewer">Viewer</MenuItem>
-                </TextField> */}
-               </Stack>
-            </>
-          )}
+        {/* Functional Categories */}
+        {type === "functional-categories" && (
+          <Stack spacing={2}>
+            <TextField
+              fullWidth
+              size="small"
+              label="Functional Category Label"
+              value={formData.label || ""}
+              onChange={(e) => handleChange("label", e.target.value)}
+            />
+            <TextField
+              fullWidth
+              size="small"
+              label="Functional Category Description"
+              value={formData.description || ""}
+              onChange={(e) => handleChange("description", e.target.value)}
+            />
+          </Stack>
+        )}
 
-          {/* Form cho "academic-titles" */}
-          {type === "functional-categories" && (
-            <>
-              <Stack spacing={2}>
-                <TextField
-                  fullWidth
-                  size="small"
-                  variant="outlined"
-                  label="Functional Categories Label"
-                  value={formData.label || ""}
-                  onChange={(e) => handleChange("label", e.target.value)}
-                />
-             
-                <TextField
-                  fullWidth
-                  size="small"
-                  variant="outlined"
-                  label="Functional Categories Description"
-                  value={formData.description || ""}
-                  onChange={(e) => handleChange("description", e.target.value)}
-                />
-              </Stack>
-            </>
-          )}
-          {type === "forms" && (
-            <>
-              <Stack spacing={2}>
-                <TextField
-                  fullWidth
-                  size="small"
-                  variant="outlined"
-                  label="Equipment Forms Name"
-                  value={formData.name || ""}
-                  onChange={(e) => handleChange("name", e.target.value)}
-                />
-             
-                <TextField
-                  fullWidth
-                  size="small"
-                  variant="outlined"
-                  label="Equipment Forms Description"
-                  value={formData.description || ""}
-                  onChange={(e) => handleChange("description", e.target.value)}
-                />
-              </Stack>
-            </>
-          )}
-          
-          {type === "functional-domains" && (
-            <>
-              <Stack spacing={2}>
-                <TextField
-                  fullWidth
-                  size="small"
-                  variant="outlined"
-                  label="Functional Domains Label"
-                  value={formData.label || ""}
-                  onChange={(e) => handleChange("label", e.target.value)}
-                />
-             
-                <TextField
-                  fullWidth
-                  size="small"
-                  variant="outlined"
-                  label="Functional Domains Description"
-                  value={formData.description || ""}
-                  onChange={(e) => handleChange("description", e.target.value)}
-                />
-              </Stack>
-            </>
-          )}
-          {type === "programs" && (
-            <>
-              <Stack spacing={2}>
-                <TextField
-                  fullWidth
-                  size="small"
-                  variant="outlined"
-                  label="Functional Domains Label"
-                  value={formData.code || ""}
-                  onChange={(e) => handleChange("code", e.target.value)}
-                />
-             
-                <TextField
-                  fullWidth
-                  size="small"
-                  variant="outlined"
-                  label="Functional Domains Description"
-                  value={formData.name || ""}
-                  onChange={(e) => handleChange("name", e.target.value)}
-                />
-                 <TextField
-                  select
-                  fullWidth
-                  size="small"
-                  label="Select Faculty"
-                  value={formData.facultyId || ""}
-                  onChange={(e) => handleChange("facultyId", e.target.value)}
-                >
-                  {faculty && faculty.length > 0 ? (
-                    faculty.map((d) => (
-                      <MenuItem key={d.id} value={d.id}>
-                        {d.name}
-                      </MenuItem>
-                    ))
-                  ) : (
-                    <MenuItem disabled>No faculties</MenuItem>
-                  )}
-                </TextField>
+        {/* Forms */}
+        {type === "forms" && (
+          <Stack spacing={2}>
+            <TextField
+              fullWidth
+              size="small"
+              label="Form Name"
+              value={formData.name || ""}
+              onChange={(e) => handleChange("name", e.target.value)}
+            />
+            <TextField
+              fullWidth
+              size="small"
+              label="Form Description"
+              value={formData.description || ""}
+              onChange={(e) => handleChange("description", e.target.value)}
+            />
+          </Stack>
+        )}
 
-              </Stack>
-            </>
-          )}
+        {/* Functional Domains */}
+        {type === "functional-domains" && (
+          <Stack spacing={2}>
+            <TextField
+              fullWidth
+              size="small"
+              label="Functional Domain Label"
+              value={formData.label || ""}
+              onChange={(e) => handleChange("label", e.target.value)}
+            />
+            <TextField
+              fullWidth
+              size="small"
+              label="Functional Domain Description"
+              value={formData.description || ""}
+              onChange={(e) => handleChange("description", e.target.value)}
+            />
+          </Stack>
+        )}
+
+        {/* Programs */}
+        {type === "programs" && (
+          <Stack spacing={2}>
+            <TextField
+              fullWidth
+              size="small"
+              label="Program Code"
+              value={formData.code || ""}
+              onChange={(e) => handleChange("code", e.target.value)}
+            />
+            <TextField
+              fullWidth
+              size="small"
+              label="Program Name"
+              value={formData.name || ""}
+              onChange={(e) => handleChange("name", e.target.value)}
+            />
+            <TextField
+              select
+              fullWidth
+              size="small"
+              label="Select Faculty"
+              value={formData.facultyId || ""}
+              onChange={(e) => handleChange("facultyId", e.target.value)}
+            >
+              {faculty?.length ? (
+                faculty.map((d) => (
+                  <MenuItem key={d.id} value={d.id}>
+                    {d.name}
+                  </MenuItem>
+                ))
+              ) : (
+                <MenuItem disabled>No faculties available</MenuItem>
+              )}
+            </TextField>
+          </Stack>
+        )}
       </DialogContent>
+
       <DialogActions sx={{ p: 2 }}>
+        {/* Cancel button - viền đỏ */}
         <Button
           onClick={onClose}
           variant="outlined"
-          color="inherit"
-          sx={{ borderRadius: 2 }}
+          sx={{
+            borderRadius: 2,
+            borderColor: "error.main",
+            color: "error.main",
+            "&:hover": {
+              borderColor: "error.dark",
+              backgroundColor: "rgba(255,0,0,0.04)",
+            },
+          }}
         >
           Cancel
         </Button>
+
+        {/* Save button - xanh lá khi có dữ liệu */}
         <Button
           onClick={handleSave}
           variant="contained"
-          color="primary"
-          sx={{ borderRadius: 2, px: 3 }}
+          disabled={!isFormFilled}
+          sx={{
+            borderRadius: 2,
+            px: 3,
+            backgroundColor: isFormFilled ? "success.main" : "grey.400",
+            "&:hover": {
+              backgroundColor: isFormFilled ? "success.dark" : "grey.500",
+            },
+          }}
         >
           Save
         </Button>
