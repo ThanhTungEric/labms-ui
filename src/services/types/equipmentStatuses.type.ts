@@ -1,11 +1,11 @@
-export interface equipmentStatusItems {
-   id: number
-    code: string,
-    description: string,
+export interface EquipmentStatus {
+  id: number
+  code: string,
+  description: string,
 }
 
 export interface equipmentStatuses {
-  data: equipmentStatusItems[];
+  data: EquipmentStatus[];
   meta: {
     count: number;
   };

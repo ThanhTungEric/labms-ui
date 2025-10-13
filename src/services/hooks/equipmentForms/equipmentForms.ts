@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { getEquipmentForms } from '../../api/equipmentForms/equipmentForms';
-import { equipmentForms } from '../../types/equipmentForms.type';
-import { MoreActionItem } from '@/services/types';
+import { getEquipmentForms, getEquipmentFormsWithData } from '../../api/equipmentForms/equipmentForms';
+import { equipmentFormItems, equipmentForms } from '../../types/equipmentForms.type';
+
 export function useEquipmentForms(params: Record<string, any>) {
   const [equipmentForms, setEquipmentForms] = useState<equipmentForms[]>([]);
   const [loadingEquipmentForms, setLoading] = useState(true);
@@ -28,3 +28,33 @@ export function useEquipmentForms(params: Record<string, any>) {
   return { equipmentForms, loadingEquipmentForms, errorEquipmentForms };
 }
 
+export function useEquipmentFormsData(params: Record<string, any>) {
+  const [formsData, setFormsData] = useState<equipmentFormItems[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    setLoading(true);
+    getEquipmentFormsWithData(params)
+      .then((data) => {
+        if (isMounted) {
+          setFormsData(data);
+          setLoading(false);
+        }
+      })
+      .catch((err) => {
+        if (isMounted) {
+          setError(err);
+          setLoading(false);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [JSON.stringify(params)]);
+
+  return { formsData, loading, error };
+}

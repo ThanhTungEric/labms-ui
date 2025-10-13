@@ -9,3 +9,5 @@ export * from './common.type';
 export * from './moreActionsMenu.types';
 export * from './functionalCategories.type';
 export * from './functionalDomains.type';
+export * from './equipmentForms.type';
+export * from './equipmentStatuses.type'

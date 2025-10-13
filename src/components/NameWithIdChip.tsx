@@ -15,7 +15,7 @@ const NameWithIdChip: React.FC<NameWithIdChipProps> = ({
         <Stack direction="row" spacing={1} alignItems="center" sx={{ mt: 0.25 }}>
             {!!id && (
                 <Chip
-                    label={`${chipPrefix}: ${id}`}
+                    label={`${id}`}
                     size="small"
                     sx={{ fontSize: '0.75rem', height: 22 }}
                 />

@@ -20,6 +20,7 @@ import BuildingTable from '../../pages/site/building';
 import DashboardContent from './DashboardContent';
 
 import EquipmentManagement from '../../pages/equipment/master';
+import EquipmentItemManagement from '@/pages/equipment/item';
 
 interface LogoutProps {
     onLogout: () => void;
@@ -51,6 +52,7 @@ const DashboardRoutes: React.FC<DashboardRoutesProps> = ({ onLogout }) => {
             <Route path="site/lab" element={<LabManagement />} />
 
             <Route path="equipment/master-equipment" element={<EquipmentManagement />} />
+            <Route path="equipment/equipment-item" element={<EquipmentItemManagement />} />
 
             <Route path="financial/labBudget" element={<LabBudget />} />
             <Route path="financial/labIncomeExpense" element={<LabIncomeExpense />} />

@@ -100,7 +100,7 @@ function LoginPage({ onLoginSuccess }: { onLoginSuccess: () => void }) {
               onClick={handleLogin}
               disabled={loading}
             >
-              {loading ? <CircularProgress size={20} color="inherit" /> : 'Đăng nhập'}
+              {loading ? <CircularProgress size={20} color="inherit" /> : 'Login'}
             </Button>
 
             {error && (
