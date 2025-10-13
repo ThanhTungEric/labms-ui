@@ -27,7 +27,7 @@ interface StyledMultiSelectProps {
 const StyledSelectButton = styled(Button)(({ theme }) => ({
     height: 32,
     minWidth: 160,
-    borderRadius: 4,
+    borderRadius: 8,
     backgroundColor: theme.palette.common.white,
     color: theme.palette.text.primary,
     borderColor: theme.palette.divider,
@@ -65,7 +65,7 @@ const StyledMultiSelect: React.FC<StyledMultiSelectProps> = ({
     selectedKeys,
     onSelectChange,
     label,
-    placeholder = '—',
+    placeholder = 'Select',
     multiple = true,
     fullWidth = true,
 }) => {

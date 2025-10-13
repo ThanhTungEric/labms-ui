@@ -38,7 +38,6 @@ const FilterSection = forwardRef(({ onSearch }: { onSearch: (filters: any) => vo
     onSearch({ search: '' });
   };
 
-  // Expose reset method to parent
   useImperativeHandle(ref, () => ({
     reset: handleReset
   }));
