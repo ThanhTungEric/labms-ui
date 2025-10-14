@@ -1,7 +1,6 @@
-// EquipmentActions.types.ts
 import type { MoreActionItem } from "@/services/types";
 
-export interface EquipmentActionsProps {
+export interface ParticipantActionsProps {
   selectedItemId: number | null;
   canAdd: boolean;
   moreActionItems: MoreActionItem[];
@@ -10,7 +9,7 @@ export interface EquipmentActionsProps {
   onDelete: () => void;
   onExportReport: () => void;
   onMoreActionClick: (key: string) => void;
+  onColumnClick: () => void;
   searchValue: string;
   onSearchChange: (v: string) => void;
-  onColumnClick: () => void;
 }

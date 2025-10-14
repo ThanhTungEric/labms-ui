@@ -11,14 +11,10 @@ import { PageContainer } from '@toolpad/core/PageContainer';
 
 import BusinessIcon from '@mui/icons-material/Business';
 import DevicesOtherIcon from '@mui/icons-material/DevicesOther';
-import EngineeringIcon from '@mui/icons-material/Engineering';
-import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
-import InventoryIcon from '@mui/icons-material/Inventory';
-import SummarizeIcon from '@mui/icons-material/Summarize';
 import SettingsSuggestIcon from '@mui/icons-material/SettingsSuggest';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ChevronRightOutlinedIcon from '@mui/icons-material/ChevronRightOutlined';
-
+import GroupsIcon from '@mui/icons-material/Groups';
 import DashboardRoutes from './DashboardRoutes';
 
 const NAVIGATION: Navigation = [
@@ -43,37 +39,13 @@ const NAVIGATION: Navigation = [
     ],
   },
   {
-    segment: 'operation',
-    title: 'Operation',
-    icon: <EngineeringIcon />,
+    segment: 'participant',
+    title: 'Participant',
+    icon: <GroupsIcon />,
     children: [
-      { segment: 'labUsageLog', title: 'Lab Usage Log', icon: <ChevronRightOutlinedIcon /> },
-      { segment: 'labResourceDemand', title: 'Lab Resource Demand', icon: <ChevronRightOutlinedIcon /> },
+      { segment: 'group-guest', title: 'Group', icon: <ChevronRightOutlinedIcon /> },
+      { segment: 'individual-guest', title: 'Individual', icon: <ChevronRightOutlinedIcon /> },
     ],
-  },
-  {
-    segment: 'process',
-    title: 'Process',
-    icon: <PublishedWithChangesIcon />,
-    children: [
-      { segment: 'labBooking', title: 'Lab Booking', icon: <ChevronRightOutlinedIcon /> },
-      { segment: 'labSecurity', title: 'Lab Security', icon: <ChevronRightOutlinedIcon /> },
-    ],
-  },
-  {
-    segment: 'inventory',
-    title: 'Inventory',
-    icon: <InventoryIcon />,
-    children: [
-      { segment: 'labInventoryPlanning', title: 'Lab Inventory Planning', icon: <ChevronRightOutlinedIcon /> },
-      { segment: 'inventoryResultEvaluation', title: 'Inventory Result Evaluation', icon: <ChevronRightOutlinedIcon /> },
-    ],
-  },
-  {
-    segment: 'report',
-    title: 'Report',
-    icon: <SummarizeIcon />,
-    children: [{ segment: 'reportList', title: 'Report List', icon: <ChevronRightOutlinedIcon /> }],
   },
   {
     segment: 'setup',

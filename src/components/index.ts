@@ -8,3 +8,4 @@ export { default as SaveButton } from './SaveButton';
 export { default as CancelButton } from './CancelButton';
 export { default as StyledMultiSelect } from './StyledMultiSelect';
 export { default as CustomSearchableSelect } from './CustomSearchableSelect';
+export {default as StyledTextWithButton } from './StyledTextWithButton';

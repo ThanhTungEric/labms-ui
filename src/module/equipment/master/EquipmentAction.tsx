@@ -19,6 +19,7 @@ const EquipmentActions: React.FC<EquipmentActionsProps> = ({
     onColumnClick,
     searchValue,
     onSearchChange,
+    
 }) => {
     return (
         <Stack spacing={1.5} sx={{ mb: 2 }}>

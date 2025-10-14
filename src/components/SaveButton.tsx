@@ -2,37 +2,26 @@ import React from 'react';
 import { Button, styled } from '@mui/material';
 import type { ButtonProps } from '@mui/material/Button';
 
-const StyledSaveButton = styled(Button)(({ theme }) => ({
+const StyledButton = styled(Button)(({ theme }) => ({
     height: '30px',
     padding: '8px 8px',
-    borderRadius: '6px',
-
-    '&.MuiButton-outlined': {
-        borderColor: '#4caf50',
-        color: '#4caf50',
-        '&:hover': {
-            borderColor: '#43a047',
-            backgroundColor: theme.palette.action.hover,
-        },
-    },
-
-
-    '&.MuiButton-contained': {
-        backgroundColor: theme.palette.success.main,
-        color: theme.palette.common.white,
-        '&:hover': {
-            backgroundColor: theme.palette.success.dark,
-        },
+    borderRadius: '8px',
+    borderColor: theme.palette.grey[400],
+    textTransform: 'none',
+    '&:hover': {
+        borderColor: '#439cd8',
+        backgroundColor: theme.palette.action.hover,
+        color: theme.palette.text.secondary,
     },
 }));
 
 export type SaveButtonProps = ButtonProps;
 
 const SaveButton = React.forwardRef<HTMLButtonElement, SaveButtonProps>(
-    ({ children = 'Save', ...props }, ref) => (
-        <StyledSaveButton ref={ref} {...props}>
+    ({ children = 'Save', variant = 'outlined', ...props }, ref) => (
+        <StyledButton ref={ref} variant={variant} {...props}>
             {children}
-        </StyledSaveButton>
+        </StyledButton>
     )
 );
 

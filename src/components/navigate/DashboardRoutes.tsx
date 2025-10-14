@@ -1,18 +1,8 @@
 import * as React from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 
-// Import tất cả các trang
 import FacilitiesMaster from '../../pages/setup/facilitiesmaster';
 import CommonStandardMaster from '../../pages/setup/commonStandardMaster/commonStandardMaster';
-import LabBudget from '../../pages/financial/labBudget/labBudget';
-import LabIncomeExpense from '../../pages/financial/labIncomeExpense/labIncomeExpense';
-import LabResourceDemand from '../../pages/operation/labResourceDemand/labResourceDemand';
-import LabUsageLog from '../../pages/operation/labUsageLog/labUsageLog';
-import LabBooking from '../../pages/process/labBooking/labBooking';
-import LabSecurity from '../../pages/process/labSecurity/labSecurity';
-import LabInventoryPlanning from '../../pages/inventory/labInventoryPlanning/labInventoryPlanning';
-import InventoryResultEvaluation from '../../pages/inventory/inventoryResultEvaluation/inventoryResultEvaluation';
-import ReportList from '../../pages/report/reportList/reportList';
 import LabManagement from '../../pages/site/lab';
 import FloorManagement from '../../pages/site/floor';
 import RoomManagement from '../../pages/site/room';
@@ -21,6 +11,8 @@ import DashboardContent from './DashboardContent';
 
 import EquipmentManagement from '../../pages/equipment/master';
 import EquipmentItemManagement from '@/pages/equipment/item';
+import ParticipantManagement from '@/pages/participant/group';
+import IndividualManagement from '@/pages/participant/individual/PersonManagement';
 
 interface LogoutProps {
     onLogout: () => void;
@@ -54,19 +46,8 @@ const DashboardRoutes: React.FC<DashboardRoutesProps> = ({ onLogout }) => {
             <Route path="equipment/master-equipment" element={<EquipmentManagement />} />
             <Route path="equipment/equipment-item" element={<EquipmentItemManagement />} />
 
-            <Route path="financial/labBudget" element={<LabBudget />} />
-            <Route path="financial/labIncomeExpense" element={<LabIncomeExpense />} />
-
-            <Route path="operation/labUsageLog" element={<LabUsageLog />} />
-            <Route path="operation/labResourceDemand" element={<LabResourceDemand />} />
-
-            <Route path="process/labBooking" element={<LabBooking />} />
-            <Route path="process/labSecurity" element={<LabSecurity />} />
-
-            <Route path="inventory/labInventoryPlanning" element={<LabInventoryPlanning />} />
-            <Route path="inventory/inventoryResultEvaluation" element={<InventoryResultEvaluation />} />
-
-            <Route path="report/reportList" element={<ReportList />} />
+            <Route path="participant/group-guest" element={<ParticipantManagement />} />
+            <Route path="participant/individual-guest" element={<IndividualManagement />} />
 
             <Route path="setup/facilities-master" element={<FacilitiesMaster />} />
             <Route path="setup/commonStandardMaster" element={<CommonStandardMaster />} />
