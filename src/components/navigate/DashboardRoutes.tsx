@@ -13,6 +13,7 @@ import EquipmentManagement from '../../pages/equipment/master';
 import EquipmentItemManagement from '@/pages/equipment/item';
 import ParticipantManagement from '@/pages/participant/group';
 import IndividualManagement from '@/pages/participant/individual/PersonManagement';
+import CalendarPage from '@/pages/calendar';
 
 interface LogoutProps {
     onLogout: () => void;
@@ -48,6 +49,8 @@ const DashboardRoutes: React.FC<DashboardRoutesProps> = ({ onLogout }) => {
 
             <Route path="participant/group-guest" element={<ParticipantManagement />} />
             <Route path="participant/individual-guest" element={<IndividualManagement />} />
+
+             <Route path="/calendar" element={<CalendarPage />} />
 
             <Route path="setup/facilities-master" element={<FacilitiesMaster />} />
             <Route path="setup/commonStandardMaster" element={<CommonStandardMaster />} />

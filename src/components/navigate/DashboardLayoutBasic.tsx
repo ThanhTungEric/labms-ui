@@ -15,6 +15,7 @@ import SettingsSuggestIcon from '@mui/icons-material/SettingsSuggest';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ChevronRightOutlinedIcon from '@mui/icons-material/ChevronRightOutlined';
 import GroupsIcon from '@mui/icons-material/Groups';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import DashboardRoutes from './DashboardRoutes';
 
 const NAVIGATION: Navigation = [
@@ -47,6 +48,11 @@ const NAVIGATION: Navigation = [
       { segment: 'individual-guest', title: 'Individual', icon: <ChevronRightOutlinedIcon /> },
     ],
   },
+  {
+  segment: 'calendar',
+  title: 'Calendar',
+  icon: <CalendarMonthIcon />,
+},
   {
     segment: 'setup',
     title: 'Setup',

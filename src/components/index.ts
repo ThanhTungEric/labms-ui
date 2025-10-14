@@ -9,3 +9,6 @@ export { default as CancelButton } from './CancelButton';
 export { default as StyledMultiSelect } from './StyledMultiSelect';
 export { default as CustomSearchableSelect } from './CustomSearchableSelect';
 export {default as StyledTextWithButton } from './StyledTextWithButton';
+
+export { default as CreateScheduleDialog } from "./schedule/CreateScheduleDialog";
+export { default as ScheduleForm } from "./schedule/ScheduleForm";
