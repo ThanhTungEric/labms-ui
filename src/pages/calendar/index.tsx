@@ -107,7 +107,7 @@ const CalendarPage: React.FC = () => {
 
   return (
     <Box>
-      <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 1}}>
+      <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 1 }}>
         <CustomButton onClick={() => setOpen(true)}>Create Schedule</CustomButton>
       </Box>
 
@@ -136,8 +136,6 @@ const CalendarPage: React.FC = () => {
           listWeek: { buttonText: "List" },
         }}
       />
-
-
       <CreateScheduleDialog
         open={open}
         onClose={() => setOpen(false)}

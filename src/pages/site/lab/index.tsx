@@ -10,7 +10,7 @@ import ConfirmationModal from '../../../components/ConfirmationModal';
 
 import { useLabs } from '../../../services/hooks';
 import { useLabMutations } from '../../../services/hooks';
-import { MoreActionItem } from '@/components';
+import { MoreActionItem } from '@/services/types';
 import { useDebounce } from '../../../utils';
 
 const LabManagement: React.FC = () => {

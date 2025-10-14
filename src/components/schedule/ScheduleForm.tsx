@@ -1,11 +1,13 @@
 import React, { useState } from "react";
-import { Box, Stack, Radio, RadioGroup, FormControlLabel } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import SchedulePriority from "./SchedulePriority";
 import StyledTextBox from "../StyledTextBox";
 import StyledDateTimeBox from "./StyledDateTimeBox";
 import CustomRecurrence from "./CustomRecurrence";
 import SaveButton from "../SaveButton";
 import CancelButton from "../CancelButton";
+import StyledMultiSelect from "../StyledMultiSelect";
+import Participant from "./Participant";
 
 export interface ScheduleData {
   mark: string;
@@ -22,6 +24,8 @@ export interface ScheduleData {
   repeatDays: string[];
   repeatEndType: "on" | "after";
   repeatCount: number;
+  selectedGroups: (string | number)[];
+  selectedIndividuals: (string | number)[];
 }
 
 interface Props {
@@ -44,21 +48,32 @@ const ScheduleForm: React.FC<Props> = ({ onSubmit }) => {
     repeatDays: [],
     repeatEndType: "on",
     repeatCount: 0,
+    selectedGroups: [],
+    selectedIndividuals: [],
   });
 
-  const [repeatOption, setRepeatOption] = useState<string>("noRepeat");
+  const [repeatOption, setRepeatOption] = useState<string[]>([]);
 
   const handleChange = (key: keyof ScheduleData, value: string | number | string[]) => {
     setForm((prev) => ({ ...prev, [key]: value }));
   };
 
-  const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRepeatOption(event.target.value);
+  const handleMultiSelectChange = (selectedValues: string[]) => {
+    setRepeatOption(selectedValues);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit(form);
+  };
+
+
+  const handleGroupChange = (newValues: (string | number)[]) => {
+    setForm((prev) => ({ ...prev, selectedGroups: newValues }));
+  };
+
+  const handleIndividualChange = (newValues: (string | number)[]) => {
+    setForm((prev) => ({ ...prev, selectedIndividuals: newValues }));
   };
 
   return (
@@ -78,6 +93,7 @@ const ScheduleForm: React.FC<Props> = ({ onSubmit }) => {
         isEditing
         onChange={(v) => handleChange("title", v)}
         labelPosition="top"
+        fullWidth={true}
       />
 
       <StyledDateTimeBox
@@ -87,24 +103,24 @@ const ScheduleForm: React.FC<Props> = ({ onSubmit }) => {
         onChange={(k, v) => handleChange(k as any, v)}
       />
 
-      <RadioGroup
-        value={repeatOption}
-        onChange={handleRadioChange}
-        sx={{ display: "flex", flexDirection: "row", gap: 2 }}
-      >
-        <FormControlLabel
-          control={<Radio />}
-          label="No repeat"
-          value="noRepeat"
-        />
-        <FormControlLabel
-          control={<Radio />}
-          label="Repeat"
-          value="repeat"
-        />
-      </RadioGroup>
+      <StyledMultiSelect
+        label="Repeat Options"
+        items={[
+          { key: "no_repeat", label: "Does not repeat" },
+          { key: "daily", label: "Daily" },
+          { key: "weekly_on_tuesday", label: "Weekly on Tuesday" },
+          { key: "monthly_on_second_tuesday", label: "Monthly on the second Tuesday" },
+          { key: "annually_on_october_14", label: "Annually on October 14" },
+          { key: "every_weekday", label: "Every weekday (Monday to Friday)" },
+          { key: "custom", label: "Custom..." },
+        ]}
+        selectedKeys={repeatOption}
+        onSelectChange={handleMultiSelectChange}
+        multiple={false}
+        labelPosition="top"
+      />
 
-      {repeatOption === "repeat" && (
+      {repeatOption.includes("custom") && (
         <CustomRecurrence
           repeatEvery={form.repeatEvery}
           repeatUnit={form.repeatUnit}
@@ -115,6 +131,13 @@ const ScheduleForm: React.FC<Props> = ({ onSubmit }) => {
           onChange={handleChange}
         />
       )}
+
+      <Participant
+        selectedGroupValues={form.selectedGroups}
+        selectedIndividualValues={form.selectedIndividuals}
+        onGroupChange={handleGroupChange}
+        onIndividualChange={handleIndividualChange}
+      />
 
       <Stack direction="row" justifyContent="flex-end" spacing={2} mt={2}>
         <CancelButton type="button" />

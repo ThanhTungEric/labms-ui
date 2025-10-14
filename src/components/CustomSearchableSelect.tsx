@@ -8,6 +8,7 @@ import {
     TextField,
     CircularProgress,
 } from '@mui/material';
+import StyledLabel from './StyledLabel';
 
 const StyledAutocompleteInput = styled(TextField)(({ theme }) => ({
     '& .MuiOutlinedInput-root': {
@@ -34,11 +35,13 @@ interface StyledSearchableSelectProps {
     label: string;
     options: OptionType[];
     placeholder?: string;
-    value: OptionType['value'] | '' | null;
-    onChange: (newValue: OptionType['value'] | '') => void;
+    value: (OptionType['value'] | '')[];
+    onChange: (newValue: (OptionType['value'] | '')[]) => void;
     fullWidth?: boolean;
     loading?: boolean;
+    multiple?: boolean;
     onInputChange?: (event: React.SyntheticEvent, value: string, reason: string) => void;
+    width?: string | number;
 }
 
 const StyledSearchableSelect: React.FC<StyledSearchableSelectProps> = ({
@@ -49,25 +52,20 @@ const StyledSearchableSelect: React.FC<StyledSearchableSelectProps> = ({
     placeholder = `Select ${label}`,
     fullWidth = true,
     loading = false,
+    multiple = false,
+    width = '100%',
     ...props
 }) => {
     const inputId = `searchable-select-${label.toLowerCase().replace(/\s/g, '-')}`;
 
-    const fullOptions = options;
-
-    const selectedOption = useMemo(() => {
-        if (!value) return null;
-        return fullOptions.find(option => option.value === value) || null;
-    }, [value, fullOptions]);
-
-
-    const handleChange = (
-        event: any,
-        newValue: OptionType | null,
-    ) => {
-        const finalValue = newValue ? newValue.value : '';
-        onChange(finalValue as string | number | '');
+    const handleChange = (event: any, newValue: OptionType | OptionType[] | null) => {
+        const newSelectedValues = Array.isArray(newValue) ? newValue.map(item => item.value) : [];
+        onChange(newSelectedValues);
     };
+
+    const selectedOptions = useMemo(() => {
+        return options.filter(option => value.includes(option.value));
+    }, [value, options]);
 
     const getOptionLabel = (option: OptionType | string | null | undefined) => {
         if (!option) return '';
@@ -82,31 +80,17 @@ const StyledSearchableSelect: React.FC<StyledSearchableSelectProps> = ({
     };
 
     return (
-        <Box
-            sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 0.2,
-                minWidth: 150,
-                ...(fullWidth && { width: '100%' }),
-            }}
-        >
-            <Typography
-                component="label"
-                htmlFor={inputId}
-                variant="body2"
-                color="text.secondary"
-                sx={{ fontWeight: 600, fontSize: 11, flexShrink: 0 }}
-            >
-                {label}
-            </Typography>
-
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.2, minWidth: 150, width }}>
+            <StyledLabel
+                label={label}
+            />
             <FormControl fullWidth size="small" variant="outlined">
                 <Autocomplete
                     id={inputId}
+                    multiple={multiple}
                     disableClearable={false}
-                    options={fullOptions}
-                    value={selectedOption}
+                    options={options}
+                    value={selectedOptions}
                     onChange={handleChange}
                     getOptionLabel={getOptionLabel}
                     isOptionEqualToValue={isOptionEqualToValue}
@@ -139,7 +123,7 @@ const StyledSearchableSelect: React.FC<StyledSearchableSelectProps> = ({
                         },
                     }}
                     size="small"
-                    {...props as any}
+                    {...props}
                 />
             </FormControl>
         </Box>

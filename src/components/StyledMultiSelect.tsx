@@ -22,7 +22,7 @@ interface StyledMultiSelectProps {
   placeholder?: string;
   multiple?: boolean;
   fullWidth?: boolean;
-  /** 👇 NEW: kiểm soát vị trí label */
+  width?: string | number;  // Allow a custom width to be passed in
   labelPosition?: 'side' | 'top';
 }
 
@@ -70,7 +70,8 @@ const StyledMultiSelect: React.FC<StyledMultiSelectProps> = ({
   placeholder = 'Select',
   multiple = true,
   fullWidth = true,
-  labelPosition = 'side', // 👈 default
+  width,  // Accept width as a prop
+  labelPosition = 'side',
 }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -101,7 +102,7 @@ const StyledMultiSelect: React.FC<StyledMultiSelectProps> = ({
   const renderHorizontal = (
     <FieldContainer>
       <LabelText variant="body2">{label}:</LabelText>
-      <ButtonWrapper sx={{ width: fullWidth ? '100%' : 'auto' }}>
+      <ButtonWrapper sx={{ width: width ?? (fullWidth ? '100%' : 'auto') }}>
         <StyledSelectButton
           variant="outlined"
           onClick={handleOpenMenu}
@@ -124,7 +125,7 @@ const StyledMultiSelect: React.FC<StyledMultiSelectProps> = ({
   );
 
   const renderVertical = (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5, width: fullWidth ? '100%' : 'auto' }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5, width: width ?? (fullWidth ? '100%' : 'auto') }}>
       <LabelText variant="body2">{label}</LabelText>
       <StyledSelectButton
         variant="outlined"

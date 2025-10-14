@@ -8,6 +8,9 @@ type StyledTextBoxProps = {
   onChange?: (value: string) => void;
   type?: string;
   labelPosition?: 'side' | 'top';
+  height?: string | number;
+  width?: string | number;
+  fullWidth?: boolean;
 };
 
 export default function StyledTextBox({
@@ -17,6 +20,9 @@ export default function StyledTextBox({
   onChange,
   type = 'text',
   labelPosition = 'side',
+  height = 32,
+  width = '100%',
+  fullWidth = false,
 }: StyledTextBoxProps) {
   const displayValue = String(value ?? '');
 
@@ -26,14 +32,15 @@ export default function StyledTextBox({
       type={type}
       onChange={(e) => onChange?.(e.target.value)}
       size="small"
-      fullWidth
+      fullWidth={fullWidth}
       variant="outlined"
       sx={{
+        width: fullWidth ? '100%' : width,
         flex: 1,
         display: 'flex',
         alignItems: 'center',
         '& .MuiOutlinedInput-root': {
-          minHeight: 32,
+          minHeight: height,
           borderRadius: 2,
           '& fieldset': { borderColor: 'divider' },
           '&:hover fieldset': { borderColor: 'divider' },
@@ -54,11 +61,12 @@ export default function StyledTextBox({
       borderColor="divider"
       borderRadius={1}
       flex={1}
-      minHeight={32}
+      minHeight={height}
       display="flex"
       alignItems="center"
       fontSize={14}
       color="text.primary"
+      width={fullWidth ? '100%' : width}
     >
       {displayValue}
     </Box>
