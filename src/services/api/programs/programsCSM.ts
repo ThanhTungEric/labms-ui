@@ -1,6 +1,6 @@
 import api from '../../config/axios';
 
-import { programsCSM } from '../../types/programCSM.type';
+import { programsCSM } from '../../types/program.type';
 
 
 export async function getProgramsCSM(params: Record<string, any> = {}): Promise<programsCSM[]> {
