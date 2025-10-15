@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { getAllLabs, getLabById } from '../../api/lab/lab';
 import { LabListItem, LabDetail } from '../../types';
+import { useDebounce } from '@/utils';
 
 type UseLabsOpts = {
     page?: number;
@@ -18,6 +19,7 @@ export function useLabs(id?: number, initial?: UseLabsOpts) {
     const [pageSize, setPageSize] = useState(initial?.pageSize ?? 10);
     const [total, setTotal] = useState(0);
     const [search, setSearch] = useState(initial?.search ?? '');
+    const debouncedSearch = useDebounce(search, 400);
     const [sorts, setSorts] = useState(initial?.sorts ?? []);
 
     const fetchLabs = useCallback(async () => {
@@ -29,7 +31,12 @@ export function useLabs(id?: number, initial?: UseLabsOpts) {
                 setLabs([data]);
                 setTotal(1);
             } else {
-                const { data, meta } = await getAllLabs({ page, pageSize, search, sorts });
+                const { data, meta } = await getAllLabs({
+                    page,
+                    pageSize,
+                    search: debouncedSearch,
+                    sorts,
+                });
                 setLabs(data);
                 setTotal(meta?.count ?? 0);
             }
@@ -38,7 +45,7 @@ export function useLabs(id?: number, initial?: UseLabsOpts) {
         } finally {
             setLoading(false);
         }
-    }, [id, page, pageSize, search, sorts]);
+    }, [id, page, pageSize, debouncedSearch, sorts]);
 
     useEffect(() => {
         fetchLabs();

@@ -1,6 +1,4 @@
-
-import { equipmentStatusItems } from './equipmentStatuses.type';
-
+import { EquipmentStatus } from './equipmentStatuses.type';
 
 export type EquipmentForm = {
     id: number;
@@ -20,8 +18,15 @@ export type EquipmentDomain = {
     description: string;
 };
 
+export type EquipmentItemStatus = EquipmentStatus;
 
-export type EquipmentListItem = {
+export type EquipmentItemLab = {
+    id: number;
+    code: string;
+    name: string;
+};
+
+export type Equipment = {
     id: number;
     code: string;
     name: string;
@@ -38,31 +43,22 @@ export type EquipmentListItem = {
     domains: EquipmentDomain[];
 };
 
-export type EquipmentItemStatus = equipmentStatusItems;
-
-export type EquipmentItemLab = {
-    id: number;
-    code: string;
-    name: string;
-};
-
-export type EquipmentItemListItem = {
+export type EquipmentItem = {
     id: number;
     serialNumber: string;
     status: EquipmentItemStatus;
     warrantyExpiration: string;
     purchaseDate: string;
+    base: Equipment;
     lab: EquipmentItemLab;
 };
 
-
-export type EquipmentDetail = EquipmentListItem & {
+export type EquipmentDetail = Equipment & {
     items: {
-        data: EquipmentItemListItem[];
+        data: EquipmentItem[];
         meta: { count: number };
     };
 };
-
 
 export type CreateEquipmentDto = {
     code: string;
@@ -99,7 +95,6 @@ export type UpdateEquipmentDto = {
     addedDomainIds?: number[];
     removedDomainIds?: number[];
 };
-
 
 export type EquipmentSort = {
     field:

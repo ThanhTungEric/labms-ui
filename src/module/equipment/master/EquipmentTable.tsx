@@ -1,15 +1,13 @@
 import React from 'react';
 import {
     Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-    Paper, Typography, TableSortLabel, TableFooter, TablePagination, Box
+    Paper, TableSortLabel, TableFooter, TablePagination, Box
 } from '@mui/material';
 import NameWithIdChip from '../../../components/NameWithIdChip';
 
-import type { EquipmentListItem, EquipmentForm, EquipmentCategory, EquipmentDomain, Order } from '../../../services/types';
+import type { Equipment, EquipmentCategory, EquipmentDomain, Order } from '../../../services/types';
 
-import type { EquipmentQuery, EquipmentSort } from '../../../services/types';
-
-export type EquipmentRow = EquipmentListItem;
+export type EquipmentRow = Equipment;
 
 interface EquipmentTableProps {
     rows: EquipmentRow[];

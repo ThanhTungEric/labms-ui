@@ -1,8 +1,8 @@
-import api from '../../config/axios';
+import api from '@/services/config/axios';
 import {
     CreateEquipmentDto,
     EquipmentDetail,
-    EquipmentListItem,
+    Equipment,
     EquipmentQuery,
     UpdateEquipmentDto,
 } from '../../types';
@@ -11,7 +11,7 @@ const BASE = '/equipment';
 
 export async function getAllEquipment(
     params: EquipmentQuery = {}
-): Promise<{ data: EquipmentListItem[]; meta: { count: number } }> {
+): Promise<{ data: Equipment[]; meta: { count: number } }> {
     const page = params.page ?? 1;
     const pageSize = params.pageSize ?? 10;
 
@@ -23,7 +23,7 @@ export async function getAllEquipment(
             ? JSON.stringify(params.sorts.map(s => ({ field: s.field, direction: s.dir })))
             : undefined;
 
-    const res = await api.get<{ data: EquipmentListItem[]; meta: { count: number } }>(BASE, {
+    const res = await api.get<{ data: Equipment[]; meta: { count: number } }>(BASE, {
         params: {
             skip,
             take,

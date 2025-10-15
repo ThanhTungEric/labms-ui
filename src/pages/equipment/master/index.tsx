@@ -8,10 +8,10 @@ import ColumnSelectionDialog from '../../../module/equipment/master/ColumnSelect
 import EquipmentDialog from '../../../module/equipment/master/EquipmentDialog';
 
 import { useEquipmentData, useEquipmentMutations } from '@/services/hooks';
-import type { EquipmentListItem } from '@/services/types';
+import type { Equipment } from '@/services/types';
 import { MoreActionItem } from '@/services/types';
 
-const toRow = (item: EquipmentListItem): EquipmentRow => ({
+const toRow = (item: Equipment): EquipmentRow => ({
     id: item.id,
     code: item.code,
     name: item.name,
@@ -34,7 +34,7 @@ const EquipmentManagement: React.FC = () => {
     const [selectedItemId, setSelectedItemId] = useState<number | null>(null);
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
     const [isColumnDialogVisible, setIsColumnDialogVisible] = useState(false);
-    const [isFormModalOpen, setIsFormModalOpen] = useState<boolean>(false); // Thêm state cho form dialog
+    const [isFormModalOpen, setIsFormModalOpen] = useState<boolean>(false);
 
     const [columnsVisible, setColumnsVisible] = useState<Record<keyof EquipmentRow, boolean>>({
         id: true, code: true, name: true, manufacturer: true, price: true, modelCode: true,
@@ -47,7 +47,7 @@ const EquipmentManagement: React.FC = () => {
         searchInput, setSearchInput, sorts, onRequestSort, reload,
     } = useEquipmentData();
 
-    const { remove } = useEquipmentMutations(); // Lấy hàm remove từ hook
+    const { remove } = useEquipmentMutations();
 
     const rows: EquipmentRow[] = useMemo(() => (data || []).map(toRow), [data]);
 
@@ -57,7 +57,6 @@ const EquipmentManagement: React.FC = () => {
 
     const handleExportReport = () => console.log('Exporting equipment report...');
 
-    // Cập nhật hàm xử lý
     const handleAdd = () => {
         setSelectedItemId(null);
         setIsFormModalOpen(true);

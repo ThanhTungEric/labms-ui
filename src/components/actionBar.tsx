@@ -12,6 +12,8 @@ import { useNotification } from "../services/hooks/notification/notification";
 import ExportReportButton from "./ExportReportButton";
 import ImportButton from "./ImportButton";
 import FilterSection from "./fiterSearch";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 
 //
 // 🎨 Styled containers for consistent spacing & alignment
@@ -48,9 +50,10 @@ export default function ActionBar({
   const filterRef = useRef<{ reset: () => void }>(null);
 
   // Handle export click
-  const handleExportReport = useCallback(() => {
-    if (typeof onExport === "function") onExport();
-  }, [onExport]);
+ const handleExportReport = useCallback(() => {
+  if (typeof onExport === "function") onExport();
+}, [onExport]);
+
 
   // Handle import click
   const handleImportClick = useCallback(() => {
@@ -69,9 +72,7 @@ export default function ActionBar({
 
   return (
     <StyledActionBar>
-      {/* ✅ Left section — action buttons */}
       <ButtonGroup>
-        {/* Add button (hidden for some types) */}
         {!hiddenAddTypes.includes(type) && (
           <Tooltip title="Add">
             <IconButton size="small" onClick={onAdd}>
@@ -79,8 +80,6 @@ export default function ActionBar({
             </IconButton>
           </Tooltip>
         )}
-
-        {/* Delete button — only active when items are selected */}
         {!hiddenAddTypes.includes(type) && (
           <Tooltip title={isDeleteDisabled ? "Select items to delete" : "Delete"}>
             <span>
@@ -88,25 +87,20 @@ export default function ActionBar({
                 size="small"
                 onClick={handleDeleteClick}
                 disabled={isDeleteDisabled}
-                color={isDeleteDisabled ? "default" : "error"} // 🔴 turns red when active
+                color={isDeleteDisabled ? "default" : "error"} 
               >
                 <DeleteIcon fontSize="small" />
               </IconButton>
             </span>
           </Tooltip>
         )}
-
-        {/* Import button */}
         <ImportButton onClick={handleImportClick} />
-
-        {/* Export button */}
         <ExportReportButton onClick={handleExportReport} />
       </ButtonGroup>
-
-      {/* ✅ Right section — search bar */}
       <Box flex={1} display="flex" justifyContent="flex-end" minWidth={200}>
         <FilterSection ref={filterRef} onSearch={handleFilter} />
       </Box>
+      
     </StyledActionBar>
   );
 }

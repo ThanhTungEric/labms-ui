@@ -1,4 +1,4 @@
-import type { MoreActionItem } from '../../../../components';
+import type { MoreActionItem } from "@/services/types";
 
 export interface EquipmentActionsProps {
     selectedItemId: number | null;

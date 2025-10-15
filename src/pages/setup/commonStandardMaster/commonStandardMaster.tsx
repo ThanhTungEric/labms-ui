@@ -47,6 +47,10 @@ import { useAddPrograms } from '../../../services/hooks/programsCSM/programsAdd'
 import { useFunctionalCategories } from '@/services/hooks/functionalCategories/functionalCategories';
 import { data } from 'react-router-dom';
 import CustomTablePagination from '@/components/CustomTablePagination';
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
+import ImportDialog from '@/components/ImportDialog';
+
 export default function CommonStandardMaster() {
   //--------------------------------------------------------------------------------------------------------- Khai báo 
 
@@ -60,6 +64,7 @@ export default function CommonStandardMaster() {
   const [openConfirm, setOpenConfirm] = useState(false);
   const [openAdd, setOpenAdd] = useState(false);
   const filterRef = useRef<{ reset: () => void }>(null);
+  const [openImport, setOpenImport] = useState(false);
 
   //--------------------------------------------------------------------------------------------------------- Gọi custom hook và destructuring kết quả trả về cho master-data
 
@@ -378,8 +383,87 @@ export default function CommonStandardMaster() {
     setOpenAdd(false);
   };
 
+  // Xuất dữ liệu Excel (page hiện tại hoặc toàn bộ)
+const handleExportExcel = () => {
+  if (!items || items.length === 0) {
+    showError("No data to export");
+    return;
+  }
 
-  
+  // Chỉ xuất trang hiện tại
+  const currentPageData = items
+    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+    .map((row: { [x: string]: any; }) => {
+      const obj: Record<string, any> = {};
+      keys.forEach((key) => {
+        obj[key.toUpperCase()] = row[key];
+      });
+      return obj;
+    });
+
+  // Tạo file Excel
+  const worksheet = XLSX.utils.json_to_sheet(currentPageData);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+  const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+  const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
+  saveAs(blob, `${selected || "Data"}_${new Date().toISOString().slice(0, 10)}.xlsx`);
+
+  showSuccess("Exported successfully!");
+};
+
+
+
+const handleImport = async (data: any[]) => {
+  try {
+    if (!data || data.length === 0) {
+      showError("No data to import");
+      return;
+    }
+
+    if (!selected) {
+      showError("Please select master-data type");
+      return;
+    }
+
+    const varTextSuccess = "Imported successfully";
+
+    // ⚙️ Import từng dòng
+    for (const row of data) {
+      const hasValue = Object.values(row).some(
+        (v) => v !== null && v !== undefined && String(v).trim() !== ""
+      );
+      if (!hasValue) continue;
+
+      if (selected === "faculty") {
+        await addFaculty(row); // ✅ row là object { name, description? }
+      } else if (selected === "academic-titles") {
+        await addAcademicTitle(row);
+      } else if (selected === "forms") {
+        await addEquipmentForm(row);
+      } else if (selected === "functional-categories") {
+        await addFunctionalCategories(row);
+      } else if (selected === "functional-domains") {
+        await addFunctionalDomains(row);
+      } else if (selected === "programs") {
+        await addPrograms(row);
+      } else {
+        showError(`Import not supported for "${selected}"`);
+        return;
+      }
+    }
+
+    showSuccess(varTextSuccess);
+    setSearchParams({ _refresh: Date.now() });
+    setSelectedIds([]);
+    setOpenImport(false);
+  } catch (error: any) {
+    console.error("Import error:", error);
+    showError(`Import failed: ${error?.message || "Unknown error"}`);
+  }
+};
+
+ 
   return (
     <Box sx={{ p: 2 }}>
       {/* Popup loading */}
@@ -433,10 +517,9 @@ export default function CommonStandardMaster() {
             selectedIds={selectedIds}
             onDelete={checkDelete}
             onAdd={() => setOpenAdd(true)}
-            onImport={(file) => {
-            } }
-            onExport={() => {
-            } } handleFilter={handleFilter}         />
+             onImport={() => setOpenImport(true)} 
+              onExport={handleExportExcel}
+             handleFilter={handleFilter}         />
            
           <TableContainer component={Paper}>
             <Table size="small" sx={{ borderCollapse: "collapse", "& td, & th": { border: "1px solid rgba(224, 224, 224, 1)" } }}>
@@ -537,6 +620,12 @@ export default function CommonStandardMaster() {
         onClose={() => setOpenAdd(false)}
         onSave={handleAdd}
         faculty={faculties?.data|| []}   // lấy mảng data, fallback []
+      />
+      <ImportDialog
+        open={openImport}
+        onClose={() => setOpenImport(false)}
+        keys={keys}
+        onImport={handleImport}
       />
     </Box>
   );
