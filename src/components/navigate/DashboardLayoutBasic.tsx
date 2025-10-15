@@ -16,6 +16,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import ChevronRightOutlinedIcon from '@mui/icons-material/ChevronRightOutlined';
 import GroupsIcon from '@mui/icons-material/Groups';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import AccountTreeOutlinedIcon from '@mui/icons-material/AccountTreeOutlined';
 import DashboardRoutes from './DashboardRoutes';
 
 const NAVIGATION: Navigation = [
@@ -49,10 +50,15 @@ const NAVIGATION: Navigation = [
     ],
   },
   {
-  segment: 'calendar',
-  title: 'Calendar',
-  icon: <CalendarMonthIcon />,
-},
+    segment: 'calendar',
+    title: 'Calendar',
+    icon: <CalendarMonthIcon />,
+  },
+  {
+    segment: 'manage-flow',
+    title: 'Manage Flow',
+    icon: <AccountTreeOutlinedIcon />,
+  },
   {
     segment: 'setup',
     title: 'Setup',
