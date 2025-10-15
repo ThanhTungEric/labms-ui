@@ -1,88 +1,106 @@
+import React, { useCallback, useRef } from "react";
 import {
   Box,
   IconButton,
-  Button,
-  Menu,
-  MenuItem,
-  TextField,
-  Tooltip
-} from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
-import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
-import {actionBar} from '../services/types/actionBar.type';
+  Tooltip,
+  styled,
+} from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { actionBar } from "../services/types/actionBar.type";
+import { useNotification } from "../services/hooks/notification/notification";
+import ExportReportButton from "./ExportReportButton";
+import ImportButton from "./ImportButton";
+import FilterSection from "./fiterSearch";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 
-export default function ActionBar({ onDelete, onImport, onExport, selectedIds  }: actionBar) {
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file && typeof onImport === 'function') {
-      onImport(file);
+//
+// 🎨 Styled containers for consistent spacing & alignment
+//
+const StyledActionBar = styled(Box)(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  flexWrap: "wrap", // allows wrapping on smaller screens
+  gap: theme.spacing(1.5),
+  padding: theme.spacing(1),
+  border: `1px solid ${theme.palette.grey[300]}`,
+  borderRadius: 8,
+  backgroundColor: theme.palette.background.paper,
+}));
+
+const ButtonGroup = styled(Box)(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  flexWrap: "wrap",
+  gap: theme.spacing(1),
+}));
+
+export default function ActionBar({
+  type,
+  onDelete,
+  onImport,
+  onExport,
+  selectedIds = [],
+  onAdd,
+  handleFilter,
+}: actionBar) {
+  const hiddenAddTypes = ["equipment-statuses", "lab-positions", "something-else"];
+  const filterRef = useRef<{ reset: () => void }>(null);
+
+  // Handle export click
+ const handleExportReport = useCallback(() => {
+  if (typeof onExport === "function") onExport();
+}, [onExport]);
+
+
+  // Handle import click
+  const handleImportClick = useCallback(() => {
+    if (typeof onExport === "function") onImport();
+  }, [onImport]);
+
+  // Handle delete click (only if items selected)
+  const handleDeleteClick = () => {
+    if (onDelete && selectedIds.length > 0) {
+      onDelete(selectedIds);
     }
-    e.target.value = ''; // reset input để chọn lại cùng file
   };
 
+  // Check if delete button should be active
+  const isDeleteDisabled = selectedIds.length === 0;
+
   return (
-    <Box
-      mt={2}
-      p={1}
-      display="flex"
-      justifyContent="space-between"
-      flexWrap="wrap"
-      alignItems="center"
-      border="1px solid #e0e0e0"
-      borderRadius={1}
-      mb={1}
-    >
-      <Box display="flex"  gap={1}>
-        <Tooltip title='Add'>
-            <IconButton component="label" size="small" color="primary">
-                <AddIcon />
+    <StyledActionBar>
+      <ButtonGroup>
+        {!hiddenAddTypes.includes(type) && (
+          <Tooltip title="Add">
+            <IconButton size="small" onClick={onAdd}>
+              <AddIcon fontSize="small" />
             </IconButton>
-        </Tooltip>
-        {/* <Tooltip title='View'>
-            <IconButton component="label" size="small" color="primary">
-                <VisibilityIcon />
-            </IconButton>
-        </Tooltip> */}
-        {/* <Tooltip title='Edit'>
-            <IconButton component="label" size="small" color="primary">
-                <EditIcon />
-            </IconButton>
-        </Tooltip> */}
-        <Tooltip title='Delete'>
-            <IconButton component="label" size="small" color="primary" onClick={() => {
-              if (onDelete && selectedIds.length > 0) {
-                onDelete(selectedIds);
-              }
-            }}>
-                <DeleteIcon />
-            </IconButton>
-        </Tooltip>
-        
-
-        {/* Import CSV */}
-        <Tooltip title="Import CSV">
-          <IconButton component="label" size="small" color="primary">
-            <FileUploadOutlinedIcon />
-            <input
-              type="file"
-              hidden
-              accept=".csv"
-              onChange={handleFileChange}
-            />
-          </IconButton>
-        </Tooltip>
-
-        {/* Export CSV */}
-        <Tooltip title="Export CSV">
-          <IconButton size="small" color="primary" onClick={onExport}>
-            <FileDownloadOutlinedIcon />
-          </IconButton>
-        </Tooltip>
+          </Tooltip>
+        )}
+        {!hiddenAddTypes.includes(type) && (
+          <Tooltip title={isDeleteDisabled ? "Select items to delete" : "Delete"}>
+            <span>
+              <IconButton
+                size="small"
+                onClick={handleDeleteClick}
+                disabled={isDeleteDisabled}
+                color={isDeleteDisabled ? "default" : "error"} 
+              >
+                <DeleteIcon fontSize="small" />
+              </IconButton>
+            </span>
+          </Tooltip>
+        )}
+        <ImportButton onClick={handleImportClick} />
+        <ExportReportButton onClick={handleExportReport} />
+      </ButtonGroup>
+      <Box flex={1} display="flex" justifyContent="flex-end" minWidth={200}>
+        <FilterSection ref={filterRef} onSearch={handleFilter} />
       </Box>
-    </Box>
+      
+    </StyledActionBar>
   );
 }

@@ -22,7 +22,7 @@ export function useNotification() {
     showInfo: (msg: string) => showNotification(msg, 'info'),
     showSuccess: (msg: string) => showNotification(msg, 'success'),
     showError: (msg: string) => showNotification(msg, 'error'),
-    showWarning: (msg: string) => showNotification(msg, 'warning'),
+    showWarning: (msg: string, err: any) => showNotification(msg, 'warning'),
     close: () => setNotify((prev) => ({ ...prev, open: false })),
   };
 }

@@ -31,3 +31,7 @@ export * from './participants/groupGuestParticipant/useGgpMutations';
 export * from './participants/individualGuestParticipant/useIgpData';
 export * from './participants/individualGuestParticipant/useIgpForm';
 export * from './participants/individualGuestParticipant/useIgpMutations';
+
+export * from './staff/useStaffData';
+export * from './staff/useStaffForm';
+export * from './staff/useStaffMutations';

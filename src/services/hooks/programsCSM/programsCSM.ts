@@ -23,6 +23,6 @@ export function useProgramsCSM(params: Record<string, any>) {
         });
   
       return () => { isMounted = false };
-    }, [params]); // <-- khi params đổi thì gọi lại API
+    }, [params]);
   return { programsCSM, loadingProgramsCSM, errorProgramsCSM };
 }

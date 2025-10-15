@@ -1,12 +1,10 @@
 import api from '../../config/axios';
 import qs from 'qs';
- interface DeleteParams extends Record<string, any> {
-  ids: number[]; // hoặc string[] tùy ID
-}
+
 export async function deleteEquipmentFormItems(ids: number[]): Promise<void> {
 
   if (!ids || !Array.isArray(ids) || ids.length === 0) {
-    throw new Error('Phải cung cấp mảng IDs để xóa');
+    throw new Error('Please select the row to delete');
   }
 
   try {
@@ -16,7 +14,7 @@ export async function deleteEquipmentFormItems(ids: number[]): Promise<void> {
     });
 
   } catch (error: any) {
-    console.error('Lỗi khi xóa equipment forms:', error);
-    throw new Error(error?.message || 'Xóa thất bại');
+    
+    throw new Error(error?.message || 'Delete failed please check and try again');
   }
 }

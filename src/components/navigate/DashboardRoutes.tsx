@@ -1,19 +1,8 @@
 import * as React from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 
-import FacilitiesMaster from '../../pages/setup/facilitiesmaster';
-import CommonStandardMaster from '../../pages/setup/commonStandardMaster/commonStandardMaster';
-import LabManagement from '../../pages/site/lab';
-import FloorManagement from '../../pages/site/floor';
-import RoomManagement from '../../pages/site/room';
-import BuildingTable from '../../pages/site/building';
+import { BuildingTable, CalendarPage, CommonStandardMaster, EquipmentItemManagement, EquipmentManagement, FacilitiesMaster, FloorManagement, IndividualManagement, LabManagement, ManageFLPage, ParticipantManagement, RoomManagement, StaffManagement } from '@/pages';
 import DashboardContent from './DashboardContent';
-
-import EquipmentManagement from '../../pages/equipment/master';
-import EquipmentItemManagement from '@/pages/equipment/item';
-import ParticipantManagement from '@/pages/participant/group';
-import IndividualManagement from '@/pages/participant/individual/PersonManagement';
-import CalendarPage from '@/pages/calendar';
 
 interface LogoutProps {
     onLogout: () => void;
@@ -50,7 +39,11 @@ const DashboardRoutes: React.FC<DashboardRoutesProps> = ({ onLogout }) => {
             <Route path="participant/group-guest" element={<ParticipantManagement />} />
             <Route path="participant/individual-guest" element={<IndividualManagement />} />
 
-             <Route path="/calendar" element={<CalendarPage />} />
+            <Route path="/staff" element={<StaffManagement/>} />
+
+            <Route path="/calendar" element={<CalendarPage />} />
+
+            <Route path="/manage-flow" element={<ManageFLPage />} />
 
             <Route path="setup/facilities-master" element={<FacilitiesMaster />} />
             <Route path="setup/commonStandardMaster" element={<CommonStandardMaster />} />

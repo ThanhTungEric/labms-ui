@@ -25,11 +25,34 @@ import { useEquipmentForms } from '../../../services/hooks/equipmentForms/equipm
 import { useFaculties } from '../../../services/hooks/faculties/faculties';
 import { useLabPositions } from '../../../services/hooks/labPositions/labPositions';
 import { useFunctionalDomains } from '../../../services/hooks/functionalDomains/functionalDomains';
-import { useFunctionalCategories } from '../../../services/hooks/functionalCategories/functionalCategories';
+
 import LoadingInline from '../../../components/loadingPopup';
 import { useDeleteEquipmentForms } from '../../../services/hooks/equipmentForms/eqipmentFormsDelete';
 import DynamicDialog from '../../../components/dynamicDialog';
+import { useDeleteAcademicTitles } from '../../../services/hooks/academicTitle/academicTitlesDelete';
+import { useDeleteEquipmentStatuses } from '../../../services/hooks/equipmentStatuses/equipmentStatusesDelete';
+import { useDeleteFunctionalDomains } from '../../../services/hooks/functionalDomains/functionalDomainsDelete';
+import { useDeleteFaculties } from '../../../services/hooks/faculties/facultiesDelete';
+import { useDeleteLabPositions } from '../../../services/hooks/labPositions/labPositionsDelete';
+import { useDeletePriceCategories } from '../../../services/hooks/priceCategories/priceCategotiesDelete';
+import { useDeletePrograms } from '../../../services/hooks/programsCSM/programsDelete';
+import { useDeleteFunctionalCategories } from '../../../services/hooks/functionalCategories/functionalCategoriesDelete';
+import AddFormDialog from '../../../components/AddFormDialog';
+import { useAddFaculty } from '../../../services/hooks/faculties/facultiesAdd';
+import { useAddAcademicTitle } from '../../../services/hooks/academicTitle/academicTitleAdd';
+import { useAddEquipmentForms } from '../../../services/hooks/equipmentForms/equipmentFormsAdd';
+import { useAddFunctionalCategories } from '../../../services/hooks/functionalCategories/functionalCategoriesAdd';
+import { useAddFunctionalDomains } from '../../../services/hooks/functionalDomains/functionalDomainsAdd';
+import { useAddPrograms } from '../../../services/hooks/programsCSM/programsAdd';
+import { useFunctionalCategories } from '@/services/hooks/functionalCategories/functionalCategories';
+import { data } from 'react-router-dom';
+import CustomTablePagination from '@/components/CustomTablePagination';
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
+import ImportDialog from '@/components/ImportDialog';
+
 export default function CommonStandardMaster() {
+  //--------------------------------------------------------------------------------------------------------- Khai báo 
 
   const [searchParams, setSearchParams] = useState<Record<string, any>>({});
   const [searchKeywordParams, setSearchKeywworParams] = useState<Record<string, any>>({});
@@ -39,6 +62,12 @@ export default function CommonStandardMaster() {
   const [selected, setSelected] = React.useState('');
   const [selectedIds, setSelectedIds] = React.useState<number[]>([]);
   const [openConfirm, setOpenConfirm] = useState(false);
+  const [openAdd, setOpenAdd] = useState(false);
+  const filterRef = useRef<{ reset: () => void }>(null);
+  const [openImport, setOpenImport] = useState(false);
+
+  //--------------------------------------------------------------------------------------------------------- Gọi custom hook và destructuring kết quả trả về cho master-data
+
 
   const { academicTitles, loadingAcademicTitles, errorAcademicTitles } = useAcademicTitles(searchParams);
   const { programsCSM, loadingProgramsCSM, errorProgramsCSM } = useProgramsCSM(searchKeywordParams);
@@ -49,22 +78,49 @@ export default function CommonStandardMaster() {
   const { labPositions, loadingLabPositions, errorLabPositions } = useLabPositions(searchParams);
   const { functionalDomains, loadingFunctionalDomains, errorFunctionalDomains } = useFunctionalDomains(searchParams);
   const { functionalCategories, loadingFunctionalCategories, errorFunctionalCategories } = useFunctionalCategories(searchParams);
-  const { deleteEquipmentForms, loadingDeleteEquipmentForms, errorDeleteEquipmentForms, deletedIds } = useDeleteEquipmentForms();
 
+
+  //--------------------------------------------------------------------------------------------------------- Gọi custom hook và destructuring kết quả trả về cho xóa data
+
+  const { deleteEquipmentForms, loadingDeleteEquipmentForms, errorDeleteEquipmentForms, deletedEquipmentFormsIds } = useDeleteEquipmentForms();
+  const { deleteAcademicTitles, loadingDeleteAcademicTitles, errorDeleteAcademicTitles, deletedAcademicTitlesIds } = useDeleteAcademicTitles();
+  const { deleteEquipmentStatuses, loadingDeleteEquipmentStatuses, errorDeleteEquipmentStatuses, deletedEquipmentStatusesIds } = useDeleteEquipmentStatuses();
+  const { deleteFunctionalDomains, loadingDeleteFunctionalDomains, errorDeleteFunctionalDomains, deletedFunctionalDomainsIds } = useDeleteFunctionalDomains();
+  const { deleteFaculties, loadingDeleteFaculties, errorDeleteFaculties, deletedFacultiesIds } = useDeleteFaculties();
+  const { deleteLabPositions, loadingDeleteLabPositions, errorDeleteLabPositions, deletedLabPositionsIds } = useDeleteLabPositions();
+  const { deletePriceCategories, loadingDeletePriceCategories, errorDeletePriceCategories, deletedPriceCategoriesIds } = useDeletePriceCategories();
+  const { deletePrograms, loadingDeletePrograms, errorDeletePrograms, deletedProgramsIds } = useDeletePrograms();
+  const { deleteFunctionalCategories, loadingDeleteFunctionalCategories, errorDeleteFunctionalCategories, deletedFunctionalCategoriesIds } = useDeleteFunctionalCategories();
+
+  //--------------------------------------------------------------------------------------------------------- Gọi custom hook và destructuring kết quả trả về cho thêm data
+
+  const { addFaculty, loadingAddFaculty, errorAddFaculty } = useAddFaculty();
+  const { addAcademicTitle, loadingAddAcademicTitle, errorAddAcademicTitle } = useAddAcademicTitle();
+  const { addEquipmentForm, loadingAddEquipmentForm, errorAddEquipmentForm } = useAddEquipmentForms();
+  const { addFunctionalCategories, loadingAddFunctionalCategories, errorAddFunctionalCategories } = useAddFunctionalCategories();
+  const { addFunctionalDomains, loadingAddFunctionalDomains, errorAddFunctionalDomains } = useAddFunctionalDomains();
+  const { addPrograms, loadingAddPrograms, errorAddPrograms } = useAddPrograms();
   const { notify, showSuccess, showError, showInfo, showWarning, close } = useNotification();
-  const filterRef = useRef<{ reset: () => void }>(null);
 
-  // Hiển thị thông báo khi có lỗi tải dữ liệu
+
+  //--------------------------------------------------------------------------------------------------------- Hiển thị thông báo khi có lỗi tải dữ liệu
+
   useEffect(() => {
-    const error = errorAcademicTitles || errorProgramsCSM || errorPriceCategories || errorEquipmentStatuses || errorEquipmentForms || errorFaculties || errorLabPositions || errorFunctionalDomains || errorFunctionalCategories;
+    const error = errorAcademicTitles || errorProgramsCSM || errorPriceCategories || errorEquipmentStatuses || errorEquipmentForms || errorFaculties || errorLabPositions || errorFunctionalDomains || errorFunctionalCategories || errorDeleteAcademicTitles || errorDeleteEquipmentForms || errorDeleteEquipmentStatuses
+      || errorDeleteEquipmentStatuses || errorDeleteFunctionalCategories || errorDeleteFunctionalDomains || errorDeleteFaculties || errorDeleteLabPositions || errorDeletePriceCategories || errorDeletePrograms || errorAddFaculty || errorAddAcademicTitle || errorAddEquipmentForm || errorAddFunctionalCategories
+    errorAddFunctionalDomains || errorAddPrograms;
     if (error?.message) {
       showError(error.message);
       const timer = setTimeout(() => close(), 3000);
       return () => clearTimeout(timer);
     }
-  }, [errorAcademicTitles, errorProgramsCSM, errorPriceCategories, errorEquipmentStatuses, errorEquipmentForms, errorFaculties, errorLabPositions, errorFunctionalDomains, errorFunctionalCategories]);
+  }, [errorAcademicTitles, errorProgramsCSM, errorPriceCategories, errorEquipmentStatuses, errorEquipmentForms, errorFaculties, errorLabPositions, errorFunctionalDomains, errorFunctionalCategories, errorDeleteAcademicTitles, errorDeleteEquipmentForms, errorDeleteEquipmentStatuses,
+    errorDeleteEquipmentStatuses, errorDeleteFunctionalDomains, errorDeleteFaculties, errorDeleteLabPositions, errorDeletePriceCategories, errorDeletePrograms, errorDeleteFunctionalCategories, errorAddAcademicTitle, errorAddEquipmentForm, errorAddFunctionalDomains, errorAddFunctionalCategories, 
+    errorAddPrograms
+  ]);
 
 
+  //--------------------------------------------------------------------------------------------------------- Tạo hành động loading 
 
   const isLoading =
     loadingAcademicTitles ||
@@ -75,12 +131,28 @@ export default function CommonStandardMaster() {
     loadingFunctionalDomains ||
     loadingLabPositions ||
     loadingFaculties ||
-    loadingEquipmentForms;
+    loadingEquipmentForms ||
+    loadingDeleteAcademicTitles ||
+    loadingDeleteEquipmentForms ||
+    loadingDeleteEquipmentStatuses ||
+    loadingDeleteFunctionalDomains
+    loadingDeleteFaculties ||
+    loadingDeletePrograms ||
+    loadingDeleteLabPositions ||
+    loadingDeletePriceCategories ||
+    loadingAddAcademicTitle ||
+    loadingAddFaculty ||
+    loadingDeleteFunctionalCategories ||
+    loadingAddEquipmentForm ||
+    loadingAddFunctionalCategories ||
+    loadingAddFunctionalDomains ||
+    loadingAddPrograms
+    ;
 
+  //--------------------------------------------------------------------------------------------------------- Gọi master-data cho dropdown select chính
 
   const selectedItem = useMemo(() => {
     if (!selected) return [];
-
     const dataMap: Record<string, any> = {
       "academic-titles": academicTitles || [],
       "programs": programsCSM || [],
@@ -104,11 +176,13 @@ export default function CommonStandardMaster() {
     return [];
   }, [selected, academicTitles, programsCSM, priceCategories, equipmentForms, equipmentStatuses, functionalCategories, functionalDomains, labPositions, faculties]);
 
+  //--------------------------------------------------------------------------------------------------------- Xử lý dữ liệu master-data đã tải
 
   const items = selectedItem;
   const keys = items.length > 0
-    ? Object.keys(items[0]).filter(k => k !== "faculty")
+    ? Object.keys(items[0]).filter(k => k !== "faculty" && k !== "id")
     : [];
+
   const handleFilter = (filters: any) => {
     const keyword = filters.search?.trim();
 
@@ -140,6 +214,7 @@ export default function CommonStandardMaster() {
         });
     }
 
+    //--------------------------------------------------------------------------------------------------------- Xử lý sự kiện change select
 
   };
   const handleChangeSelected = (value: string) => {
@@ -148,25 +223,248 @@ export default function CommonStandardMaster() {
     setSearchParams({ _refresh: Date.now() });
   };
 
-
-  const handleConfirmDelete = async () => {
-    if (selected === "forms" && selectedIds.length > 0) {
-      await deleteEquipmentForms(selectedIds);
-      setSearchParams({ _refresh: Date.now() });
-      setSelectedIds([]);
-      setOpenConfirm(false)
+  //--------------------------------------------------------------------------------------------------------- Xử lý sự kiện xác nhận xóa
+  const checkDelete = (ids: number[]) => {
+    if (!ids || ids.length === 0) {
+      showError("Please select the row to delete");
+      return;
     }
-    setOpenConfirm(false);
+    setOpenConfirm(true);
   };
 
 
+  const handleConfirmDelete = async () => {
+    if (selected === "") {
+      showError("Please select master data type");
+    }
 
-  function setDialogOpen(arg0: boolean) {
-    throw new Error('Function not implemented.');
+
+    const varTextSuccess = "Deleted successfully";
+    if (selected === "forms" && selectedIds.length > 0) {
+      await deleteEquipmentForms(selectedIds);
+
+
+      setSearchParams({ _refresh: Date.now() });
+      setSelectedIds([]);
+      setOpenConfirm(false);
+      showSuccess(varTextSuccess);
+
+
+    }
+    if (selected === "academic-titles" && selectedIds.length > 0) {
+      await deleteAcademicTitles(selectedIds);
+
+      setSearchParams({ _refresh: Date.now() });
+      setSelectedIds([]);
+      setOpenConfirm(false);
+      showSuccess(varTextSuccess);
+
+
+    }
+    if (selected === "functional-categories" && selectedIds.length > 0) {
+      await deleteFunctionalCategories(selectedIds);
+
+      setSearchParams({ _refresh: Date.now() });
+      setSelectedIds([]);
+      setOpenConfirm(false);
+      showSuccess(varTextSuccess);
+
+    }
+    // if (selected === "equipment-statuses" && selectedIds.length > 0) {
+    //   if(deletedEquipmentStatusesIds.length >0)
+    //   {
+    //     await deleteEquipmentStatuses(selectedIds);
+    //     setSearchParams({ _refresh: Date.now() });
+    //     setSelectedIds([]);
+    //     setOpenConfirm(false);
+    //     showSuccess(varTextSuccess);
+    //   }
+    // }
+    if (selected === "functional-domains" && selectedIds.length > 0) {
+      await deleteFunctionalDomains(selectedIds);
+
+
+      setSearchParams({ _refresh: Date.now() });
+      setSelectedIds([]);
+      setOpenConfirm(false);
+      showSuccess(varTextSuccess);
+
+    }
+    if (selected === "lab-prositions" && selectedIds.length > 0) {
+      await deleteLabPositions(selectedIds);
+
+
+      setSearchParams({ _refresh: Date.now() });
+      setSelectedIds([]);
+      setOpenConfirm(false);
+      showSuccess(varTextSuccess);
+
+    }
+    if (selected === "programs" && selectedIds.length > 0) {
+      await deletePrograms(selectedIds);
+
+
+      setSearchParams({ _refresh: Date.now() });
+      setSelectedIds([]);
+      setOpenConfirm(false);
+      showSuccess(varTextSuccess);
+
+    }
+    if (selected === "faculty" && selectedIds.length > 0) {
+      await deleteFaculties(selectedIds);
+
+
+      setSearchParams({ _refresh: Date.now() });
+      setSelectedIds([]);
+      setOpenConfirm(false);
+      showSuccess(varTextSuccess);
+
+    }
+    if (selected === "price-categories" && selectedIds.length > 0) {
+      await deletePriceCategories(selectedIds);
+
+
+      setSearchParams({ _refresh: Date.now() });
+      setSelectedIds([]);
+      setOpenConfirm(false);
+      showSuccess(varTextSuccess);
+
+
+    }
+    setOpenConfirm(false);
+  };
+  //--------------------------------------------------------------------------------------------------------- Xử lý sự kiện hiển thị popup form thêm và lưu
+
+  const handleAdd = async (data: any) => {
+    const hasValue = Object.values(data).some(v => v !== null && v !== undefined && v !== "");
+    const varTextSuccess = "Save successfully";
+    if (selected === "") {
+      showError("Please select master-data type");
+    }
+
+    if (selected === "faculty" && hasValue === true) {
+      await addFaculty(data);
+      setSearchParams({ _refresh: Date.now() });
+      setSelectedIds([]);
+      setOpenConfirm(false);
+      showSuccess(varTextSuccess);
+    }
+    if (selected === "academic-titles" && hasValue === true) {
+      await addAcademicTitle(data);
+      setSearchParams({ _refresh: Date.now() });
+      setSelectedIds([]);
+      setOpenConfirm(false);
+    }
+    if (selected === "forms" && hasValue === true) {
+      await addEquipmentForm(data);
+      setSearchParams({ _refresh: Date.now() });
+      setSelectedIds([]);
+      setOpenConfirm(false);
+    }
+    if (selected === "functional-categories" && hasValue === true) {
+      await addFunctionalCategories(data);
+      setSearchParams({ _refresh: Date.now() });
+      setSelectedIds([]);
+      setOpenConfirm(false);
+    }
+    if (selected === "functional-domains" && hasValue === true) {
+      await addFunctionalDomains(data);
+      setSearchParams({ _refresh: Date.now() });
+      setSelectedIds([]);
+      setOpenConfirm(false);
+    }
+    if (selected === "programs" && hasValue === true) {
+      await addPrograms(data);
+      setSearchParams({ _refresh: Date.now() });
+      setSelectedIds([]);
+      setOpenConfirm(false);
+    }
+    setSearchParams({ _refresh: Date.now() });
+    setOpenAdd(false);
+  };
+
+  // Xuất dữ liệu Excel (page hiện tại hoặc toàn bộ)
+const handleExportExcel = () => {
+  if (!items || items.length === 0) {
+    showError("No data to export");
+    return;
   }
 
-  return (
+  // Chỉ xuất trang hiện tại
+  const currentPageData = items
+    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+    .map((row: { [x: string]: any; }) => {
+      const obj: Record<string, any> = {};
+      keys.forEach((key) => {
+        obj[key.toUpperCase()] = row[key];
+      });
+      return obj;
+    });
 
+  // Tạo file Excel
+  const worksheet = XLSX.utils.json_to_sheet(currentPageData);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+  const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+  const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
+  saveAs(blob, `${selected || "Data"}_${new Date().toISOString().slice(0, 10)}.xlsx`);
+
+  showSuccess("Exported successfully!");
+};
+
+
+
+const handleImport = async (data: any[]) => {
+  try {
+    if (!data || data.length === 0) {
+      showError("No data to import");
+      return;
+    }
+
+    if (!selected) {
+      showError("Please select master-data type");
+      return;
+    }
+
+    const varTextSuccess = "Imported successfully";
+
+    // ⚙️ Import từng dòng
+    for (const row of data) {
+      const hasValue = Object.values(row).some(
+        (v) => v !== null && v !== undefined && String(v).trim() !== ""
+      );
+      if (!hasValue) continue;
+
+      if (selected === "faculty") {
+        await addFaculty(row); // ✅ row là object { name, description? }
+      } else if (selected === "academic-titles") {
+        await addAcademicTitle(row);
+      } else if (selected === "forms") {
+        await addEquipmentForm(row);
+      } else if (selected === "functional-categories") {
+        await addFunctionalCategories(row);
+      } else if (selected === "functional-domains") {
+        await addFunctionalDomains(row);
+      } else if (selected === "programs") {
+        await addPrograms(row);
+      } else {
+        showError(`Import not supported for "${selected}"`);
+        return;
+      }
+    }
+
+    showSuccess(varTextSuccess);
+    setSearchParams({ _refresh: Date.now() });
+    setSelectedIds([]);
+    setOpenImport(false);
+  } catch (error: any) {
+    console.error("Import error:", error);
+    showError(`Import failed: ${error?.message || "Unknown error"}`);
+  }
+};
+
+ 
+  return (
     <Box sx={{ p: 2 }}>
       {/* Popup loading */}
       <LoadingInline open={isLoading} />
@@ -188,7 +486,6 @@ export default function CommonStandardMaster() {
           const selectedValue = newValue?.basePath || '';
           setSelected(selectedValue);
           handleChangeSelected(selectedValue);
-
         }}
         renderInput={(params) => (
           <TextField
@@ -199,7 +496,7 @@ export default function CommonStandardMaster() {
           />
         )}
       />
-      {selectedItem.length > 0 ? (
+      {selected ? (
         <Box mt={2}>
           <TablePagination
             component="div"
@@ -213,18 +510,17 @@ export default function CommonStandardMaster() {
             }}
             rowsPerPageOptions={[5, 10, 25, 50]}
           />
+          
 
-          <FilterSection ref={filterRef} onSearch={handleFilter} />
           <ActionBar
+            type={selected}
             selectedIds={selectedIds}
-            onDelete={() => setOpenConfirm(true)}
-            onImport={(file) => {
-
-            }}
-            onExport={() => {
-
-            }}
-          />
+            onDelete={checkDelete}
+            onAdd={() => setOpenAdd(true)}
+             onImport={() => setOpenImport(true)} 
+              onExport={handleExportExcel}
+             handleFilter={handleFilter}         />
+           
           <TableContainer component={Paper}>
             <Table size="small" sx={{ borderCollapse: "collapse", "& td, & th": { border: "1px solid rgba(224, 224, 224, 1)" } }}>
               <TableHead>
@@ -296,8 +592,6 @@ export default function CommonStandardMaster() {
               </TableBody>
             </Table>
           </TableContainer>
-
-
         </Box>
       ) : (
         <Box mt={2} textAlign="center" color="gray">
@@ -320,9 +614,19 @@ export default function CommonStandardMaster() {
         cancelLabel="Cancel"
         confirmColor="error"
       />
-
-
+      <AddFormDialog
+        type={selected}   // "forms" | "users" | "equipments"
+        open={openAdd}
+        onClose={() => setOpenAdd(false)}
+        onSave={handleAdd}
+        faculty={faculties?.data|| []}   // lấy mảng data, fallback []
+      />
+      <ImportDialog
+        open={openImport}
+        onClose={() => setOpenImport(false)}
+        keys={keys}
+        onImport={handleImport}
+      />
     </Box>
-
   );
 }
