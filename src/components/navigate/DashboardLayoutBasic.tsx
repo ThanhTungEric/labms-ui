@@ -17,7 +17,9 @@ import ChevronRightOutlinedIcon from '@mui/icons-material/ChevronRightOutlined';
 import GroupsIcon from '@mui/icons-material/Groups';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import AccountTreeOutlinedIcon from '@mui/icons-material/AccountTreeOutlined';
+import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import DashboardRoutes from './DashboardRoutes';
+
 
 const NAVIGATION: Navigation = [
   {
@@ -48,6 +50,11 @@ const NAVIGATION: Navigation = [
       { segment: 'group-guest', title: 'Group', icon: <ChevronRightOutlinedIcon /> },
       { segment: 'individual-guest', title: 'Individual', icon: <ChevronRightOutlinedIcon /> },
     ],
+  },
+  {
+    segment: 'staff',
+    title: 'Staff',
+    icon: <AccountCircleOutlinedIcon />,
   },
   {
     segment: 'calendar',

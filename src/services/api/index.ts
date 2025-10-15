@@ -19,3 +19,4 @@ export * from './room/room';
 export * from './equipmentItems/equipmentItems';
 export * from './participants/group-guest-participants';
 export * from './participants/individual-guest.api';
+export * from './staff/staff';

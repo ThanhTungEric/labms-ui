@@ -13,3 +13,4 @@ export * from './equipmentForms.type';
 export * from './equipmentStatuses.type'
 export * from './individualParticipant.types';
 export * from './groupParticipant.types'
+export * from './staff.types';
