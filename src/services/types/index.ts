@@ -11,3 +11,5 @@ export * from './functionalCategories.type';
 export * from './functionalDomains.type';
 export * from './equipmentForms.type';
 export * from './equipmentStatuses.type'
+export * from './individualParticipant.types';
+export * from './groupParticipant.types'

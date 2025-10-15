@@ -17,3 +17,5 @@ export * from './priceCategories/priceCategories';
 export * from './programs/programsCSM';
 export * from './room/room';
 export * from './equipmentItems/equipmentItems';
+export * from './participants/group-guest-participants';
+export * from './participants/individual-guest.api';

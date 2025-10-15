@@ -4,9 +4,10 @@ import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-import MoreActionsMenu, { MoreActionItem } from '../../../components/MoreActionsMenu';
+import MoreActionsMenu from '../../../components/MoreActionsMenu';
 import ExportReportButton from '../../../components/ExportReportButton';
 import LabSearch from '../../../components/LabSearch';
+import { MoreActionItem } from '@/services/types';
 
 interface LabActionsProps {
     selectedItemId: number | null;
