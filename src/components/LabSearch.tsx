@@ -55,3 +55,11 @@ const LabSearch: React.FC<LabSearchProps> = ({ searchValue, onSearchChange }) =>
 };
 
 export default LabSearch;
+
+function onSearchChange(arg0: { search: any; }) {
+    throw new Error('Function not implemented.');
+}
+function useState(arg0: { applicationType: string; idOrName: string; owner: string; status: string; notSubmitted: boolean; department: string; dateFrom: string; dateTo: string; }): [any, any] {
+    throw new Error('Function not implemented.');
+}
+

@@ -9,7 +9,8 @@ export async function getProgramsCSM(params: Record<string, any> = {}): Promise<
   if (search && search.trim() !== '') apiParams.search = search;
   try 
   {
-    const response = await api.get<programsCSM[]>('/forms', { params: apiParams });
+    const response = await api.get<programsCSM[]>('/programs', { params: apiParams });
+
     return response.data;
   } 
   catch (error: any) 

@@ -1,7 +1,5 @@
- export interface Faculty {
-  id: number;
-  label: string;
-}
+import { fucultyItems } from "./faculties.type";
+
 
 
 
@@ -9,7 +7,7 @@ export interface programItems {
   id: number;
   code: string;
   name: string;
-  faculty: Faculty[];
+  faculty: fucultyItems[];
 }
 
 export interface programsCSM {

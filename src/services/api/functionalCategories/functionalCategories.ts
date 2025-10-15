@@ -5,7 +5,9 @@ export async function getFunctionalCategories(params: Record<string, any> = {}):
   const { _refresh, search, ...rest } = params;
   const apiParams: Record<string, any> = { ...rest };
   if (search && search.trim() !== '') apiParams.search = search;
-  try {
+
+  try 
+  {
     const response = await api.get<functionalCategories[]>('/functional-categories', { params: apiParams });
     return response.data;
   }
