@@ -16,7 +16,7 @@ const NameWithIdChip: React.FC<NameWithIdChipProps> = ({
     if (name === undefined && id !== undefined && id !== null && id !== 0) {
         return (
             <Chip
-                label={`${chipPrefix}: ${id}`}
+                label={`${id}`}
                 size="small"
                 variant="outlined" 
                 sx={{ fontSize: '0.75rem', height: 22, px: 0.5 }}

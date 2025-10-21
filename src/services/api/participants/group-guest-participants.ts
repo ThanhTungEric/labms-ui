@@ -6,7 +6,7 @@ import type {
   GgpSort
 } from "@/services/types";
 
-const BASE = "/participants/group-guest";
+const BASE = "/schedule/participants/group-guest";
 export async function getAllGroupGuestParticipants(
   params: GgpQuery = {}
 ): Promise<{ data: GroupGuestParticipant[]; meta: { count: number } }> {
