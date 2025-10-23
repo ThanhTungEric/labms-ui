@@ -6,7 +6,7 @@ import type {
   IgpSort
 } from "@/services/types";
 
-const BASE = "/participants/individual-guest";
+const BASE = "/schedule/participants/individual-guest";
 
 export async function getAllIndividualGuestParticipants(
   params: IgpQuery = {}

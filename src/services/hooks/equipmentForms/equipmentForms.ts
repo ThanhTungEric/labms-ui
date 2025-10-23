@@ -1,60 +1,39 @@
-import { useEffect, useState } from 'react';
-import { getEquipmentForms, getEquipmentFormsWithData } from '../../api/equipmentForms/equipmentForms';
-import { equipmentFormItems, equipmentForms } from '../../types/equipmentForms.type';
+import { useEffect, useState, useMemo } from 'react';
+import { getEquipmentForms } from '@/services/api';
+import { EquipmentForm, GetEquipmentFormsParams, equipmentForms } from '@/services/types/equipmentForms.type';
+import { useDebounce } from '@/utils';
 
-export function useEquipmentForms(params: Record<string, any>) {
-  const [equipmentForms, setEquipmentForms] = useState<equipmentForms[]>([]);
-  const [loadingEquipmentForms, setLoading] = useState(true);
-  const [errorEquipmentForms, setError] = useState<Error | null>(null);
+export function useEquipmentForms(params: GetEquipmentFormsParams) {
+  const [forms, setForms] = useState<EquipmentForm[]>([]);
+  const [loadingForms, setLoading] = useState(true);
+  const [errorForms, setError] = useState<Error | null>(null);
+
+  const { search, ...restParams } = params;
+  const debouncedSearch = useDebounce(search, 500);
+
+  const stableRestParams = useMemo(() => restParams, [JSON.stringify(restParams)]);
 
   useEffect(() => {
     let isMounted = true;
-
     setLoading(true);
-    getEquipmentForms(params)
-      .then((data) => {
-        if (isMounted) setEquipmentForms(data);
+    setError(null);
+
+    const apiParams = {
+      ...stableRestParams,
+      search: debouncedSearch,
+    };
+
+    getEquipmentForms(apiParams)
+      .then((res: equipmentForms) => {
+        if (!isMounted) return;
+        const formsArray = Array.isArray(res) ? res : res?.data || [];
+        setForms(formsArray);
       })
-      .catch((err) => {
-        if (isMounted) setError(err);
-      })
-      .finally(() => {
-        if (isMounted) setLoading(false);
-      });
+      .catch((err) => isMounted && setError(err))
+      .finally(() => isMounted && setLoading(false));
 
     return () => { isMounted = false };
-  }, [params]);
+  }, [debouncedSearch, stableRestParams]);
 
-  return { equipmentForms, loadingEquipmentForms, errorEquipmentForms };
-}
-
-export function useEquipmentFormsData(params: Record<string, any>) {
-  const [formsData, setFormsData] = useState<equipmentFormItems[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-
-  useEffect(() => {
-    let isMounted = true;
-
-    setLoading(true);
-    getEquipmentFormsWithData(params)
-      .then((data) => {
-        if (isMounted) {
-          setFormsData(data);
-          setLoading(false);
-        }
-      })
-      .catch((err) => {
-        if (isMounted) {
-          setError(err);
-          setLoading(false);
-        }
-      });
-
-    return () => {
-      isMounted = false;
-    };
-  }, [JSON.stringify(params)]);
-
-  return { formsData, loading, error };
+  return { forms, loadingForms, errorForms };
 }

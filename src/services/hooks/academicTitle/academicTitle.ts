@@ -1,27 +1,43 @@
-import { useEffect, useState } from 'react';
-import { getAcademicTitles } from '../../api/academicTitle/academicTitle';
-import { AcademicTitles } from '../../types/academicTitles.type';
-export function useAcademicTitles(params: Record<string, any>) {
-  const [academicTitles, setAcademicTitles] = useState<AcademicTitles[]>([]);
+import { useEffect, useState, useMemo } from 'react';
+import { getAcademicTitles } from '@/services/api';
+import { AcademicTitle, GetAcademicTitlesParams } from '@/services/types';
+import { useDebounce } from '@/utils';
+
+export function useAcademicTitles(params: GetAcademicTitlesParams) {
+  const [academicTitles, setAcademicTitles] = useState<AcademicTitle[]>([]);
   const [loadingAcademicTitles, setLoading] = useState(true);
   const [errorAcademicTitles, setError] = useState<Error | null>(null);
-  
-    useEffect(() => {
-        let isMounted = true;
-        setLoading(true);
-        getAcademicTitles(params)
-          .then((data) => {
-            if (isMounted) setAcademicTitles(data);
-          })
-          .catch((err) => {
-            if (isMounted) setError(err);
-          })
-          .finally(() => {
-            if (isMounted) setLoading(false);
-          });
-    
-        return () => { isMounted = false };
-      }, [params]); // <-- khi params đổi thì gọi lại API
-      
+
+  const { search, ...restParams } = params;
+  const debouncedSearch = useDebounce(search, 500);
+
+  const debouncedParams = useMemo(
+    () => ({ ...restParams, search: debouncedSearch }),
+    [debouncedSearch, JSON.stringify(restParams)]
+  );
+
+  useEffect(() => {
+    let isMounted = true;
+    setLoading(true);
+    setError(null);
+
+    getAcademicTitles(debouncedParams)
+      .then((response) => {
+        if (isMounted && response && response.data) {
+          setAcademicTitles(response.data);
+        }
+      })
+      .catch((err) => {
+        if (isMounted) setError(err);
+      })
+      .finally(() => {
+        if (isMounted) setLoading(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [debouncedParams]);
+
   return { academicTitles, loadingAcademicTitles, errorAcademicTitles };
 }

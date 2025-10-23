@@ -1,12 +1,6 @@
-export interface AcademicTitle {
-  id: number;
-  name: string;
-}
+import { Program } from "./program.type";
+import { AcademicTitle } from "./academicTitles.type";
 
-export interface Program {
-  id: number;
-  name: string;
-}
 export type Staff = {
   id: number;
   code: string;
@@ -32,22 +26,22 @@ export type StaffFormState = Omit<Staff, 'id' | 'expertises' | 'academicTitles' 
   expertises: string[]; 
 };
 
-export type StaffUpdatePayload = {
-  code: string;
-  function: string;
-  firstName: string;
-  lastName: string;
+export interface StaffUpdatePayload {
+  code?: string;
+  function?: string;
+  firstName?: string;
+  lastName?: string;
   middleName?: string;
-  phoneNumber: string | undefined;
-  email: string | undefined
-  title: string;
-  addedExpertises: string[];
-  removedExpertises: string[];
-  addedAcademicTitleIds: number[];
-  removedAcademicTitleIds: number[];
-  addedProgramIds: number[];
-  removedProgramIds: number[];
-};
+  phoneNumber?: string;
+  email?: string;
+  title?: string;
+  addedExpertises?: string[];
+  removedExpertises?: string[];
+  addedAcademicTitleIds?: number[];
+  removedAcademicTitleIds?: number[];
+  addedProgramIds?: number[];
+  removedProgramIds?: number[];
+}
 
 export type StaffOrderField = "id" | "firstName" | "lastName" | "middleName" | "code" | "function" | "phoneNumber" | "email" | "title";
 

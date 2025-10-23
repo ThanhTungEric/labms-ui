@@ -40,7 +40,6 @@ const StaffTable: React.FC<Props> = ({
 }) => {
   const createSortHandler = (field: StaffOrderField) => () => onRequestSort(field);
   const getFullName = (row: Staff) => `${row.firstName} ${row.middleName ? row.middleName + ' ' : ''}${row.lastName}`;
-console.log("////", rows);
   const renderObjectArrayAsChips = <T extends { id: number; name: string }>(
       data: T[] | null | undefined
   ) => {

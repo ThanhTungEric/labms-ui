@@ -1,13 +1,17 @@
 import React, { useMemo, useRef } from 'react';
 import { Box, Chip, CircularProgress, Typography } from '@mui/material';
 import { DynamicModal, StyledTextBox, SaveButton, CancelButton, StyledMultiSelect } from '@/components';
-import { useEquipmentForm, useEquipmentFormsData, useFunctionalCategories, useFunctionalDomains } from '@/services/hooks';
+import { useEquipmentForm, useEquipmentForms, useFunctionalCategories, useFunctionalDomains } from '@/services/hooks';
 import type { Equipment } from '@/services/types';
 
 const EquipmentDialog: React.FC<{ open: boolean; onClose: () => void; onSuccess: () => void; equipment?: Equipment | null; }> = ({ open, onClose, onSuccess, equipment }) => {
     const { formState, isEditing, busy, error, handleInputChange, handleMultiSelectChange, handleFormSelectChange, handleSubmit } = useEquipmentForm(equipment);
     const formsParams = useMemo(() => ({}), []);
-    const { formsData, loading: loadingForms, error: errorForms } = useEquipmentFormsData(formsParams);
+const { 
+        forms, 
+        loadingForms,  
+        errorForms   
+    } = useEquipmentForms(formsParams);
     const emptyParams = useRef({}).current;
     const { functionalCategories: categories, loadingFunctionalCategories: loadingCategories } = useFunctionalCategories(emptyParams);
     const { functionalDomains: domains, loadingFunctionalDomains: loadingDomains } = useFunctionalDomains(emptyParams);
@@ -34,9 +38,8 @@ const EquipmentDialog: React.FC<{ open: boolean; onClose: () => void; onSuccess:
                             </Box>
                         ) : (
                             <>
-                                <StyledMultiSelect label="Select Form" items={formsData.map(f => ({ key: String(f.id), label: f.name }))} selectedKeys={formState.formId ? [String(formState.formId)] : []} onSelectChange={handleFormSelectChange} />
+                                <StyledMultiSelect label="Select Form" items={forms.map(f => ({ key: String(f.id), label: f.name }))} selectedKeys={formState.formId ? [String(formState.formId)] : []} onSelectChange={handleFormSelectChange} />
 
-                                {/* --- Categories --- */}
                                 <Box>
                                     <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 700, fontSize: 14, mb: 1 }}>Categories:</Typography>
                                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 1 }}>
@@ -55,7 +58,6 @@ const EquipmentDialog: React.FC<{ open: boolean; onClose: () => void; onSuccess:
                                     <StyledMultiSelect label="Add categories" items={(categories || []).map(c => ({ key: String(c.id), label: c.label }))} selectedKeys={(formState.categoryIds || []).map(String)} onSelectChange={(keys) => handleMultiSelectChange('categoryIds', keys)} />
                                 </Box>
 
-                                {/* --- Domains --- */}
                                 <Box>
                                     <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 700, fontSize: 14, mb: 1 }}>Domains:</Typography>
                                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 1 }}>
