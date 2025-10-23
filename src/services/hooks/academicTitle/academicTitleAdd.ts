@@ -1,26 +1,27 @@
 import { useState } from "react";
-import { addAcademicTitleItem as addApi } from "../../api/academicTitle/academicTitleAdd";
+import { addAcademicTitleItem } from "@/services/api";
 
 export function useAddAcademicTitle() {
-  const [newAcademicTitle, setNewAcademicTitle] = useState<any | null>(null);
+  const [isAddedSuccessfully, setIsAddedSuccessfully] = useState<boolean>(false);
   const [loadingAddAcademicTitle, setLoading] = useState(false);
   const [errorAddAcademicTitle, setError] = useState<Error | null>(null);
 
   const addAcademicTitle = async (data: { label: string; description?: string }) => {
     setLoading(true);
     setError(null);
+    setIsAddedSuccessfully(false);
 
     try {
-      const res = await addApi(data);   
-      setNewAcademicTitle(res);               
-      return res;
+      await addAcademicTitleItem(data);
+      setIsAddedSuccessfully(true);
+      return true;
     } catch (err) {
       setError(err as Error);
-      throw err;                        
+      throw err;
     } finally {
       setLoading(false);
     }
   };
 
-  return { addAcademicTitle, loadingAddAcademicTitle, errorAddAcademicTitle, newAcademicTitle };
+  return { addAcademicTitle, loadingAddAcademicTitle, errorAddAcademicTitle, isAddedSuccessfully };
 }

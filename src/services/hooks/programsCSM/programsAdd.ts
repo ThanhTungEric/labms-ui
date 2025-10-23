@@ -1,26 +1,27 @@
 import { useState } from "react";
-import { addProgramsItem as addApi } from "../../api/programs/programsAdd";
+import { addProgramsItem } from "@/services/api";
 
 export function useAddPrograms() {
-  const [newPrograms, setNewPrograms] = useState<any | null>(null);
+  const [isAddedSuccessfully, setIsAddedSuccessfully] = useState<boolean>(false); 
   const [loadingAddPrograms, setLoading] = useState(false);
   const [errorAddPrograms, setError] = useState<Error | null>(null);
 
-  const addPrograms = async (data: { code: string; name?: string ; facultyId: number}) => {
+  const addPrograms = async (data: { code: string; name?: string; facultyId: number }) => {
     setLoading(true);
     setError(null);
+    setIsAddedSuccessfully(false); 
 
     try {
-      const res = await addApi(data);   
-      setNewPrograms(res);               
-      return res;
+      await addProgramsItem(data);
+      setIsAddedSuccessfully(true); 
+      return true;
     } catch (err) {
       setError(err as Error);
-      throw err;                        
+      throw err;
     } finally {
       setLoading(false);
     }
   };
 
-  return { addPrograms, loadingAddPrograms, errorAddPrograms, newPrograms };
+  return { addPrograms, loadingAddPrograms, errorAddPrograms, isAddedSuccessfully };
 }

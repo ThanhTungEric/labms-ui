@@ -12,6 +12,7 @@ type StyledTextWithButtonProps = {
   buttonAriaLabel?: string;
   buttonTooltip?: string;
   type?: string;
+  labelWidth?: string | number;
 };
 
 const StyledTextWithButton: React.FC<StyledTextWithButtonProps> = ({
@@ -24,6 +25,7 @@ const StyledTextWithButton: React.FC<StyledTextWithButtonProps> = ({
   buttonAriaLabel = "submit",
   buttonTooltip = "Submit",
   type = "text",
+  labelWidth = "120px",
 }) => {
   const displayValue = String(value ?? "");
 
@@ -39,7 +41,12 @@ const StyledTextWithButton: React.FC<StyledTextWithButtonProps> = ({
       <Typography
         variant="body2"
         color="text.secondary"
-        sx={{ fontWeight: 700, fontSize: 14, flexShrink: 0 }}
+        sx={{
+          fontWeight: 700,
+          fontSize: 14,
+          flexShrink: 0,
+          width: labelWidth,
+        }}
       >
         {label}:
       </Typography>

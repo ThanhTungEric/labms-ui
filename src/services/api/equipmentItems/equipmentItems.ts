@@ -1,89 +1,40 @@
 import api from '@/services/config/axios';
-import { EquipmentItem } from '@/services/types';
+import {
+  CreateEquipmentItemDto,
+  EquipmentItem,
+  EquipmentItemsQuery,
+  EquipmentItemsResponse,
+  UpdateEquipmentItemDto,
+} from '@/services/types';
 
-export interface EquipmentItemSort {
-    field:
-    | 'id'
-    | 'serialNumber'
-    | 'warrantyExpiration'
-    | 'purchaseDate'
-    | 'status'
-    | 'base'
-    | 'lab'
-    | (string & {});
-    dir: 'asc' | 'desc';
-}
-
-export interface EquipmentItemsQuery {
-    skip?: number;
-    take?: number;
-    searchSerialNumber?: string;
-    searchBase?: number[];
-    searchLab?: number[];
-    searchStatus?: number;
-    ids?: number[];
-    sorts?: EquipmentItemSort[];
-}
-
-export interface EquipmentItemsMeta {
-    count: number;
-    page?: number;
-    totalPages?: number;
-}
-
-export interface EquipmentItemsResponse {
-    data: EquipmentItem[];
-    meta: EquipmentItemsMeta;
-}
+const BASE = '/equipment-items';
 
 export const getEquipmentItems = async (
-    params: EquipmentItemsQuery = {}
+  params: EquipmentItemsQuery = {}
 ): Promise<EquipmentItemsResponse> => {
-    const response = await api.get<EquipmentItemsResponse>('/equipment-items', { params });
-    const { data, meta } = response.data;
+  const { data: { data, meta } } = await api.get<EquipmentItemsResponse>(BASE, { params });
 
-    const page = params.skip && params.take ? Math.floor(params.skip / params.take) + 1 : 1;
-    const totalPages = params.take ? Math.ceil((meta.count || 0) / params.take) : 1;
+  const page = params.skip && params.take ? Math.floor(params.skip / params.take) + 1 : 1;
+  const totalPages = params.take ? Math.ceil((meta.count || 0) / params.take) : 1;
 
-    return { data, meta: { ...meta, page, totalPages } };
+  return { data, meta: { ...meta, page, totalPages } };
 };
 
 export const getEquipmentItemById = async (id: number): Promise<EquipmentItem> => {
-    const response = await api.get<EquipmentItem>(`/equipment-items/${id}`);
-    return response.data;
+  const { data } = await api.get<EquipmentItem>(`${BASE}/${id}`);
+  return data;
 };
-
-export interface CreateEquipmentItemDto {
-    serialNumber: string;
-    warrantyExpiration: string;
-    purchaseDate: string;
-    status: number;
-    baseId: number;
-    labId: number;
-}
 
 export const createEquipmentItem = async (dto: CreateEquipmentItemDto): Promise<EquipmentItem> => {
-    const response = await api.post<EquipmentItem>('/equipment-items', dto);
-    return response.data;
+  const { data } = await api.post<EquipmentItem>(BASE, dto);
+  return data;
 };
 
-export interface UpdateEquipmentItemDto {
-    serialNumber?: string;
-    warrantyExpiration?: string;
-    purchaseDate?: string;
-    status?: number;
-    labId?: number;
-}
-
-export const updateEquipmentItem = async (
-    id: number,
-    dto: UpdateEquipmentItemDto
-): Promise<EquipmentItem> => {
-    const response = await api.patch<EquipmentItem>(`/equipment-items/${id}`, dto);
-    return response.data;
+export const updateEquipmentItem = async (id: number, dto: UpdateEquipmentItemDto): Promise<EquipmentItem> => {
+  const { data } = await api.patch<EquipmentItem>(`${BASE}/${id}`, dto);
+  return data;
 };
-
 
 export const deleteEquipmentItem = async (id: number): Promise<void> => {
-    await api.delete(`/equipment-items/${id}`);
+  await api.delete(`${BASE}/${id}`);
 };

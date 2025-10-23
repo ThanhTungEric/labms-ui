@@ -12,3 +12,5 @@ export {default as StyledTextWithButton } from './StyledTextWithButton';
 
 export { default as CreateScheduleDialog } from "./schedule/CreateScheduleDialog";
 export { default as ScheduleForm } from "./schedule/ScheduleForm";
+
+export {default as NameWithIdChip} from './NameWithIdChip';

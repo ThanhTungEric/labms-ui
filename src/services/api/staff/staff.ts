@@ -85,22 +85,14 @@ export async function updateStaff(
     removedProgramIds?: number[];
   }
 ): Promise<StaffDetail> {
-  const res = await api.patch<StaffDetail>(`${BASE}/${id}`, {
-    code: payload.code,
-    function: payload.function,
-    firstName: payload.firstName,
-    lastName: payload.lastName,
-    middleName: payload.middleName || undefined,
-    phoneNumber: payload.phoneNumber || undefined,
-    email: payload.email || undefined, 
-    title: payload.title || undefined,
-    addedExpertises: payload.addedExpertises || undefined,
-    removedExpertises: payload.removedExpertises || undefined,
-    addedAcademicTitleIds: payload.addedAcademicTitleIds || undefined,
-    removedAcademicTitleIds: payload.removedAcademicTitleIds || undefined,
-    addedProgramIds: payload.addedProgramIds || undefined,
-    removedProgramIds: payload.removedProgramIds || undefined,
+  const cleanedPayload: any = {};
+  Object.entries(payload).forEach(([key, value]) => {
+    if (value !== undefined) {
+      cleanedPayload[key] = value;
+    }
   });
+
+  const res = await api.patch<StaffDetail>(`${BASE}/${id}`, cleanedPayload);
   return res.data;
 }
 

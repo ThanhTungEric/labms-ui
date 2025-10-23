@@ -24,6 +24,7 @@ interface StyledMultiSelectProps {
   fullWidth?: boolean;
   width?: string | number;  // Allow a custom width to be passed in
   labelPosition?: 'side' | 'top';
+  labelWidth?: string | number;  // Fixed label width
 }
 
 const StyledSelectButton = styled(Button)(({ theme }) => ({
@@ -70,8 +71,9 @@ const StyledMultiSelect: React.FC<StyledMultiSelectProps> = ({
   placeholder = 'Select',
   multiple = true,
   fullWidth = true,
-  width,  // Accept width as a prop
+  width,
   labelPosition = 'side',
+  labelWidth = '120px',
 }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -101,7 +103,9 @@ const StyledMultiSelect: React.FC<StyledMultiSelectProps> = ({
 
   const renderHorizontal = (
     <FieldContainer>
-      <LabelText variant="body2">{label}:</LabelText>
+      <LabelText variant="body2" sx={{ width: labelWidth }}>
+        {label}:
+      </LabelText>
       <ButtonWrapper sx={{ width: width ?? (fullWidth ? '100%' : 'auto') }}>
         <StyledSelectButton
           variant="outlined"
@@ -126,7 +130,9 @@ const StyledMultiSelect: React.FC<StyledMultiSelectProps> = ({
 
   const renderVertical = (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5, width: width ?? (fullWidth ? '100%' : 'auto') }}>
-      <LabelText variant="body2">{label}</LabelText>
+      <LabelText variant="body2" sx={{ width: labelWidth }}>
+        {label}
+      </LabelText>
       <StyledSelectButton
         variant="outlined"
         onClick={handleOpenMenu}

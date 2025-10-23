@@ -1,6 +1,6 @@
 import api from '@/services/config/axios';
 import qs from 'qs';
-import { Program, ProgramsResponse } from '@/services/types/program.type';
+import { GetProgramsParams, Program, ProgramsResponse } from '@/services/types/program.type';
 
 const BASE = '/programs';
 
@@ -16,11 +16,23 @@ export async function addProgramsItem(data: { code: string; name?: string; facul
   }
 }
 
-export async function getPrograms(params: Record<string, any> = {}): Promise<Program[]> {
-  const { _refresh, search, ...rest } = params;
-  const apiParams: Record<string, any> = { ...rest };
+export async function getPrograms(params: GetProgramsParams = {}): Promise<Program[]> {
+  const { _refresh, skip, take, searchKeyword, searchFaculty, sorts } = params;
+  
+  const apiParams: Record<string, any> = {};
 
-  if (search && search.trim() !== '') apiParams.search = search;
+  if (skip !== undefined) apiParams.skip = skip;
+  if (take !== undefined) apiParams.take = take;
+  
+  if (searchKeyword && typeof searchKeyword === 'string' && searchKeyword.trim() !== '') {
+    apiParams.searchKeyword = searchKeyword.trim();
+  }
+  
+  if (searchFaculty !== undefined) apiParams.searchFaculty = searchFaculty;
+
+  if (sorts && Array.isArray(sorts) && sorts.length > 0) {
+    apiParams.sorts = JSON.stringify(sorts);
+  }
 
   try {
     const response = await api.get<ProgramsResponse>(BASE, { params: apiParams });

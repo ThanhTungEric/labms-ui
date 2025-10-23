@@ -1,25 +1,27 @@
 import { useState } from "react";
-import { addEquipmentFormsItem as addApi } from "../../api/equipmentForms/equipmentFormsAdd";
-export function useAddEquipmentForms() {
-  const [newEquipmentForm, setNewEquipmentForm] = useState<any | null>(null);
-  const [loadingAddEquipmentForm, setLoading] = useState(false);
-  const [errorAddEquipmentForm, setError] = useState<Error | null>(null);
+import { addEquipmentFormsItem } from "@/services/api";
+
+export function useAddEquipmentForm() {
+  const [isAddedSuccessfully, setIsAddedSuccessfully] = useState<boolean>(false);
+  const [loadingAddForm, setLoading] = useState(false);
+  const [errorAddForm, setError] = useState<Error | null>(null);
 
   const addEquipmentForm = async (data: { name: string; description?: string }) => {
     setLoading(true);
     setError(null);
+    setIsAddedSuccessfully(false);
 
     try {
-      const res = await addApi(data);   
-      setNewEquipmentForm(res);               
-      return res;
+      await addEquipmentFormsItem(data);
+      setIsAddedSuccessfully(true);
+      return true;
     } catch (err) {
       setError(err as Error);
-      throw err;                        
+      throw err;
     } finally {
       setLoading(false);
     }
   };
 
-  return { addEquipmentForm, loadingAddEquipmentForm, errorAddEquipmentForm, newEquipmentForm };
+  return { addEquipmentForm, loadingAddForm, errorAddForm, isAddedSuccessfully };
 }

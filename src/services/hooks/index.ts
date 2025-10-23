@@ -3,7 +3,7 @@ export * from './building/useBuilding';
 export * from './academicTitle/academicTitle';
 export * from './masterData/masterData';
 export * from './priceCategories/priceCategoties';
-export * from './programsCSM/programsCSM';
+export * from './programsCSM/programsData';
 export * from './equipmentStatuses/equipmentStatuses';
 export * from './notification/notification';
 export * from './room/useRoomMutations';
@@ -35,3 +35,5 @@ export * from './participants/individualGuestParticipant/useIgpMutations';
 export * from './staff/useStaffData';
 export * from './staff/useStaffForm';
 export * from './staff/useStaffMutations';
+
+export * from './academicTitle/academicTitle';

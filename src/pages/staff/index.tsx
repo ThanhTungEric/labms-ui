@@ -56,7 +56,6 @@ const StaffManagement: React.FC = () => {
     title: true,
     email: true,
     phoneNumber: true,
-    // CẬP NHẬT TRẠNG THÁI HIỂN THỊ BAN ĐẦU CHO CỘT MỚI
     expertises: false,
     academicTitles: false,
     programs: false,

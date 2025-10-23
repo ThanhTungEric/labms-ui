@@ -15,3 +15,12 @@ export interface ProgramsResponse {
     count: number;
   };
 }
+
+export interface GetProgramsParams {
+  skip?: number;
+  take?: number;
+  searchKeyword?: string;
+  searchFaculty?: string;
+  sorts?: Array<{ field: string; direction: 'asc' | 'desc' }>;
+  _refresh?: any; 
+}

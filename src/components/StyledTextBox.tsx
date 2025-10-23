@@ -11,6 +11,7 @@ type StyledTextBoxProps = {
   height?: string | number;
   width?: string | number;
   fullWidth?: boolean;
+  labelWidth?: string | number;  // Added prop for controlling label width
 };
 
 export default function StyledTextBox({
@@ -23,6 +24,7 @@ export default function StyledTextBox({
   height = 32,
   width = '100%',
   fullWidth = false,
+  labelWidth = 100, // Default label width
 }: StyledTextBoxProps) {
   const displayValue = String(value ?? '');
 
@@ -92,7 +94,12 @@ export default function StyledTextBox({
       <Typography
         variant="body2"
         color="text.secondary"
-        sx={{ fontWeight: 700, fontSize: 14, flexShrink: 0 }}
+        sx={{
+          fontWeight: 700,
+          fontSize: 14,
+          flexShrink: 0,
+          width: labelWidth,
+        }}
       >
         {label}:
       </Typography>
